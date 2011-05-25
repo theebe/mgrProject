@@ -1,0 +1,60 @@
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:s="http://jboss.com/products/seam/taglib"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:rich="http://richfaces.org/rich"
+	xmlns:a="http://richfaces.org/a4j" template="layout/template.xhtml">
+
+	<ui:define name="body">
+		<h:form id="form" styleClass="cPanel">
+			<s:validateAll>
+				<rich:panel>
+					<f:facet name="header">
+						<span class="tableHeader">Rejestracja:</span>
+					</f:facet>
+					<h:panelGrid columns="2" columnClasses="name,value">
+
+						<h:outputLabel for="username">Login:</h:outputLabel>
+						<s:decorate id="usernameDecorate" template="/layout/edit.xhtml">
+							<h:inputText id="username" value="#{user.username}"
+								required="true">
+								<a:support event="onblur" reRender="usernameDecorate" />
+							</h:inputText>
+						</s:decorate>
+
+						<h:outputLabel for="password">Hasło:</h:outputLabel>
+						<s:decorate id="passwordDecorate" template="/layout/edit.xhtml">
+							<h:inputSecret id="password" value="#{user.password}"
+								required="true" />
+						</s:decorate>
+
+						<h:outputLabel for="verifyDecorate">Powtórz hasło:</h:outputLabel>
+						<s:decorate id="verifyDecorate" template="/layout/edit.xhtml">
+							<h:inputSecret id="verify" value="#{register.verify}"
+								required="true" />
+
+						</s:decorate>
+
+						<h:outputLabel for="name">Imię i nazwisko:</h:outputLabel>
+						<s:decorate id="nameDecorate" template="/layout/edit.xhtml">
+							<h:inputText id="name" value="#{user.name}" required="true">
+								<a:support event="onblur" reRender="nameDecorate" />
+							</h:inputText>
+						</s:decorate>
+
+					</h:panelGrid>
+
+				</rich:panel>
+			</s:validateAll>
+
+			<div class="actionButtons"><h:commandButton id="register"
+				value="Rejestruj" action="#{register.register}" /> <s:button
+				id="cancel" value="Anuluj" view="/home.xhtml" /></div>
+
+		</h:form>
+	</ui:define>
+
+</ui:composition>
