@@ -1,0 +1,16 @@
+#Wed Aug 06 19:35:32 BST 2008
+action.package=pl.mgrProject.action
+action.sources=/mgrProject/src/hot
+eclipse.preferences.version=1
+model.package=pl.mgrProject.model
+model.sources=/mgrProject/src/main
+seam.ejb.project=mgrProject
+seam.project.connection.profile=
+seam.project.deployment.type=ear
+seam.project.settings.version=1.1
+seam.project.web.root.folder=/mgrProject/view
+seam.runtime.name=
+seam.test.creating=true
+seam.test.project=mgrProject
+test.package=pl.mgrProject.test
+test.sources=/mgrProject/src/test
