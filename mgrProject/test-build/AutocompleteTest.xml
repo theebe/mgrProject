@@ -1,9 +1,0 @@
-<!DOCTYPE suite SYSTEM "http://beust.com/testng/testng-1.0.dtd" >
-
-<suite name="Autocomplete Tests" verbose="2" parallel="false">
-   <test name="Autocomplete Test">
-     <classes>
-       <class name="pl.mgrProject.test.AutocompleteTest"/>       
-     </classes>
-   </test>	
-</suite>
