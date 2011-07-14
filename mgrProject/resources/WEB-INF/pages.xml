@@ -13,6 +13,16 @@
             </rule>
         </navigation>
     </page>
+    
+    <page view-id="/user.xhtml" no-conversation-view-id="/userList.xhtml" login-required="true">
+    	<restrict>#{s:hasRole('admin')}</restrict>
+     
+		<begin-conversation join="true"/>
+		<navigation from-action="#{userManager.update}" >
+			<end-conversation/>
+			<redirect view-id="/userList.xhtml" />
+		</navigation>
+    </page>
 
     <exception class="org.jboss.seam.framework.EntityNotFoundException">
         <redirect view-id="/error.xhtml">

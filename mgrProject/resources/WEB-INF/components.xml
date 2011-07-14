@@ -28,8 +28,10 @@
    <!-- Make sure this URL pattern is the same as that used by the Faces Servlet -->
    <web:hot-deploy-filter url-pattern="*.seam"/>
 
-   <persistence:managed-persistence-context name="entityManager" auto-create="true"
-                      persistence-unit-jndi-name="@puJndiName@"/>
+	<!-- Tutaj ustawiona jest nazwa menagera encji kontrolowanego przez SEAMA przipisana do nazw jndi java:/mgrProjectEntityManagerFactory,
+		 nazwe mgrDatabase używamy jako obiekt klasy EntityMenager wstrzykiwany przez @In -->
+   <persistence:managed-persistence-context name="mgrDatabase" auto-create="true"
+                      persistence-unit-jndi-name="java:/mgrProjectEntityManagerFactory"/>
 
    <drools:rule-base name="securityRules">
       <drools:rule-files>
