@@ -18,7 +18,7 @@ import javax.persistence.PrePersist;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 import javax.persistence.Version;
-
+import org.hibernate.validator.*;
 import org.hibernate.HibernateException;
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Name;
@@ -77,6 +77,8 @@ public class Linia {
 		this.version = version;
 	}
 	
+	@NotNull
+	@Range(min=0, max=999, message="Wartoœæ musi byæ z przedzia³u od 0 do 999")
 	public Integer getNumer() {
 		return numer;
 	}

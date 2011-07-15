@@ -1,6 +1,8 @@
 package pl.mgrProject.model;
 
 import java.io.Serializable;
+import java.util.HashSet;
+import java.util.Set;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -8,9 +10,11 @@ import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Version;
 
+import org.hibernate.validator.NotNull;
 import org.jboss.seam.annotations.Name;
 
 @Entity
@@ -27,13 +31,17 @@ public class PrzystanekTabliczka implements Serializable{
 	private Integer version;
 	private Linia linia;
 	private Przystanek przystanek;
-	private TypDnia typDnia;
+	private Przystanek nastepnyPrzystanek;
+
+	private Set<Odjazd> odjazdy = new HashSet<Odjazd>();
+	
+	//private Map<TypDnia, Set<> >
 	
 	@Id @GeneratedValue
 	public Long getId() {
 		return id;
 	}
-	public void setId(Long id) {
+	public void setId(Long id) { 
 		this.id = id;
 	}
 	 
@@ -46,6 +54,7 @@ public class PrzystanekTabliczka implements Serializable{
 	}
 	
 	@ManyToOne
+	@NotNull
 	public Linia getLinia() {
 		return linia;
 	}
@@ -54,6 +63,7 @@ public class PrzystanekTabliczka implements Serializable{
 	}
 	
 	@ManyToOne
+	@NotNull
 	public Przystanek getPrzystanek() {
 		return przystanek;
 	}
@@ -61,6 +71,25 @@ public class PrzystanekTabliczka implements Serializable{
 		this.przystanek = przystanek;
 	}
 	
+	@ManyToOne
+	public Przystanek getNastepnyPrzystanek() {
+		return nastepnyPrzystanek;
+	}
+	public void setNastepnyPrzystanek(Przystanek nastepnyPrzystanek) {
+		this.nastepnyPrzystanek = nastepnyPrzystanek;
+	}
+	
+	@OneToMany(mappedBy="przystanekTabliczka")
+	public Set<Odjazd> getOdjazdy() {
+		return odjazdy;
+	}
+	
+	public void setOdjazdy(Set<Odjazd> odjazdy) {
+		this.odjazdy = odjazdy;
+	}
 	
 	
+
+	
+
 }

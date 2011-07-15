@@ -49,6 +49,11 @@ public class Przystanek implements Serializable {
 	
 	private Set<PrzystanekTabliczka> przystanekTabliczki = new HashSet<PrzystanekTabliczka>();
 	
+	/**
+	 * Ten przystanek jest nastêpnym dla danego zbioru przystanków
+	 */
+	private Set<PrzystanekTabliczka> poprzedniePrzystanki = new HashSet<PrzystanekTabliczka>();
+	
 	@Id @GeneratedValue
 	public Long getId() {
 		return id;
@@ -107,5 +112,18 @@ public class Przystanek implements Serializable {
 		this.przystanekTabliczki = przystanekTabliczki;
 	}
 
+	
+	@OneToMany(mappedBy="nastepnyPrzystanek")
+	public Set<PrzystanekTabliczka> getPoprzedniePrzystanki() {
+		return poprzedniePrzystanki;
+	}
+
+	
+	public void setPoprzedniePrzystanki(Set<PrzystanekTabliczka> poprzedniePrzystanki) {
+		this.poprzedniePrzystanki = poprzedniePrzystanki;
+	}
+
+	
+	
 
 }
