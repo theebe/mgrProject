@@ -1,0 +1,40 @@
+.container {
+	width: 100%;
+	margin: 0 auto;
+	position: relative;
+}
+.topPanelContainer{
+	width: 100%;
+	height: 130px;
+	
+	border: 1px solid red;
+	}
+.topPanel{
+	padding: 10px;
+	}
+
+.mapa {
+	float: left;
+	width: 77%;
+ 	height: 600px; 
+	border: 1px solid;
+	border-color: lightgray;
+}
+
+.infoPanelContainer{
+	border: 1px solid green;
+	//float: left;
+	width: 330px;
+	
+	}
+	
+.infoPanel{
+	padding: 10px;
+	
+	}
+	
+.topSearchPanel{
+	float: left;
+	padding: 10px;
+	width: 400px;	
+}

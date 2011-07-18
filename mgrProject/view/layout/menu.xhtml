@@ -9,6 +9,16 @@
         <h:outputText value="#{projectName}:"/>
         <s:link id="menuHomeId" view="/home.xhtml" value="Home" propagation="none"/>
     </rich:toolBarGroup>
+    <rich:dropDownMenu showDelay="250" hideDelay="0" submitMode="none">
+        <f:facet name="label">Browse data</f:facet>
+	<rich:menuItem>
+    	<s:link view="/UserList.xhtml"
+           	value="User List"
+           	id="UserId"
+			includePageParams="false"
+     		propagation="none"/>
+     </rich:menuItem>
+    </rich:dropDownMenu>
     <!-- @newMenuItem@ -->
     <rich:toolBarGroup location="right">
         <h:outputText id="menuWelcomeId" value="signed in as: #{credentials.username}" rendered="#{identity.loggedIn}"/>

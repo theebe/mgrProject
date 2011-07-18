@@ -1,0 +1,11 @@
+<!DOCTYPE suite SYSTEM "http://beust.com/testng/testng-1.0.dtd" >
+
+<suite name="mgrProject" verbose="2" parallel="false">
+
+   <test name="Model">
+     <packages>
+      <package name="pl.mgrProject.test.model" />
+    </packages>
+   </test>
+	
+</suite>
