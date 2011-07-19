@@ -2,12 +2,9 @@
  * @author: Szymon Skupien
  */
 
- 
- var SHADOW_Z_INDEX = 10;
-var MARKER_Z_INDEX = 11;
+////////////////////////////////////////////////////////////////////
+// Zmienne
 
- 
- 
 /**
  * obiekt mapy OpenLayers
  */
@@ -19,43 +16,71 @@ var map;
 var przystanki =  [];
 
 
-        
-
-var icon;
-
 /**
  * Warstwy na których pracujemy
  */
 var przystankiLayer;
 var start_stopLayer;
-var layer;
 
-
+/**
+ * Punkty poczatku i konca trasy
+ */
 var start = null;
 var stop = null;
-var size;
-var calculateOffset;
 
-var DIAMETER = 200;
-var NUMBER_OF_FEATURES = 15;
+/**
+ * Popup wyskakujacy po kliknieciu na mape
+ */
+var popup = null;
+var popupContent;
+
+/**
+ * ikonki
+ */
+var iconCross = null;
+var iconStart = null;
+var iconStop = null;
+
+/**
+ * marker krzyza oznaczajacy klikniecie
+ */
+var crossMarker = null
+
+
+/////////////////////////////////////////////////////////////
+//Funkcje
 
 
 /**
- * FUNKCJA STARTUJACA PO ZALADOWANIU STRONY MAIN
+ * FUNKCJA STARTUJACA PO ZALADOWANIU STRONY
+ * dodaje glowne zdarzenia 
  */
 $(document).ready(function() {
 
+	popupContent=$(".popupContent").html();
+	
+	
+	//inicjacja mapy, dodanie warstw...
 	mapInit();
+	
 
 	// dynamiczna zmiana rozmiaru strony
 	findSize();
+
 	// zdarzenie resizu okna
 	$(window).resize(function() {
 		findSize();
 	});
-	// alert("jestem");
+	
+	
+	iconCross = new OpenLayers.Icon("./openlayers/img/cross.png", new OpenLayers.Size(20, 20), new OpenLayers.Pixel(-10, -10));
+	iconStart = new OpenLayers.Icon("./openlayers/img/marker-green.png", new OpenLayers.Size(30, 40), new OpenLayers.Pixel(-(15), -40));
+	iconStop = new OpenLayers.Icon("./openlayers/img/marker.png", new OpenLayers.Size(30, 40), new OpenLayers.Pixel(-(15), -40));
+
+
 
 });//
+
 
 /**
  * Funkcja inicjalizuj¹ca mape
@@ -64,7 +89,7 @@ function mapInit() {
 	// Start position for the map (hardcoded here for simplicity)
 	var lon = 19.937036260585;
 	var lat = 50.064963154336;
-	var zoom = 14;
+	var zoom = 17;
 
 	//inicjalizuje konstruktor i opcje handlera eventu onClick na mapie
 	addOnClickAction();
@@ -84,12 +109,6 @@ function mapInit() {
 															 * OpenLayers.Control.Attribution()
 															 */
 		],
-
-		/*
-		 * maxExtent: new
-		 * OpenLayers.Bounds(-20037508.34,-20037508.34,20037508.34,20037508.34),
-		 */
-		/* maxResolution: 156543.0399, */
 		numZoomLevels : 20,
 		units : 'm',
 		projection : new OpenLayers.Projection("EPSG:900913"),
@@ -100,7 +119,7 @@ function mapInit() {
 	
 	
 	
-	// Warstwy:
+	// Warstwy map:
 	var layerMapnik = new OpenLayers.Layer.OSM.Mapnik("Mapnik");
 	map.addLayer(layerMapnik);
 
@@ -114,91 +133,18 @@ function mapInit() {
 	
 	
 	var gsat = new OpenLayers.Layer.Google("Google Satellite",
-		    {type: google.maps.MapTypeId.SATELLITE, numZoomLevels: 22}
-		);
+		    {type: google.maps.MapTypeId.SATELLITE, numZoomLevels: 22});
 	map.addLayer(gsat);
 	
-	/*var renderer = OpenLayers.Util.getParameters(window.location.href).renderer;
-    renderer = (renderer) ? [renderer] : OpenLayers.Layer.Vector.prototype.renderers;
-	start_stopLayer = new OpenLayers.Layer.Vector(
-                "Start Stop",
-                {
-                    styleMap: new OpenLayers.StyleMap({
-                        // Set the external graphic and background graphic images.
-                        externalGraphic: "../openlayers/img/marger-gold.png",
-                        backgroundGraphic: "../openlayers/img/marker_shadow.png",
-                        
-                        // Makes sure the background graphic is placed correctly relative
-                        // to the external graphic.
-                        backgroundXOffset: 0,
-                        backgroundYOffset: -7,
-                        
-                        // Set the z-indexes of both graphics to make sure the background
-                        // graphics stay in the background (shadows on top of markers looks
-                        // odd; let's not do that).
-                        graphicZIndex: MARKER_Z_INDEX,
-                        backgroundGraphicZIndex: SHADOW_Z_INDEX,
-                        
-                        pointRadius: 10
-                    }),
-                    rendererOptions: {yOrdering: true},
-                    renderers: renderer
-                }
-            );
+	// Warsty robocze
+   // przystankiLayer = new OpenLayers.Layer.Markers("Przystanki");
+	//map.addLayer(przystankiLayer);
+	
+	start_stopLayer = new OpenLayers.Layer.Markers("Start_Stop");
 	map.addLayer(start_stopLayer);
 
-	*/
-     przystankiLayer = new OpenLayers.Layer.Markers("Przystanki");
-	map.addLayer(przystankiLayer);
 	
-
-    // allow testing of specific renderers via "?renderer=Canvas", etc
-    var renderer = OpenLayers.Util.getParameters(window.location.href).renderer;
-    renderer = (renderer) ? [renderer] : OpenLayers.Layer.Vector.prototype.renderers;
-
-    layer = new OpenLayers.Layer.Vector(
-        "Marker Drop Shadows",
-        {
-            styleMap: new OpenLayers.StyleMap({
-                // Set the external graphic and background graphic images.
-                externalGraphic: "../openlayers/img/marker-gold.png",
-                backgroundGraphic: "../openlayers/img/marker_shadow.png",
-                
-                // Makes sure the background graphic is placed correctly relative
-                // to the external graphic.
-                backgroundXOffset: 0,
-                backgroundYOffset: -7,
-                
-                // Set the z-indexes of both graphics to make sure the background
-                // graphics stay in the background (shadows on top of markers looks
-                // odd; let's not do that).
-                graphicZIndex: MARKER_Z_INDEX,
-                backgroundGraphicZIndex: SHADOW_Z_INDEX,
-                
-                pointRadius: 10
-            }),
-            isBaseLayer: false,
-            rendererOptions: {yOrdering: true},
-            renderers: renderer
-        }
-    );
-    
-    map.addLayers([layer]);
-    
-    // Add a drag feature control to move features around.
-    var dragFeature = new OpenLayers.Control.DragFeature(layer);
-    
-    map.addControl(dragFeature);
-    
-    dragFeature.activate();
-
-       size = new OpenLayers.Size(21, 25);
-       calculateOffset = function(size) {
-                   return new OpenLayers.Pixel(-(size.w/2), -size.h); };
-       icon = new OpenLayers.Icon(
-           'http://www.openlayers.org/dev/img/marker.png',
-           size, null, calculateOffset);
-       
+	// Ustawia centrum mapy
 	 if (!map.getCenter()) { //if potrzebny do permalink
 		map.setCenter(new OpenLayers.LonLat(lon, lat).transform(
 				new OpenLayers.Projection("EPSG:4326"), map.getProjectionObject()),
@@ -206,17 +152,10 @@ function mapInit() {
 	 }
 	 
 	 
-	 
-	 
-	// add behavior to html
-	/*
-	 * var animate = document.getElementById("animate"); animate.onclick =
-	 * function() { for (var i=map.layers.length-1; i>=0; --i) {
-	 * map.layers[i].animationEnabled = this.checked; } };
-	 */
-	 
-	 
 }
+
+
+
 
 /**
  * FUNKCJA DOSTOSOWUJE WYSOKOSC CONTENEROW DO WIELKOSCI OKNA
@@ -228,7 +167,7 @@ function findSize() {
 	
 	//wysokosc i szerokosc 2panelow: na gorze i po prawej
 	var heightTopPanel = $(".topPanelContainer").height() + 70;
-	var widthInfoPanel = $(".infoPanelContainer").width() + 80;
+	var widthInfoPanel = $(".infoPanelContainer").width() + 44;
 	
 	//ustawia wielkosci panelow mapy i info
 	$(".mapa").height(height - heightTopPanel);
@@ -263,103 +202,93 @@ function addOnClickAction(){
              );
          }, 
 
-         /**
-          * Ta funcja wykona siê po klikniêciu na mapie
-          * @param e event
-          */
          onClick: function(e) {
-             var lonlat = map.getLonLatFromViewPortPx(e.xy);
-             lonlat.transform(map.getProjectionObject(), new OpenLayers.Projection("EPSG:4326"));
-             przystanki.push(
-            		 {
-	                 "type":"Point", 
-	                 "coordinates":[lonlat.lon, lonlat.lat]
-            		 }
-             );
-             
-             if(start == null){
-            	 start = new OpenLayers.Feature.Vector( new OpenLayers.Geometry.Point(lonlat.lon, lonlat.lat));
-				 setStart();
-             }
-             else{
-            	 stop =  new OpenLayers.Feature.Vector( new OpenLayers.Geometry.Point(lonlat.lon, lonlat.lat));
-				 setStop();
-            //	 zrobRouting();
-            	 
-           
-             }
-             
-             updatePrzystanki();
-             
-			 /*
-             przystankiLayer.addMarker(
-                     new OpenLayers.Marker(lonlat.transform(
-             				new OpenLayers.Projection("EPSG:4326"), map.getProjectionObject()), icon)); 
-							*/
-							
-			
+        	 onClickEvent(e);
 
-          	
          }
 
      });
 }
 
 
-/**
-* Funkcja ustawia na mapie ikonki Startu
-* @param startPoint
-*/
-function setStart(){
-	//start_stopLayer.removeFeatures([start]);
-            
-            var features = [];
-            // Add the ordering features. These are the gold ones that all have the same z-index
-            // and succomb to y-ordering.
-                features.push(
-                    start
-                );
-    
-             start_stopLayer.addFeatures(features);
-}
 
 /**
- * Funkcja ustawiaj¹ca ikonkê mety na mapie
- * @param stopPoint
+ * Ta funcja wykona siê po klikniêciu na mapie
+ * Wyswietla popup menu
+ * @param e event
  */
-
-function setStop(){
-
-//	start_stopLayer.removeFeatures([stop]);
-            
-            var features = [];
-            // Add the ordering features. These are the gold ones that all have the same z-index
-            // and succomb to y-ordering.
-                features.push(
-                    stop
-                );
-    
-             start_stopLayer.addFeatures(features);
+function onClickEvent(e){
+	
+	var lonlat = map.getLonLatFromViewPortPx(e.xy);
+	
+	
+	//dodanie markera krzyza na mape
+	if(crossMarker){
+		start_stopLayer.removeMarker(crossMarker);
+		crossMarker = null;
+	}
+	crossMarker = new OpenLayers.Marker(lonlat, iconCross.clone());
+	start_stopLayer.addMarker(crossMarker);
+	
+	
+	//dodanie popupu
+	 if(popup) map.removePopup(popup);
+	 popup = new OpenLayers.Popup('menu', 
+			  lonlat, 
+			  new OpenLayers.Size(100,100),
+			  popupContent, 
+			  true);
+	 
+	 popup.setBackgroundColor('darkblue');	
+	 map.addPopup(popup);
+	 
+	 
+	 //Eventy popup menu: Start stop etc
+	 $(".popupStart").click(function(){
+		 
+		 var startLonLat = popup.lonlat;
+		 if(start){
+			 start_stopLayer.removeMarker(start);
+             start = null;
+		 } 
+		 start = new OpenLayers.Marker(startLonLat,iconStart.clone()); 
+		 start_stopLayer.addMarker(start);
+		 map.removePopup(popup);	
+		 start_stopLayer.removeMarker(crossMarker);
+			crossMarker = null;
+	 });
+	 $(".popupStop").click(function(){
+		 
+		 var stopLonLat = popup.lonlat;
+		 if(stop){
+			 start_stopLayer.removeMarker(stop);
+			 stop = null;
+		 } 
+		 stop = new OpenLayers.Marker(stopLonLat,iconStop.clone()); 
+		 start_stopLayer.addMarker(stop);
+		 map.removePopup(popup);
+		 start_stopLayer.removeMarker(crossMarker);
+			crossMarker = null;
+		});
+	 $(".popupDodajPrzystanek").click(function(){
+		 
+		 lonlat.transform(map.getProjectionObject(), new OpenLayers.Projection("EPSG:4326"));
+         przystanki.push(
+        		 {
+                 "type":"Point", 
+                 "coordinates":[lonlat.lon, lonlat.lat]
+        		 }
+         );
+         map.removePopup(popup);
+         start_stopLayer.removeMarker(crossMarker);
+			crossMarker = null;
+         updatePrzystankiView();
+		});
+	 
 }
 
-/*
-function zrobRouting(){
-	
-	$.ajax({
-		   type: "GET",
-		   url: "http://www.yournavigation.org/api/1.0/gosmore.php?format=geojson&flat=52.215676&flon=5.963946&tlat=52.2573&tlon=6.1799&v=motorcar&fast=1&layer=mapnik",
-		   dataType: 'json',
-		   success: function(data) {
-			    $('.topPanel').html(data);
-			    $('.topPanel').appendt("aaa");
-		
-		 }});
-	
-	
-}
-*/
 
-function updatePrzystanki(){
+function updatePrzystankiView(){
 	
 	
 	var przystanek = przystanki[przystanki.length-1];
@@ -369,35 +298,3 @@ function updatePrzystanki(){
 	
 }
 
-/*
-function drawFeatures() {
-    
-	start_stopLayer.removeFeatures(start_stopLayer.features);
-    
-    // Create features at random around the center.
-    var center = map.getViewPortPxFromLonLat(map.getCenter());
-    
-    // Add the ordering features. These are the gold ones that all have the same z-index
-    // and succomb to y-ordering.
-    var features = [];
-    
-    for (var index = 0; index < NUMBER_OF_FEATURES; index++) {
-        // Calculate a random x/y. Subtract half the diameter to make some
-        // features negative.
-        var x = (parseInt(Math.random() * DIAMETER)) - (DIAMETER / 2);
-        var y = (parseInt(Math.random() * DIAMETER)) - (DIAMETER / 2);
-        
-        var pixel = new OpenLayers.Pixel(center.x + x, center.y + y);
-        
-        var lonLat = map.getLonLatFromViewPortPx(pixel);
-        features.push(
-            new OpenLayers.Feature.Vector(
-                new OpenLayers.Geometry.Point(lonLat.lon, lonLat.lat)
-            )
-        );
-    }
-    
-    start_stopLayer.addFeatures(features);
-}
-
-*/

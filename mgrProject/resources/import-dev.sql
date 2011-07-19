@@ -3,9 +3,9 @@
 
 
 -- ROLE
-INSERT INTO ROLE(id, rolename, conditional) VALUES (1, "Administrator", true);
-INSERT INTO ROLE(id, rolename, conditional) VALUES (2, "Operator", true);
-INSERT INTO ROLE(id, rolename, conditional) VALUES (3, "Moderator", true);
+INSERT INTO ROLE(roleid, rolename, conditional) VALUES (1, 'Administrator', true);
+INSERT INTO ROLE(roleid, rolename, conditional) VALUES (2, 'Operator', true);
+INSERT INTO ROLE(roleid, rolename, conditional) VALUES (3, 'Moderator', true);
 
 -- USERS
 
