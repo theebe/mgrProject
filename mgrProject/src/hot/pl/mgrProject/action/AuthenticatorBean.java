@@ -27,7 +27,6 @@ public class AuthenticatorBean implements Authenticator {
 	@In
 	private EntityManager mgrDatabase;
 
-	@In(required = false)
 	@Out(required = false, scope = ScopeType.SESSION)
 	private User user;
 
@@ -39,9 +38,11 @@ public class AuthenticatorBean implements Authenticator {
 	public boolean authenticate() {
 		 
 		log.info("authenticating {0}", credentials.getUsername());
-		
+
+	
 		  try {
-		         User user = (User) mgrDatabase.createQuery(
+			  
+		        this.user = (User) mgrDatabase.createQuery(
 		            "from User where username = :username and password = :password")
 		            .setParameter("username", credentials.getUsername())
 		            .setParameter("password", credentials.getPassword())
@@ -50,6 +51,7 @@ public class AuthenticatorBean implements Authenticator {
 		            for (Role mr : user.getRoles()) 
 		               identity.addRole(mr.getRolename());
 		         }
+		    
 		         return true;
 		      }
 		      catch (NoResultException ex) {

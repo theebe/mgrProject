@@ -12,32 +12,35 @@
 		<div class="popup">
 			<div class="popupMenu popupStart" >START</div>
 			<div class="popupMenu popupStop" >STOP</div>
-			<div class="popupMenu popupDodajPrzystanek" >Dodaj Przystanek</div>
+			<s:div styleClass="popupMenu popupDodajPrzystanek" >Dodaj Przystanek</s:div>
 		</div>
 	</s:div>
 
 		<s:div styleClass="container">
-			<s:div styleClass="topPanelContainer">
+			<s:div  styleClass="topPanelContainer"> 
 				<s:div styleClass="topPanel">
 					
-					<rich:panel styleClass="topSearchPanel">
+						
+					
+				
 						<s:div styleClass="topSearchPaneLeft">
-						<h:outputLabel for="start">Start:</h:outputLabel>
-						<h:inputText id="start"/>
+						<h:panelGrid  columns="4">
+							<h:outputLabel for="start">Start:</h:outputLabel>
+							<h:inputText id="start"/>
+							
+							<h:outputLabel for="stop">Stop:</h:outputLabel>
+							<h:inputText id="stop"/>
+							
+							
+							<h:outputLabel for="data">Data:</h:outputLabel>
+							<h:panelGroup> <button class="dataLeftButton" /><h:inputText styleClass="dataInput" id="data"/><button class="dataRightButton" /></h:panelGroup>
+							
+							<h:outputLabel for="godzina">Godzina:</h:outputLabel>
+							<h:panelGroup><button class="godzinaLeftButton" /><h:inputText styleClass="godzinaInput" id="godzina"/><button class="godzinaRightButton" /></h:panelGroup>
+						</h:panelGrid>
 						
-						<h:outputLabel for="stop">Stop:</h:outputLabel>
-						<h:inputText id="stop"/>
-						
-						<br />
-						<h:outputLabel for="data">Data:</h:outputLabel>
-						<h:inputText id="data"/>
-						
-						<h:outputLabel for="godzina">Godzina:</h:outputLabel>
-						<h:inputText id="godzina"/>
 						</s:div>
-					 	
-					</rich:panel>
-
+				
 				</s:div>
 			</s:div>
 			<s:div id="map" styleClass="mapa" />

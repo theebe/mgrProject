@@ -9,6 +9,8 @@
 	xmlns:a="http://richfaces.org/a4j" template="layout/template.xhtml">
 
 	<ui:define name="body">
+	
+	<script type="text/javascript" src="js/register.js"></script>
 		<h:form id="form" styleClass="cPanel">
 			<s:validateAll>
 				<rich:panel>
@@ -28,29 +30,35 @@
 						<h:outputLabel for="password">Hasło:</h:outputLabel>
 						<s:decorate id="passwordDecorate" template="/layout/edit.xhtml">
 							<h:inputSecret id="password" value="#{user.password}"
-								required="true" />
+								required="true" styleClass="passwordInput" />
 						</s:decorate>
 
 						<h:outputLabel for="verifyDecorate">Powtórz hasło:</h:outputLabel>
 						<s:decorate id="verifyDecorate" template="/layout/edit.xhtml">
 							<h:inputSecret id="verify" value="#{register.verify}"
-								required="true" />
+								required="true" styleClass="verifyInput" />
 
 						</s:decorate>
 
-						<h:outputLabel for="name">Imię i nazwisko:</h:outputLabel>
+						<h:outputLabel for="name">Imię</h:outputLabel>
 						<s:decorate id="nameDecorate" template="/layout/edit.xhtml">
-							<h:inputText id="name" value="#{user.name}" required="true">
+							<h:inputText id="name" value="#{user.firstname}" required="true">
 								<a:support event="onblur" reRender="nameDecorate" />
 							</h:inputText>
 						</s:decorate>
 
+					<h:outputLabel for="name">Nazwisko</h:outputLabel>
+						<s:decorate id="lastnameDecorate" template="/layout/edit.xhtml">
+							<h:inputText id="lastname" value="#{user.lastname}" required="true">
+								<a:support event="onblur" reRender="lastnameDecorate" />
+							</h:inputText>
+						</s:decorate>
 					</h:panelGrid>
 
 				</rich:panel>
 			</s:validateAll>
 
-			<div class="actionButtons"><h:commandButton id="register"
+			<div class="actionButtons"><h:commandButton styleClass="registerButton" id="register"
 				value="Rejestruj" action="#{register.register}" /> <s:button
 				id="cancel" value="Anuluj" view="/home.xhtml" /></div>
 

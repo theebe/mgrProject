@@ -5,7 +5,7 @@ import java.util.List;
 import java.util.Set;
 
 import javax.ejb.Remove;
-import javax.ejb.Stateful;
+import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 
 import org.jboss.seam.ScopeType;
@@ -25,16 +25,15 @@ import pl.mgrProject.model.user.User;
  * @author bat
  *
  */
-@Stateful
-@Scope(ScopeType.EVENT)
+@Stateless
 @Name("register")
 public class RegisterAction implements Register {
 	
 	@Logger
 	private Log log;
 
-	@In
-	private User user;
+	@In(required=false, create=true)
+	private User user; 
 	
 
 	@In
@@ -48,31 +47,32 @@ public class RegisterAction implements Register {
 	private boolean registered;
 
 	public void register() {
+		
 		if (user.getPassword().equals(verify)) {
 			List existing = mgrDatabase
 					.createQuery(
 							"select u.username from User u where u.username=#{user.username}")
 					.getResultList();
 			if (existing.size() == 0) {
-				if(user.getRoles() == null){ // domyslna rola
+				//if(user.getRoles().size() == 0){ // domyslna rola
 					Set<Role> role = new HashSet<Role>();
 					String roleName = "Operator";
 					Role rola = (Role)mgrDatabase.createQuery("select r from Role r where r.rolename=:rolename").setParameter("rolename", roleName).getSingleResult();
 					role.add(rola);
 					user.setRoles(role);
-				}
+				//}
 				if(!user.isEnabled())
 					user.setEnabled(true);
-				
+				 
 				mgrDatabase.persist(user);
-				facesMessages
+				facesMessages 
 						.add("Successfully registered as #{user.username}");
 				registered = true;
 				log.info("Uzytkownik #{user.username} dodany do bazy.");
 			} else {
 				facesMessages.addToControl("username",
 						"Username #{user.username} already exists");
-			}
+			} 
 		} else {
 			facesMessages.addToControl("verify", "Re-enter your password");
 			verify = null;
@@ -95,9 +95,6 @@ public class RegisterAction implements Register {
 		this.verify = verify;
 	}
 
-	@Destroy
-	@Override
-	public void destroy() {}
 
 	@Remove
 	public void remove() {}

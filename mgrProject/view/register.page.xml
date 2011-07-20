@@ -4,11 +4,11 @@
       xsi:schemaLocation="http://jboss.com/products/seam/pages http://jboss.com/products/seam/pages-2.2.xsd">
 
 		<restrict>#{not identity.loggedIn}</restrict>
-		<action if="#{validation.failed}" execute="#{registerAction.invalid}" />
+		<action if="#{validation.failed}" execute="#{register.invalid}" />
 
 		<navigation>
-			<rule if="#{registerAction.registered}">
-				<redirect view-id="/home.xhtml" />
+			<rule if="#{register.registered}">
+				<redirect view-id="/login.xhtml" />
 			</rule>
 		</navigation>
 </page>

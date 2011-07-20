@@ -77,7 +77,8 @@ $(document).ready(function() {
 	iconStart = new OpenLayers.Icon("./openlayers/img/marker-green.png", new OpenLayers.Size(30, 40), new OpenLayers.Pixel(-(15), -40));
 	iconStop = new OpenLayers.Icon("./openlayers/img/marker.png", new OpenLayers.Size(30, 40), new OpenLayers.Pixel(-(15), -40));
 
-
+	//inicjalizuje ikonki i guziki
+	guiInit();
 
 });//
 
@@ -296,5 +297,36 @@ function updatePrzystankiView(){
 
 	
 	
+}
+
+
+function guiInit(){
+	
+	$(".dataLeftButton").button({
+		icons: {
+			primary: "ui-icon-carat-1-w"
+		},
+        text: false
+	});
+
+	$(".dataRightButton").button({
+		icons:{
+			primary: "ui-icon-carat-1-e"
+		},
+		text: false
+	});
+	
+	$(".godzinaLeftButton").button({
+		icons: {
+			primary: "ui-icon-carat-1-w"
+		},
+        text: false
+	});
+	$(".godzinaRightButton").button({
+		icons:{
+			primary: "ui-icon-carat-1-e"
+		},
+		text: false
+	});
 }
 

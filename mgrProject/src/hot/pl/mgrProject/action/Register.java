@@ -9,5 +9,6 @@ public interface Register {
 	public boolean isRegistered();
 	public String getVerify();
 	public void setVerify(String verify);
-	public void destroy();
+
+	public void remove();
 }

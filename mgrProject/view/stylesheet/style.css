@@ -36,7 +36,8 @@
 .topSearchPanel{
 	float: left;
 	padding: 10px;
-	width: 400px;	
+	width: 500px;	
+	border: 1px solid green;
 }
 
 
@@ -77,4 +78,15 @@
 .popupDodajPrzystanek{
 	background-color: yellow;
 	color: red;
+	}
+	
+	
+/************************************************************************************
+* Formularz strona glowna 
+*/
+
+.topPanel button{
+		padding-top:10px;
+		height: 15px;
+		
 	}

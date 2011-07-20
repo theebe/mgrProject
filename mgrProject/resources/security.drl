@@ -11,7 +11,7 @@ rule ManageUsers
   activation-group "permissions"
 when
   check: PermissionCheck(name == "seam.user", granted == false)
-  Role(name == "admin")
+    Role(name == "admin")
 then
   check.grant();
 end

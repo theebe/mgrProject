@@ -43,6 +43,7 @@
 
    <security:identity  authenticate-method="#{authenticator.authenticate}" remember-me="true"/>
 
+ <!-- 
    <security:identity-manager 
     identity-store="#{jpaIdentityStore}" 
     role-identity-store="#{jpaIdentityStore}"/>
@@ -50,7 +51,7 @@
 	 <security:jpa-identity-store 
     user-class="pl.mgrProject.model.user.User"
     role-class="pl.mgrProject.model.user.Role"/>
-
+ -->
 
    <event type="org.jboss.seam.security.notLoggedIn">
       <action execute="#{redirect.captureCurrentView}"/>

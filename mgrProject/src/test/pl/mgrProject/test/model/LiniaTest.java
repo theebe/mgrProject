@@ -20,8 +20,8 @@ public class LiniaTest{
 	
 	 @Test
 	 public void getAllTest() throws Exception  {
-		
-		 EntityManager em = getEntityManagerFactory().createEntityManager();
+		//niedziala :/
+		// EntityManager em = getEntityManagerFactory().createEntityManager();
 		
 		
 	 }

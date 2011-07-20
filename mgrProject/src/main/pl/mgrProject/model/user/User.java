@@ -37,7 +37,6 @@ import org.jboss.seam.annotations.security.management.UserRoles;
 @Table(name = "USERS", uniqueConstraints = @UniqueConstraint(columnNames = "username"))
 public class User implements Serializable {
 
-	private static final long serialVersionUID = -7157380483898412773L;
 	private Long id;
 	private Integer version;
 	private String username;
