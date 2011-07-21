@@ -8,17 +8,15 @@ import javax.ejb.Remove;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 
-import org.jboss.seam.ScopeType;
-import org.jboss.seam.annotations.Destroy;
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Logger;
 import org.jboss.seam.annotations.Name;
-import org.jboss.seam.annotations.Scope;
 import org.jboss.seam.faces.FacesMessages;
 import org.jboss.seam.log.Log;
 
 import pl.mgrProject.model.user.Role;
 import pl.mgrProject.model.user.User;
+import flexjson.JSONSerializer;
 
 /**
  * Klasa odpowiedzialna za rejestracje nowych urzytkownikow
@@ -63,7 +61,8 @@ public class RegisterAction implements Register {
 				//}
 				if(!user.isEnabled())
 					user.setEnabled(true);
-				 
+				
+				System.out.println("JSON\n" + new JSONSerializer().serialize(user));
 				mgrDatabase.persist(user);
 				facesMessages 
 						.add("Successfully registered as #{user.username}");

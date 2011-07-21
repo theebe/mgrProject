@@ -14,3 +14,4 @@ jbpm-jpdl.jar
 mvel2.jar
 richfaces-api.jar
 hibernate-postgis-support.jar
+flexjson-2.1.jar

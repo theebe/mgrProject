@@ -1,5 +1,7 @@
 package pl.mgrProject.model;
 
+import java.sql.Date;
+
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
@@ -30,8 +32,7 @@ public class Odjazd {
 	private Long id;
 	private Integer version;
 	private TypDnia typDnia;
-	private Integer godzina;
-	private Integer minuta;
+	private Date czas;
 	private PrzystanekTabliczka przystanekTabliczka;
 	
 	
@@ -60,23 +61,6 @@ public class Odjazd {
 		this.typDnia = typDnia;
 	}
 	
-	@NotNull
-	@Range(min=0, max=24, message="Od 0 do 24")
-	public Integer getGodzina() {
-		return godzina;
-	}
-	public void setGodzina(Integer godzina) {
-		this.godzina = godzina;
-	}
-	
-	@NotNull
-	@Range(min=0, max=60, message="Od 0 do 60")
-	public Integer getMinuta() {
-		return minuta;
-	}
-	public void setMinuta(Integer minuta) {
-		this.minuta = minuta;
-	}
 	
 	@ManyToOne
 	@NotNull(message="Odjazd musi byæ przypisany do przystanku i lini")
@@ -86,6 +70,16 @@ public class Odjazd {
 	
 	public void setPrzystanekTabliczka(PrzystanekTabliczka przystanekTabliczka) {
 		this.przystanekTabliczka = przystanekTabliczka;
+	}
+	
+	
+	public void setCzas(Date czas) {
+		this.czas = czas;
+	}
+	
+	@NotNull
+	public Date getCzas() {
+		return czas;
 	}
 	
 }

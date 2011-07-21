@@ -67,11 +67,4 @@
   TYPE="page" model-entity="SeamPagesDiagramItem"/>
  <item NAME="#xerror.xhtml" PATH="/error.xhtml" SHAPE="472,121,0,0"
   TYPE="page" model-entity="SeamPagesDiagramItem"/>
- <item ID="#user.xhtml" NAME="#xuser.xhtml" PATH="/user.xhtml"
-  SHAPE="344,953,0,0" TYPE="page" model-entity="SeamPagesDiagramItem">
-  <output ID="/userList.xhtml" NAME="output" PATH="/userList.xhtml"
-   TARGET="#xuserList.xhtml" model-entity="SeamPagesDiagramItemOutput"/>
- </item>
- <item NAME="#xuserList.xhtml" PATH="/userList.xhtml"
-  SHAPE="664,953,0,0" TYPE="page" model-entity="SeamPagesDiagramItem"/>
 </diagram>

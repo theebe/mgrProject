@@ -5,42 +5,61 @@
 	xmlns:ui="http://java.sun.com/jsf/facelets"
 	xmlns:f="http://java.sun.com/jsf/core"
 	xmlns:h="http://java.sun.com/jsf/html"
-	xmlns:rich="http://richfaces.org/rich" template="layout/template.xhtml">
+	xmlns:rich="http://richfaces.org/rich"
+	xmlns:a="http://richfaces.org/a4j" template="layout/template.xhtml">
 
 	<ui:define name="body">
-	<s:div styleClass="popupContent"> 
-		<div class="popup">
-			<div class="popupMenu popupStart" >START</div>
-			<div class="popupMenu popupStop" >STOP</div>
-			<s:div styleClass="popupMenu popupDodajPrzystanek" >Dodaj Przystanek</s:div>
-		</div>
-	</s:div>
+		<s:div styleClass="popupContent">
+			<div class="popup">
+				<div class="popupMenu popupStart">START</div>
+				<div class="popupMenu popupStop">STOP</div>
+				<s:div styleClass="popupMenu popupDodajPrzystanek">Dodaj Przystanek</s:div>
+			</div>
+		</s:div>
 
 		<s:div styleClass="container">
-			<s:div  styleClass="topPanelContainer"> 
+			<s:div styleClass="topPanelContainer">
 				<s:div styleClass="topPanel">
-					
+
+
+
+
+					<s:div styleClass="topSearchPaneLeft">
 						
+								<h:panelGrid columns="4">
+									<h:outputLabel for="start">Start:</h:outputLabel>
+
+									<h:inputText id="start">
+									</h:inputText>
+
+
+									<h:outputLabel for="stop">Stop:</h:outputLabel>
+									<h:inputText id="stop" />
+
+									<h:outputLabel for="data">Data:</h:outputLabel>
+									<h:panelGroup>
+										<button class="dataLeftButton" />
+										<h:inputText styleClass="dataInput" id="data"
+											>
+											
+										</h:inputText>
+
+										<button class="dataRightButton" />
+									</h:panelGroup>
+
+									<h:outputLabel for="godzina">Godzina:</h:outputLabel>
+									<h:panelGroup>
+										<button class="godzinaLeftButton" />
+										<h:inputText styleClass="godzinaInput" id="godzina"
+											>
+											
+										</h:inputText>
+										<button class="godzinaRightButton" />
+									</h:panelGroup>
+								</h:panelGrid>
 					
-				
-						<s:div styleClass="topSearchPaneLeft">
-						<h:panelGrid  columns="4">
-							<h:outputLabel for="start">Start:</h:outputLabel>
-							<h:inputText id="start"/>
-							
-							<h:outputLabel for="stop">Stop:</h:outputLabel>
-							<h:inputText id="stop"/>
-							
-							
-							<h:outputLabel for="data">Data:</h:outputLabel>
-							<h:panelGroup> <button class="dataLeftButton" /><h:inputText styleClass="dataInput" id="data"/><button class="dataRightButton" /></h:panelGroup>
-							
-							<h:outputLabel for="godzina">Godzina:</h:outputLabel>
-							<h:panelGroup><button class="godzinaLeftButton" /><h:inputText styleClass="godzinaInput" id="godzina"/><button class="godzinaRightButton" /></h:panelGroup>
-						</h:panelGrid>
-						
-						</s:div>
-				
+					</s:div>
+
 				</s:div>
 			</s:div>
 			<s:div id="map" styleClass="mapa" />

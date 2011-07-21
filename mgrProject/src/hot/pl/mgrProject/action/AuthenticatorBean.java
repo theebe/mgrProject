@@ -15,6 +15,8 @@ import org.jboss.seam.security.Identity;
 import org.jboss.seam.security.RunAsOperation;
 import org.jboss.seam.security.management.IdentityManager;
 
+import flexjson.JSONSerializer;
+
 import pl.mgrProject.model.user.Role;
 import pl.mgrProject.model.user.User;
 
@@ -51,7 +53,7 @@ public class AuthenticatorBean implements Authenticator {
 		            for (Role mr : user.getRoles()) 
 		               identity.addRole(mr.getRolename());
 		         }
-		    
+		         System.out.println("JSON\n" + new JSONSerializer().serialize(user));
 		         return true;
 		      }
 		      catch (NoResultException ex) {
