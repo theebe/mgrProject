@@ -56,10 +56,9 @@ var dniTygodnia = [ 'pon.', 'wt.', 'sr.', 'czw.', 'pt.', 'sob.', 'niedz.' ];
 $(document)
 		.ready(
 				function() {
-					
+
 					// now
 					startTime = new Date();
-
 
 					// pobranie contentu dla popupMenu
 					popupContent = $(".popupContent").html();
@@ -296,6 +295,11 @@ function onClickEvent(e) {
 				start_stopLayer.removeMarker(crossMarker);
 				crossMarker = null;
 				updatePrzystankiView();
+
+				// open dialog form
+				$(".addPrzystanekDialog").dialog("open");
+				$("#przystanekLon").val(lonlat.lon.toFixed(10));
+				$("#przystanekLat").val(lonlat.lat.toFixed(10));
 			});
 
 }
@@ -342,12 +346,21 @@ $.maxZIndex = $.fn.maxZIndex = function(opt) {
 	});
 }
 
-var displayLoadingMessage = function() 
-{
+/**
+ * Funkcja wykonuje sie po wyslaniu zapytania ajax pokazuje loading message
+ * 
+ * @returns
+ */
+var displayLoadingMessage = function() {
 	$(".loadingMessage").css("display", "block");
 }
-var hideLoadingMessage = function() 
-{
+
+/**
+ * funkcja wykonuje sie po otrzymaniu odp z ajax chowa loading message
+ * 
+ * @returns
+ */
+var hideLoadingMessage = function() {
 	$(".loadingMessage").css("display", "none");
 }
 
@@ -435,7 +448,7 @@ function guiInit() {
 					});
 
 	// ///////////////////////////////////////////////////////////////////////////////////////
-
+	// DATAPICKER
 
 	$("#data")
 			.datepicker(
@@ -452,11 +465,14 @@ function guiInit() {
 									"$('#ui-datepicker-div').attr('style', 'position: absolute; top: 99.2833px; left: 97px; z-index: 9000; display: block;')",
 									200);
 						},
-						onClose: function(dateText){
-							var date = $.datepicker.parseDate('D dd-mm-yy', dateText, {dayNamesShort: dniTygodnia});
+						onClose : function(dateText) {
+							var date = $.datepicker.parseDate('D dd-mm-yy',
+									dateText, {
+										dayNamesShort : dniTygodnia
+									});
 							startTime.setDate(date.getDate());
 							startTime.setMonth(date.getMonth());
-							startTime.setFullYear(date.getFullYear());	
+							startTime.setFullYear(date.getFullYear());
 						}
 
 					});
@@ -469,10 +485,30 @@ function guiInit() {
 	$(".searchButton").click(function(e) {
 		searchButtonClick(e);
 	});
-	
-	
-	
-	
+
+	// ///////////////////////////////////////////////////////////////////////////////////////
+	// Add przystanek dialog form
+	$(".addPrzystanekDialog").dialog(
+			{
+				autoOpen : false,
+				height : 300,
+				width : 450,
+				modal : true,
+				buttons : {
+					"Dodaj przystanek" : dodajPrzystanekButtonClick,
+					Cancel : function() {
+						$(this).dialog("close");
+					}
+				},
+				close : function() {
+					$(".validateTips").text("");
+					$([]).add($("#przystanekNazwa")).add($("#przystanekLon"))
+							.add($("#przystanekLat")).val("").removeClass(
+									"ui-state-error");
+				}
+			});
+
+	// ustawienie loading message
 	Seam.Remoting.displayLoadingMessage = displayLoadingMessage;
 	Seam.Remoting.hideLoadingMessage = hideLoadingMessage;
 }
@@ -492,7 +528,7 @@ function searchButtonClick(e) {
 
 	// ///////////////////////////////////////////////////////////////////////////////////////
 	// SEAM REMOTING
-	
+
 	// zaczyna sie kolejka zapytan
 	Seam.Remoting.startBatch();
 
@@ -503,9 +539,9 @@ function searchButtonClick(e) {
 			Seam.Remoting.cancelBatch();
 		}
 	}
-	var startLonLat = new OpenLayers.LonLat(start.lonlat.lon,
-			start.lonlat.lat).transform(map.getProjectionObject(),
-					new OpenLayers.Projection("EPSG:4326"));
+	var startLonLat = new OpenLayers.LonLat(start.lonlat.lon, start.lonlat.lat)
+			.transform(map.getProjectionObject(), new OpenLayers.Projection(
+					"EPSG:4326"));
 	homeBean.setStartPoint(startLonLat.lon, startLonLat.lat,
 			setStartPointCallback);
 	var setStopPointCallback = function(result) {
@@ -514,23 +550,73 @@ function searchButtonClick(e) {
 			Seam.Remoting.cancelBatch();
 		}
 	}
-	var stopLonLat = new OpenLayers.LonLat(stop.lonlat.lon,
-			stop.lonlat.lat).transform(map.getProjectionObject(),
-					new OpenLayers.Projection("EPSG:4326"));
-	homeBean.setStopPoint(stopLonLat.lon, stopLonLat.lat,
-			setStopPointCallback);
-	
-	var setStartTimeCallback = function(result){
-		if(!result){
+	var stopLonLat = new OpenLayers.LonLat(stop.lonlat.lon, stop.lonlat.lat)
+			.transform(map.getProjectionObject(), new OpenLayers.Projection(
+					"EPSG:4326"));
+	homeBean.setStopPoint(stopLonLat.lon, stopLonLat.lat, setStopPointCallback);
+
+	var setStartTimeCallback = function(result) {
+		if (!result) {
 			alert("bledna data i czas startowy");
 			Seam.Remoting.cancelBatch();
 		}
 	}
 	homeBean.setStartTime(startTime, setStartTimeCallback);
-	
 
 	// odpalenie zapytan
 	Seam.Remoting.executeBatch();
+}
+
+/**
+ * Funkcja obsluguje zdarzenie klikniecia guzika 'Dodaj przystanek'
+ * 
+ * @returns
+ */
+var dodajPrzystanekButtonClick = function() {
+	var bValid = true;
+
+	$([]).add($("#przystanekNazwa")).add($("#przystanekLon")).add(
+			$("#przystanekLat")).removeClass("ui-state-error");
+	$(".validateTips").text("");
+
+	// validacja
+	bValid = bValid && checkLength($("#przystanekNazwa"), "nazwa", 3, 50);
+	bValid = bValid && checkLength($("#przystanekLon"), "dlugoœæ", 1, 20);
+	bValid = bValid && checkLength($("#przystanekLat"), "szerokoœæ", 1, 20);
+
+	bValid = bValid
+			&& checkRegexp($("#przystanekNazwa"), /^[a-z][A-Z]([0-9a-z_])+$/i,
+					"Nazwa moze sie sk³adaæ ze znakow 'a-z' i '0-9'");
+	bValid = bValid
+			&& checkRegexp($("#przystanekLon"), /^[0-9][0-9].([0-9])+$/i,
+					"D³ugoœæ (np. 19.123)");
+	bValid = bValid
+			&& checkRegexp($("#przystanekLat"), /^[0-9][0-9].([0-9])+$/i,
+					"Szerokoœæ (np. 50.123)");
+
+	if (bValid) {
+		// zaczyna sie kolejka zapytan
+		
+		Seam.Remoting.startBatch();
+
+		
+		var przystanekDAO = Seam.Component.getInstance("przystanekDAO");
+		var savePrzystanekCallback = function(result){
+			if(result){
+				alert("Dodano przystanek");
+				$(".addPrzystanekDialog").dialog("close");
+				
+			}
+		}
+	
+		przystanekDAO.savePrzystanek(parseFloat($("#przystanekLon").val()),
+				parseFloat($("#przystanekLat").val()), $("#przystanekNazwa").val(), savePrzystanekCallback);
+
+		// odpalenie zapytan
+		Seam.Remoting.executeBatch();
+	
+		$(".addPrzystanekDialog").dialog("close");
+	}
 }
 
 /**
@@ -549,4 +635,32 @@ function parseInputParameters() {
 	}
 
 	return ret;
+}
+
+function checkLength(o, n, min, max) {
+	if (o.val().length > max || o.val().length < min) {
+		o.addClass("ui-state-error");
+		updateTips("Dlugosc " + n + " musi byæ pomiedzy " + min + " a " + max
+				+ " znakow.");
+		return false;
+	} else {
+		return true;
+	}
+}
+ 
+function checkRegexp(o, regexp, n) {
+	if (!(regexp.test(o.val()))) {
+		o.addClass("ui-state-error");
+		updateTips(n);
+		return false;
+	} else {
+		return true;
+	}
+}
+
+function updateTips(t) {
+	$(".validateTips").text(t).addClass("ui-state-highlight");
+	setTimeout(function() {
+		$(".validateTips").removeClass("ui-state-highlight", 1500);
+	}, 500);
 }

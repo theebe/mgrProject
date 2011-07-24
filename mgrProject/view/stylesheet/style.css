@@ -1,3 +1,19 @@
+body {
+	
+}
+
+input.text {
+	margin-bottom: 12px;
+	width: 95%;
+	padding: .4em;
+}
+
+fieldset {
+	padding: 0;
+	border: 0;
+	margin-top: 25px;
+}
+
 .container {
 	width: 100%;
 	margin: 0 auto;
@@ -6,12 +22,12 @@
 
 .topPanelContainer {
 	width: 100%;
-	height: 130px;
+	height: 140px;
 	border: 1px solid red;
 }
 
 .topPanel {
-	padding: 10px;
+	padding: 8px;
 }
 
 .mapa {
@@ -20,7 +36,6 @@
 	height: 600px;
 	border: 1px solid;
 	border-color: lightgray;
-	
 }
 
 .infoPanelContainer {
@@ -78,31 +93,28 @@
 /************************************************************************************
 * Formularz strona glowna 
 */
-.topSearchPaneLeft{
-	
+.topSearchPaneLeft {
 	border: 1px solid yellow;
 	width: 500px;
-	padding: 15px;
+	padding: 10px;
 	float: left;
-	}
-	
-.topPanel button {
-	height: 20px;
-}
-.searchButton{
-	margin-left:auto;
-              margin-right:0px;
 }
 
+
+.searchButton {
+	margin-left: auto;
+	margin-right: 0px;
+}
 
 /*****************************************************************************************
 * LOADING MESSAGE AJAX
 */
-.loadingMessage{
-	float:left;
+.loadingMessage {
+	float: left;
 	display: none;
-	}
-.loadingMessageGif{
+}
+
+.loadingMessageGif {
 	width: 80px;
 	height: 80px;
 	margin-top: 10px;
@@ -110,3 +122,14 @@
 	margin-left: 50px;
 }
 
+/******************************************************************************8
+* ADD PRZYSTANEK DIALOG
+*/
+
+.addPrzystanekDialog{
+	display: none;
+	}
+
+
+
+		.validateTips { border: 1px solid transparent; padding: 0.3em; }
