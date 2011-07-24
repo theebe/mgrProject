@@ -10,13 +10,19 @@ import org.jboss.seam.annotations.faces.Converter;
 import org.jboss.seam.annotations.intercept.BypassInterceptors;
 import org.postgis.Point;
 
+
+/**
+ * Konverter klasy Point do Stringa 
+ * wyglad po serializacji: 50.5151, 19.5151
+ * @author bat
+ *
+ */
 @Name("pointConverter")
 @BypassInterceptors
 @Converter
 public class PointConverter implements javax.faces.convert.Converter {
 
 	@Override
-	@Transactional
 	public Object getAsObject(javax.faces.context.FacesContext arg0,
 			UIComponent arg1, String arg2) {
 

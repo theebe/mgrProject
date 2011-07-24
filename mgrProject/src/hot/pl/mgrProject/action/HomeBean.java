@@ -8,16 +8,18 @@ import javax.ejb.Stateful;
 
 import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.Destroy;
-import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Logger;
 import org.jboss.seam.annotations.Name;
-import org.jboss.seam.annotations.Out;
 import org.jboss.seam.annotations.Scope;
 import org.jboss.seam.log.Log;
 import org.postgis.Point;
 
+import flexjson.JSONSerializer;
+
+import pl.mgrProject.action.utils.PointConverter;
+
 /**
- * Klasa obs³uguj¹ca zdarzenia ze strony g³ownej
+ * Klasa obs³uguj¹ca zdarzenia ze strony g³ownej poprzez ajax
  * 
  * @author bat
  *
@@ -33,28 +35,37 @@ public class HomeBean implements Serializable, Home {
 	
 	private Point startPoint ;
 	
-	private Point endPoint ;
+	private Point stopPoint ;
 
 	private Date startTime;
-	
-	private Date data;
+	 
 
 	
-	
+	 
 	public Point getStartPoint() {
-		return startPoint;
+		//startPoint.(arg0)
+		return startPoint; 
+	}
+	
+	public Boolean setStartPoint(double x, double y){
+		if(x==0 || y==0) return false;
+		this.startPoint = new Point(x, y);
+		this.startPoint.setSrid(4326);
+		log.info("homeBean: ustawiono startPoint na wspolrzedne: "+String.valueOf(x) + ", " + String.valueOf(y));
+		return true;
 	}
 
-	public void setStartPoint(Point startPoint) {
-		this.startPoint = startPoint;
+	public Point getStopPoint() {
+		return stopPoint;
 	}
-
-	public Point getEndPoint() {
-		return endPoint;
-	}
-
-	public void setEndPoint(Point endPoint) {
-		this.endPoint = endPoint;
+	
+	
+	public Boolean setStopPoint(double x, double y){
+		if(x==0 || y==0) return false;
+		this.stopPoint = new Point(x, y);
+		this.stopPoint.setSrid(4326);
+		log.info("homeBean: ustawiono stopPoint na wspolrzedne: "+String.valueOf(x) + ", " + String.valueOf(y));
+		return true;
 	}
 
 	
@@ -62,22 +73,19 @@ public class HomeBean implements Serializable, Home {
 		return startTime;
 	}
 
-	public void setStartTime(Date startTime) {
+	public Boolean setStartTime(Date startTime) {
+		if(startTime == null)
+			return false;
 		this.startTime = startTime;
+		return true;
 	}
 	
-	public Date getData() {
-		return data;
-	}
-
-	public void setData(Date data) {
-		this.data = data;
-	}
-
+	
 	
 
 	@Destroy
 	@Remove
-	public void destory(){};
-	
+	public void destory(){}
+
+
 }

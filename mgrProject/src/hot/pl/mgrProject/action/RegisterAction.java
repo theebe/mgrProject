@@ -62,7 +62,7 @@ public class RegisterAction implements Register {
 				if(!user.isEnabled())
 					user.setEnabled(true);
 				
-				System.out.println("JSON\n" + new JSONSerializer().serialize(user));
+				
 				mgrDatabase.persist(user);
 				facesMessages 
 						.add("Successfully registered as #{user.username}");

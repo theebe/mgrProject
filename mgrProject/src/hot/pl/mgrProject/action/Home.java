@@ -6,26 +6,31 @@ import javax.ejb.Local;
 import javax.ejb.Remove;
 
 import org.jboss.seam.annotations.Destroy;
+import org.jboss.seam.annotations.remoting.WebRemote;
 import org.postgis.Point;
 
 @Local
 public interface Home {
+	
+
+	@WebRemote
 	public Point getStartPoint();
 
-	public void setStartPoint(Point startPoint) ;
+	@WebRemote 
+	public Boolean setStartPoint(double x, double y) ;
 
-	public Point getEndPoint() ;
+	@WebRemote
+	public Point getStopPoint() ;
 
-	public void setEndPoint(Point endPoint) ;
+	@WebRemote 
+	public Boolean setStopPoint(double x, double y) ;
 
-	
+	@WebRemote
 	public Date getStartTime() ;
 
-	public void setStartTime(Date startTime) ;
+	@WebRemote
+	public Boolean setStartTime(Date startTime) ;
 	
-	public Date getData() ;
-
-	public void setData(Date data) ;
 
 	@Destroy
 	@Remove

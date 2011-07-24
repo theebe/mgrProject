@@ -53,7 +53,7 @@ public class AuthenticatorBean implements Authenticator {
 		            for (Role mr : user.getRoles()) 
 		               identity.addRole(mr.getRolename());
 		         }
-		         System.out.println("JSON\n" + new JSONSerializer().serialize(user));
+		         
 		         return true;
 		      }
 		      catch (NoResultException ex) {
