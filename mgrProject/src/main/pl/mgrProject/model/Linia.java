@@ -34,7 +34,8 @@ import org.jboss.seam.annotations.Name;
 @NamedQueries({
 	//wyciaga z bazy wszystkie przystanki
 	@NamedQuery(name="wszystkieLinie", query="SELECT OBJECT(lin) FROM Linia lin"),
-	@NamedQuery(name="liniePoNumerze", query="SELECT OBJECT(lin) FROM Linia lin where lin.numer = :numer")
+	@NamedQuery(name="liniePoNumerze", query="SELECT OBJECT(lin) FROM Linia lin where lin.numer = :numer"),
+	@NamedQuery(name="liniePoPrzystanku", query="SELECT przystTabl.linia FROM PrzystanekTabliczka przystTabl WHERE przystTabl.przystanek = :przystanek")
 	})
 public class Linia {
 	
@@ -42,15 +43,17 @@ public class Linia {
 	private Integer version;
 	private Integer numer;
 	
-	private List<Przystanek> przystanki = new ArrayList<Przystanek>();
+//	private List<Przystanek> przystanki = new ArrayList<Przystanek>();
 	
-	private Set<PrzystanekTabliczka> przystanekTabliczka = new HashSet<PrzystanekTabliczka>();
+	private List<PrzystanekTabliczka> przystanekTabliczka = new ArrayList<PrzystanekTabliczka>();
 
 	@Transient //niewidzialny dla bazy danych
 	@In EntityManager mgrDatabase;
 	
+	
+	
 	@PrePersist //trigger przed createm i updatem w bazie
-	public void beforeCreate() throws Exception{
+	public void beforeCreate() throws HibernateException{
 		//pobiera liczbe lini o tym samym numerze
 		Integer liczba = (Integer)mgrDatabase.createQuery("SELECT COUNT(l.numer) FROM Linia l WHERE l.numer = :numer").setParameter("numer", this.numer).getSingleResult();
 		
@@ -93,23 +96,24 @@ public class Linia {
 	 * Relacja zastêpuje relacje dotyczace przystanu poczatkowego i koncowego
 	 * @return
 	 */
-	@ManyToMany
-	@OrderColumn
-	public List<Przystanek> getPrzystanki() {
-		return przystanki;
-	}
-
-	
-	public void setPrzystanki(List<Przystanek> przystanki) {
-		this.przystanki = przystanki;
-	}
+//	@ManyToMany
+//	@OrderColumn
+//	public List<Przystanek> getPrzystanki() {
+//		return przystanki;
+//	}
+//
+//	
+//	public void setPrzystanki(List<Przystanek> przystanki) {
+//		this.przystanki = przystanki;
+//	}
 
 	@OneToMany(mappedBy = "linia")
-	public Set<PrzystanekTabliczka> getPrzystanekTabliczka() {
+	@OrderColumn
+	public List<PrzystanekTabliczka> getPrzystanekTabliczka() {
 		return przystanekTabliczka;
 	}
 
-	public void setPrzystanekTabliczka(Set<PrzystanekTabliczka> przystanekTabliczka) {
+	public void setPrzystanekTabliczka(List<PrzystanekTabliczka> przystanekTabliczka) {
 		this.przystanekTabliczka = przystanekTabliczka;
 	}
 	
