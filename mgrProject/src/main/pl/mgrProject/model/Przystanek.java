@@ -8,6 +8,8 @@ import java.util.Set;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.ManyToMany;
@@ -44,7 +46,7 @@ public class Przystanek implements Serializable {
 	private Integer version;
 	private Point location;
 	private String nazwa;
-	
+	private TypKomunikacji typ;
 	private List<Linia> linie = new ArrayList<Linia>();
 	
 	private Set<PrzystanekTabliczka> przystanekTabliczki = new HashSet<PrzystanekTabliczka>();
@@ -121,6 +123,16 @@ public class Przystanek implements Serializable {
 	
 	public void setPoprzedniePrzystanki(Set<PrzystanekTabliczka> poprzedniePrzystanki) {
 		this.poprzedniePrzystanki = poprzedniePrzystanki;
+	}
+
+	public void setTyp(TypKomunikacji typ) {
+		this.typ = typ;
+	}
+
+	@NotNull
+	@Enumerated(EnumType.STRING)
+	public TypKomunikacji getTyp() {
+		return typ;
 	}
 
 	

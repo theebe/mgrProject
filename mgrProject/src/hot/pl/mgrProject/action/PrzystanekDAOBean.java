@@ -1,6 +1,7 @@
 package pl.mgrProject.action;
 
 import java.io.Serializable;
+import java.util.List;
 
 import javax.ejb.Remove;
 import javax.ejb.Stateful;
@@ -16,6 +17,7 @@ import org.jboss.seam.log.Log;
 import org.postgis.Point;
 
 import pl.mgrProject.model.Przystanek;
+import pl.mgrProject.model.TypKomunikacji;
 
 /**
  * Klasa obslugujaca dodawanie oraz wyciaganie przystankow z bazy
@@ -36,17 +38,18 @@ public class PrzystanekDAOBean implements Serializable, PrzystanekDAO {
 
 	/**
 	 * Metoda WebRemote
+	 * @return Boolean true jesli doda false jesli nie
 	 */
-	public Boolean savePrzystanek(double lon, double lat, String nazwa) {
-		if (lon == 0 || lat == 0 || nazwa == null)
-			return false;
+	public Przystanek savePrzystanek(double lon, double lat, String nazwa, TypKomunikacji typ) {
+		if (lon == 0 || lat == 0 || nazwa == null || typ == null)
+			return null;
 
 		Przystanek p = new Przystanek();
 		p.setNazwa(nazwa);
 		Point location = new Point(lon, lat);
 		location.setSrid(4326);
 		p.setLocation(location);
-
+		p.setTyp(typ);
 		try {
 
 			mgrDatabase.persist(p);
@@ -54,11 +57,20 @@ public class PrzystanekDAOBean implements Serializable, PrzystanekDAO {
 		} catch (Exception e) {
 			log.info("Blad w zapisie przystanku do bazy, nazwa: "
 					+ p.getNazwa());
-			return false;
+			return null;
 		}
-		return true;
+		return p;
 	}
 
+	
+	public List<Przystanek> getAllPrzystanki(){
+		List<Przystanek> list = mgrDatabase.createNamedQuery("wszystkiePrzystanki").getResultList();
+		log.info("Pobrano z bazy " + list.size() + " przystankow");
+		return list;
+	}
+	
+	
+	
 	@Destroy
 	@Remove
 	public void destory() {

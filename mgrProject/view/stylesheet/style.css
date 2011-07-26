@@ -42,10 +42,12 @@ fieldset {
 	border: 1px solid green;
 	float: left;
 	width: 330px;
+	overflow: auto;
 }
 
 .infoPanel {
 	padding: 10px;
+	
 }
 
 .topSearchPanel {
@@ -67,6 +69,7 @@ fieldset {
 	font-weight: bold;
 	margin: 0 auto;
 	background-color: black;
+	z-index:8000;
 }
 
 .popupMenu {
