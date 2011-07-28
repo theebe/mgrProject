@@ -18,35 +18,76 @@ Rzeczy ktorych nie widac na stronie (popupy i okna dialogowe)
 			<div class="popup">
 				<div class="popupMenu popupStart">START</div>
 				<div class="popupMenu popupStop">STOP</div>
-				<s:div styleClass="popupMenu popupDodajPrzystanek">Dodaj Przystanek</s:div>
+				<s:div styleClass="popupMenu popupDodaj popupDodajPrzystanek">Dodaj Przystanek</s:div>
+				<s:div styleClass="popupMenu popupDodaj popupDodajLinie">Dodaj Linie</s:div>
 			</div>
 		</s:div>
 
 		<s:div>
-			
+
 			<div class="addPrzystanekDialog" title="Nowy przystanek">
 				<p class="validateTips">Wszystkie pola są wymagane.</p>
 				<form>
 					<fieldset>
-					<label for="przystanekNazwa">Nazwa</label> <input type="text"
+						<label for="przystanekNazwa">Nazwa</label> <input type="text"
 							name="przystanekNazwa" id="przystanekNazwa" value=""
-							class="text ui-widget-content ui-corner-all" />
-						Typ
+							class="text ui-widget-content ui-corner-all" /> Typ
 						<div id="przystanekTypRadio">
-						<input type="radio" id="przystanekTypA" name="radio"  value="A" checked="checked" /><label for="przystanekTypA">Autobusowy</label>
-						<input type="radio" id="przystanekTypT" name="radio" value="T" /><label for="przystanekTypT">Tramwajowy</label>
-						</div><br />
-						<label for="przystanekLon">Długość</label>
-						<input type="text" name="przystanekLon" id="przystanekLon" class=" text ui-widget-content ui-corner-all " style="width:100px"/> 
-						
-						<label style="margin-left: 40px" for="przystanekLat">Szerokość</label> 
-						<input type="text" name="przystanekLat"
-							id="przystanekLat" value="" class="text ui-widget-content ui-corner-all" style="width:100px" />
-						
+							<input type="radio" id="przystanekTypA" name="radio" value="A"
+								checked="checked" /><label for="przystanekTypA">Autobusowy</label>
+							<input type="radio" id="przystanekTypT" name="radio" value="T" /><label
+								for="przystanekTypT">Tramwajowy</label>
+						</div>
+						<br /> <label for="przystanekLon">Długość</label> <input
+							type="text" name="przystanekLon" id="przystanekLon"
+							class=" text ui-widget-content ui-corner-all "
+							style="width: 100px" /> <label style="margin-left: 40px"
+							for="przystanekLat">Szerokość</label> <input type="text"
+							name="przystanekLat" id="przystanekLat" value=""
+							class="text ui-widget-content ui-corner-all" style="width: 100px" />
+
 					</fieldset>
 				</form>
 			</div>
 		</s:div>
+
+
+
+		<div class="addLiniaDialog" title="Nowa Linia">
+
+			<p class="validateTips">Wszystkie pola sa wymagane.</p>
+			<form>
+				<fieldset>
+					<label for="liniaNumer">Numer</label> <input type="text"
+						name="liniaNumer" id="liniaNumer" value=""
+						class="text ui-widget-content ui-corner-all" /> <br />Typ
+					<div id="liniaTypRadio">
+						<input type="radio" class="liniaTyp" id="liniaTypA" name="radio" value="A"
+							checked="checked" /><label for="liniaTypA">Autobusowy</label> <input
+							type="radio" class="liniaTyp" id="liniaTypT" name="radio" value="T" /><label
+							for="liniaTypT">Tramwajowy</label>
+					</div>
+					<br />
+					<div id="listaPrzystankowCont">
+						Lista dostepnych przystankow:<br />
+						<ul class="listaPrzystankow droptrue">
+							
+							<ui:repeat value="#{przystanekDAO.przystanekList}" var="przystanek">
+								<li class="ui-state-default przytanekLi" id="#{przystanek.id}-#{przystanek.typ}" ><h:outputText value="#{przystanek.nazwa}" /> 
+								<span class="ui-icon ui-icon-circle-arrow-e arrowPrzyst arrowPrzystR" ></span></li>
+							</ui:repeat>
+						</ul>
+					</div>
+					<div id="listaPrzystankowLiniiCont">
+						Lista przystankow nowej linii:<br />
+						<ul class="listaPrzystankowLinii droptrue">
+
+						</ul>
+					</div>
+				</fieldset>
+			</form>
+
+		</div>
 		<!-- 
 *********************************************************************************************** -->
 
@@ -62,17 +103,21 @@ Rzeczy ktorych nie widac na stronie (popupy i okna dialogowe)
 						<h:panelGrid columns="4">
 							<h:outputLabel for="start">Start:</h:outputLabel>
 
-							<h:inputText styleClass="text ui-widget-content ui-corner-all" id="start">
+							<h:inputText styleClass="text ui-widget-content ui-corner-all"
+								id="start">
 							</h:inputText>
 
 
 							<h:outputLabel for="stop">Stop:</h:outputLabel>
-							<h:inputText  styleClass="text ui-widget-content ui-corner-all" id="stop" />
+							<h:inputText styleClass="text ui-widget-content ui-corner-all"
+								id="stop" />
 
 							<h:outputLabel for="data">Data:</h:outputLabel>
 							<h:panelGroup>
 								<button class="dataLeftButton" />
-								<h:inputText styleClass="dataInput  ui-widget-content ui-corner-all" id="data">
+								<h:inputText
+									styleClass="dataInput  ui-widget-content ui-corner-all"
+									id="data">
 
 								</h:inputText>
 
@@ -82,7 +127,8 @@ Rzeczy ktorych nie widac na stronie (popupy i okna dialogowe)
 							<h:outputLabel for="godzina">Godzina:</h:outputLabel>
 							<h:panelGroup>
 								<button class="godzinaLeftButton" />
-								<h:inputText  maxlength="5" styleClass="godzinaInput  ui-widget-content ui-corner-all"
+								<h:inputText maxlength="5"
+									styleClass="godzinaInput  ui-widget-content ui-corner-all"
 									id="godzina">
 
 								</h:inputText>
@@ -92,20 +138,35 @@ Rzeczy ktorych nie widac na stronie (popupy i okna dialogowe)
 						<button class="searchButton">Szukaj</button>
 					</s:div>
 					<s:div styleClass="loadingMessage">
-						<img src="./img/loading.gif" class="loadingMessageGif" /> Prosze czekać...</s:div>
+						<img src="./img/loading.gif" class="loadingMessageGif" /> Prosze czekać...
+					</s:div>
+
 				</s:div>
 			</s:div>
 			<s:div id="map" styleClass="mapa" />
 			<s:div styleClass="infoPanelContainer">
 				<s:div styleClass="infoPanel">
-				info po prawej,
-				<br />
-					<a href="#" id="permalink">Link do mapy</a>
-					<br />
-					<a href="" id="localizator">Zlokalizuj mnie</a>
-					<br />
-					<s:div id="przystanki">przystanki: <br />
-					</s:div>
+
+					<div id="tabs">
+						<ul>
+							<li><a href="#tabs-1">Połączenia</a></li>
+							<li><a href="#tabs-2">Przystanki</a></li>
+							<li><a href="#tabs-3">Rozkład</a></li>
+						</ul>
+						<div id="tabs-1"></div>
+						<div id="tabs-2">
+							<div id="tabs-1-cont">
+								<br /> <a href="#" id="permalink">Link do mapy</a> <br />
+								<s:div id="przystanki">przystanki: <br />
+								</s:div>
+							</div>
+						</div>
+						<div id="tabs-3">
+							<br /> Tu moze byc rozklad
+						</div>
+					</div>
+
+
 				</s:div>
 
 			</s:div>

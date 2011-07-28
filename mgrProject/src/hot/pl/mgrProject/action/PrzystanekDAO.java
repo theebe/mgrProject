@@ -24,7 +24,7 @@ public interface PrzystanekDAO {
 	 * @return
 	 */
 	@WebRemote(exclude={"linie", "poprzedniePrzystanki"})
-	public List<Przystanek> getAllPrzystanki();
+	public List<Przystanek> getPrzystanekList();
 	
 	@Destroy
 	@Remove

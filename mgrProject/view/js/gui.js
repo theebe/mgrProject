@@ -62,13 +62,13 @@ function searchButtonClick(e) {
  * funkcja inicjalizujaca okno modalne (formularz) dodawania przystanku
  */
 function homeAddPrzystanekDialogInit() {
-	$( "#przystanekTypRadio" ).buttonset();
+	$("#przystanekTypRadio").buttonset();
 	$(".addPrzystanekDialog").dialog(
 			{
 				autoOpen : false,
 				height : 350,
 				width : 450,
-				modal : true,
+				modal : false,
 				buttons : {
 					"Dodaj przystanek" : dodajPrzystanekButtonClick,
 					Cancel : function() {
@@ -121,22 +121,20 @@ var dodajPrzystanekButtonClick = function() {
 		var przystanekDAO = Seam.Component.getInstance("przystanekDAO");
 		var savePrzystanekCallback = function(p) {
 			if (p) {
-				
-				
-				var lon_lat = new OpenLayers.LonLat(p.location.x,
-						p.location.y).transform(new OpenLayers.Projection(
-						"EPSG:4326"), map.getProjectionObject());
+
+				var lon_lat = new OpenLayers.LonLat(p.location.x, p.location.y)
+						.transform(new OpenLayers.Projection("EPSG:4326"), map
+								.getProjectionObject());
 
 				var point = new OpenLayers.Geometry.Point(lon_lat.lon,
 						lon_lat.lat);
-				
+
 				var vect = new OpenLayers.Feature.Vector(point, {
 					nazwa : p.nazwa,
 					id : p.id,
 					typ : p.typ
 				});
-				
-			
+
 				przystanki.push(vect);
 				przystankiLayer.removeAllFeatures();
 				przystankiLayer.addFeatures(przystanki);
@@ -147,13 +145,106 @@ var dodajPrzystanekButtonClick = function() {
 				alert("Nie dodano, czegos brakuje");
 			}
 		}
-		
+
 		var typString = $("#przystanekTypRadio input:checked").val();
-		
+
 		przystanekDAO.savePrzystanek(parseFloat($("#przystanekLon").val()),
 				parseFloat($("#przystanekLat").val()), $("#przystanekNazwa")
 						.val(), typString, savePrzystanekCallback);
 
+		// odpalenie zapytan
+		Seam.Remoting.executeBatch();
+	}
+}
+
+/**
+ * Funckja inicjalizujaca okno dodawania linii
+ */
+function homeAddLiniaDialogInit() {
+	
+	
+	$("#liniaTypRadio").buttonset();
+	$(".addLiniaDialog ul").sortable({
+		connectWith : ".addLiniaDialog ul",
+		scroll: true,
+		placeholder: "ui-state-highlight",
+		receive:function(event,ui){
+			var id ="#" + ui.item.attr("id");	
+			if($(this).hasClass("listaPrzystankow")){
+				$(id).children("span").removeClass("ui-icon-circle-arrow-w arrowPrzystL").addClass("ui-icon-circle-arrow-e arrowPrzystR");
+			}
+			else if($(this).hasClass("listaPrzystankowLinii")){
+				$(id).children("span").removeClass("ui-icon-circle-arrow-e arrowPrzystR").addClass("ui-icon-circle-arrow-w arrowPrzystL");
+			}
+		}
+		
+	});
+
+	$(".listaPrzystankow, .listaPrzystankowLinii").disableSelection();
+	$(".addLiniaDialog").dialog({
+		autoOpen : false,
+		height : 450,
+		width : 450,
+		modal : false,
+		position: [500, 500],
+		buttons : {
+			"Dodaj linie" : dodajLinieButtonClick,
+			Cancel : function() {
+				$(this).dialog("close");
+			}
+		},
+		close : function() {
+			$(".validateTips").text("");
+			$([]).add($("#liniaNumer")).val("").removeClass("ui-state-error");
+		}
+	});
+	
+	$(".arrowPrzystR").click(function() {
+		var element = $(this).parent().get();
+		
+		element.remove();
+		$(".listaPrzystankowLinii").append(element);
+		$(".addLiniaDialog ul").sortable( "refresh" );
+		 $(this).removeClass("ui-icon-circle-arrow-e arrowPrzystR").addClass("ui-icon-circle-arrow-w arrowPrzystL");
+		 
+		 $(".arrowPrzystL").click(function() {
+				var element = $(this).parent().get();
+				element.remove();
+				$(".listaPrzystankow").append(element);
+				$(".addLiniaDialog ul").sortable( "refresh" );
+				 $(this).removeClass("ui-icon-circle-arrow-w arrowPrzystL").addClass("ui-icon-circle-arrow-e arrowPrzystR");
+			});
+	});
+	
+	
+
+}
+
+/**
+ * zdarzenie dodawania nowej linii
+ */
+function dodajLinieButtonClick() {
+	var bValid = true;
+
+	$(".validateTips").text("");
+	$([]).add($("#liniaNumer")).removeClass("ui-state-error");
+
+	// validacja
+	bValid = bValid && checkLength($("#liniaNumer"), "numer", 1, 3);
+
+	bValid = bValid
+			&& checkRegexp($("#liniaNumer"), /^[0-9]+$/i,
+					"Numer lini = tylko cyfry");
+	
+	bValid = bValid && checkContainer($(".listaPrzystankowLinii li"), "Liczba przystanków" , 1);
+	
+	if (bValid) {
+		// zaczyna sie kolejka zapytan
+
+		Seam.Remoting.startBatch();
+		
+		
+		$(".addLiniaDialog").dialog("close");
 		// odpalenie zapytan
 		Seam.Remoting.executeBatch();
 	}
@@ -256,8 +347,6 @@ function homeFormButtonInit() {
 	});
 }
 
-
-
 /**
  * zamienia czas w stringa o aktualnej godzinie ( 16:54 )
  */
@@ -290,6 +379,14 @@ function checkRegexp(o, regexp, n) {
 	} else {
 		return true;
 	}
+}
+
+function checkContainer(o, n, min){
+	if(o.length < min){
+		updateTips(n + "musi byæ wieksza od" + min);
+		return false;
+	}
+	else return true;
 }
 
 function updateTips(t) {

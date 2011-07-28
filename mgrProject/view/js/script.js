@@ -45,6 +45,7 @@ var iconStop = null;
  */
 var crossMarker = null
 
+
 // ///////////////////////////////////////////////////////////
 // Funkcje
 
@@ -53,6 +54,7 @@ var crossMarker = null
  */
 $(document).ready(function() {
 
+	
 	// now
 	startTime = new Date();
 
@@ -263,7 +265,8 @@ function onClickEvent(e) {
 	// dodanie popupu
 	if (popup)
 		map.removePopup(popup);
-	popup = new OpenLayers.Popup('menu', lonlat, new OpenLayers.Size(100, 100),
+	
+	popup = new OpenLayers.Popup('menu', lonlat, new OpenLayers.Size(100, 120),
 			$(".popupContent").html(), true);
 
 	popup.setBackgroundColor('darkblue');
@@ -310,6 +313,18 @@ function onClickEvent(e) {
 				$("#przystanekLon").val(lonlat.lon.toFixed(10));
 				$("#przystanekLat").val(lonlat.lat.toFixed(10));
 			});
+	$(".popupDodajLinie").click(function(){
+		$("ul.listaPrzystankowLinii li").each(function(index) {
+			$(this).remove();
+			$(".listaPrzystankow").append($(this));
+			 $(this).children("span").removeClass("ui-icon-circle-arrow-w arrowPrzystL").addClass("ui-icon-circle-arrow-e arrowPrzystR");
+		  });
+		 $(".addLiniaDialog ul").sortable( "refresh" );
+		 $("#liniaTypA").attr("checked", "checked");
+		 $("#liniaTypT").removeAttr("checked");
+		$(".addLiniaDialog").dialog("open");
+		removePopupFromMap();
+	});
 
 }
 
@@ -386,9 +401,16 @@ function homeGuiInit() {
 		searchButtonClick(e);
 	});
 
+	
+	//Tabs
+	$( "#tabs" ).tabs();
+	
 	// ///////////////////////////////////////////////////////////////////////////////////////
 	// Add przystanek dialog form
 	homeAddPrzystanekDialogInit();
+	
+	homeAddLiniaDialogInit();
+	
 
 	// ustawienie loading message
 	Seam.Remoting.displayLoadingMessage = displayLoadingMessage;
@@ -449,9 +471,13 @@ function getPrzystankiFeatures() {
 			updatePrzystankiView();
 		}
 
-		przystanekDAO.getAllPrzystanki(getAllPrzystankiCallback);
+		przystanekDAO.getPrzystanekList(getAllPrzystankiCallback);
 
 		Seam.Remoting.executeBatch();
 	}
 
 }
+
+
+
+

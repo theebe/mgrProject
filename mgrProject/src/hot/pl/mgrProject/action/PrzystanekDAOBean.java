@@ -9,10 +9,12 @@ import javax.persistence.EntityManager;
 
 import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.Destroy;
+import org.jboss.seam.annotations.Factory;
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Logger;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Scope;
+import org.jboss.seam.annotations.datamodel.DataModel;
 import org.jboss.seam.log.Log;
 import org.postgis.Point;
 
@@ -21,8 +23,9 @@ import pl.mgrProject.model.TypKomunikacji;
 
 /**
  * Klasa obslugujaca dodawanie oraz wyciaganie przystankow z bazy
+ * 
  * @author bat
- *
+ * 
  */
 @Stateful
 @Name("przystanekDAO")
@@ -35,12 +38,15 @@ public class PrzystanekDAOBean implements Serializable, PrzystanekDAO {
 	@In
 	private EntityManager mgrDatabase;
 
+	private List<Przystanek> przystanekList = null;
 
 	/**
 	 * Metoda WebRemote
+	 * 
 	 * @return Boolean true jesli doda false jesli nie
 	 */
-	public Przystanek savePrzystanek(double lon, double lat, String nazwa, TypKomunikacji typ) {
+	public Przystanek savePrzystanek(double lon, double lat, String nazwa,
+			TypKomunikacji typ) {
 		if (lon == 0 || lat == 0 || nazwa == null || typ == null)
 			return null;
 
@@ -62,15 +68,19 @@ public class PrzystanekDAOBean implements Serializable, PrzystanekDAO {
 		return p;
 	}
 
-	
-	public List<Przystanek> getAllPrzystanki(){
-		List<Przystanek> list = mgrDatabase.createNamedQuery("wszystkiePrzystanki").getResultList();
-		log.info("Pobrano z bazy " + list.size() + " przystankow");
-		return list;
+	public void setPrzystanekList(List<Przystanek> przystanekList) {
+		this.przystanekList = przystanekList;
 	}
-	
-	
-	
+
+	public List<Przystanek> getPrzystanekList() {
+		if (przystanekList == null) {
+			List<Przystanek> przystanekList = mgrDatabase.createNamedQuery(
+					"wszystkiePrzystanki").getResultList();
+			log.info("Pobrano z bazy " + przystanekList.size() + " przystankow");
+		}
+		return przystanekList;
+	}
+
 	@Destroy
 	@Remove
 	public void destory() {

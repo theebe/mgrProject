@@ -43,8 +43,6 @@ public class PrzystanekTabliczka implements Serializable{
 	private Set<PrzystanekTabliczka> poprzedniePrzystanki = new HashSet<PrzystanekTabliczka>();
 	
 	
-	//private Map<TypDnia, Set<> >
-	
 	@Id @GeneratedValue
 	public Long getId() {
 		return id;
