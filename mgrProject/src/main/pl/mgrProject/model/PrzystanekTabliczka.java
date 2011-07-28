@@ -22,7 +22,8 @@ import org.jboss.seam.annotations.Name;
 @Table(name="PRZYSTANEK_TABLICZKI")
 @NamedQueries({
 	//wyciaga z bazy wszystkie Tabliczki
-	@NamedQuery(name="wszystkieTabliczki", query="SELECT OBJECT(przystTabl) FROM PrzystanekTabliczka przystTabl")
+	@NamedQuery(name="wszystkieTabliczki", query="SELECT OBJECT(przystTabl) FROM PrzystanekTabliczka przystTabl"),
+	@NamedQuery(name="tabliczniPoPrzystanku", query="SELECT przystTabl FROM PrzystanekTabliczka przystTabl WHERE przystTabl.przystanek = :przystanek"),
 	})
 public class PrzystanekTabliczka implements Serializable{
 
@@ -31,9 +32,16 @@ public class PrzystanekTabliczka implements Serializable{
 	private Integer version;
 	private Linia linia;
 	private Przystanek przystanek;
-	private Przystanek nastepnyPrzystanek;
+	private PrzystanekTabliczka nastepnyPrzystanek;
 
 	private Set<Odjazd> odjazdy = new HashSet<Odjazd>();
+	
+	
+	/**
+	 * Ten przystanek jest nastêpnym dla danego zbioru przystanków
+	 */
+	private Set<PrzystanekTabliczka> poprzedniePrzystanki = new HashSet<PrzystanekTabliczka>();
+	
 	
 	//private Map<TypDnia, Set<> >
 	
@@ -72,10 +80,10 @@ public class PrzystanekTabliczka implements Serializable{
 	}
 	
 	@ManyToOne
-	public Przystanek getNastepnyPrzystanek() {
+	public PrzystanekTabliczka getNastepnyPrzystanek() {
 		return nastepnyPrzystanek;
 	}
-	public void setNastepnyPrzystanek(Przystanek nastepnyPrzystanek) {
+	public void setNastepnyPrzystanek(PrzystanekTabliczka nastepnyPrzystanek) {
 		this.nastepnyPrzystanek = nastepnyPrzystanek;
 	}
 	
@@ -89,6 +97,15 @@ public class PrzystanekTabliczka implements Serializable{
 	}
 	
 	
+	@OneToMany(mappedBy="nastepnyPrzystanek")
+	public Set<PrzystanekTabliczka> getPoprzedniePrzystanki() {
+		return poprzedniePrzystanki;
+	}
+
+	
+	public void setPoprzedniePrzystanki(Set<PrzystanekTabliczka> poprzedniePrzystanki) {
+		this.poprzedniePrzystanki = poprzedniePrzystanki;
+	}
 
 	
 

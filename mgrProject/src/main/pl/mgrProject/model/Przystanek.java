@@ -35,7 +35,8 @@ import org.postgis.Point;
 @NamedQueries({
 	//wyciaga z bazy wszystkie przystanki
 	@NamedQuery(name="wszystkiePrzystanki", query="SELECT OBJECT(przyst) FROM Przystanek przyst"),
-	@NamedQuery(name="przystankiPoNazwie", query="SELECT OBJECT(przyst) FROM Przystanek przyst where przyst.nazwa like :nazwa")
+	@NamedQuery(name="przystankiPoNazwie", query="SELECT OBJECT(przyst) FROM Przystanek przyst where przyst.nazwa like :nazwa"),
+	@NamedQuery(name="przystankiPoLini", query="SELECT przystTabl.przystanek FROM PrzystanekTabliczka przystTabl WHERE przystTabl.linia = :linia")
 	})
 	
 public class Przystanek implements Serializable {
@@ -47,15 +48,11 @@ public class Przystanek implements Serializable {
 	private Point location;
 	private String nazwa;
 	private TypKomunikacji typ;
-	private List<Linia> linie = new ArrayList<Linia>();
+//	private List<Linia> linie = new ArrayList<Linia>();
 	
 	private Set<PrzystanekTabliczka> przystanekTabliczki = new HashSet<PrzystanekTabliczka>();
 	
-	/**
-	 * Ten przystanek jest nastêpnym dla danego zbioru przystanków
-	 */
-	private Set<PrzystanekTabliczka> poprzedniePrzystanki = new HashSet<PrzystanekTabliczka>();
-	
+
 	@Id @GeneratedValue
 	public Long getId() {
 		return id;
@@ -96,14 +93,14 @@ public class Przystanek implements Serializable {
 	}
 
 	
-	@ManyToMany(mappedBy="przystanki")
-	public List<Linia> getLinie() {
-		return linie;
-	}
-
-	public void setLinie(List<Linia> liniePrzystanki) {
-		this.linie = liniePrzystanki;
-	}
+//	@ManyToMany(mappedBy="przystanki")
+//	public List<Linia> getLinie() {
+//		return linie;
+//	}
+//
+//	public void setLinie(List<Linia> liniePrzystanki) {
+//		this.linie = liniePrzystanki;
+//	}
 
 	@OneToMany(mappedBy="przystanek")
 	public Set<PrzystanekTabliczka> getPrzystanekTabliczki() {
@@ -115,16 +112,7 @@ public class Przystanek implements Serializable {
 	}
 
 	
-	@OneToMany(mappedBy="nastepnyPrzystanek")
-	public Set<PrzystanekTabliczka> getPoprzedniePrzystanki() {
-		return poprzedniePrzystanki;
-	}
-
 	
-	public void setPoprzedniePrzystanki(Set<PrzystanekTabliczka> poprzedniePrzystanki) {
-		this.poprzedniePrzystanki = poprzedniePrzystanki;
-	}
-
 	public void setTyp(TypKomunikacji typ) {
 		this.typ = typ;
 	}
