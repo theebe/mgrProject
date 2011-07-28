@@ -62,27 +62,33 @@ Rzeczy ktorych nie widac na stronie (popupy i okna dialogowe)
 						name="liniaNumer" id="liniaNumer" value=""
 						class="text ui-widget-content ui-corner-all" /> <br />Typ
 					<div id="liniaTypRadio">
-						<input type="radio" class="liniaTyp" id="liniaTypA" name="radio" value="A"
-							checked="checked" /><label for="liniaTypA">Autobusowy</label> <input
-							type="radio" class="liniaTyp" id="liniaTypT" name="radio" value="T" /><label
-							for="liniaTypT">Tramwajowy</label>
+						<input type="radio" class="liniaTyp" id="liniaTypA" name="radio"
+							value="A" checked="checked" /><label for="liniaTypA">Autobusowy</label>
+						<input type="radio" class="liniaTyp" id="liniaTypT" name="radio"
+							value="T" /><label for="liniaTypT">Tramwajowy</label>
 					</div>
 					<br />
-					<div id="listaPrzystankowCont">
-						Lista dostepnych przystankow:<br />
-						<ul class="listaPrzystankow droptrue">
-							
-							<ui:repeat value="#{przystanekDAO.przystanekList}" var="przystanek">
-								<li class="ui-state-default przytanekLi" id="#{przystanek.id}-#{przystanek.typ}" ><h:outputText value="#{przystanek.nazwa}" /> 
-								<span class="ui-icon ui-icon-circle-arrow-e arrowPrzyst arrowPrzystR" ></span></li>
-							</ui:repeat>
-						</ul>
-					</div>
-					<div id="listaPrzystankowLiniiCont">
-						Lista przystankow nowej linii:<br />
-						<ul class="listaPrzystankowLinii droptrue">
+					<div class="listaPrzystankowConterner">
+						<div id="listaPrzystankowCont">
+							Lista dostepnych przystankow:<br />
+							<ul class="listaPrzystankow droptrue">
 
-						</ul>
+								<ui:repeat value="#{przystanekDAO.przystanekList}"
+									var="przystanek">
+									<li class="ui-state-default przytanekLi"
+										id="#{przystanek.id}-#{przystanek.typ}"><h:outputText
+											value="#{przystanek.nazwa}" /> <span
+										class="ui-icon ui-icon-circle-arrow-e arrowPrzyst arrowPrzystR"></span>
+									</li>
+								</ui:repeat>
+							</ul>
+						</div>
+						<div id="listaPrzystankowLiniiCont">
+							Lista przystankow nowej linii:<br />
+							<ul class="listaPrzystankowLinii droptrue">
+
+							</ul>
+						</div>
 					</div>
 				</fieldset>
 			</form>
@@ -149,9 +155,12 @@ Rzeczy ktorych nie widac na stronie (popupy i okna dialogowe)
 
 					<div id="tabs">
 						<ul>
-							<li><a href="#tabs-1">Połączenia</a></li>
-							<li><a href="#tabs-2">Przystanki</a></li>
-							<li><a href="#tabs-3">Rozkład</a></li>
+							<li><a href="#tabs-1">Połączenia</a>
+							</li>
+							<li><a href="#tabs-2">Przystanki</a>
+							</li>
+							<li><a href="#tabs-3">Rozkład</a>
+							</li>
 						</ul>
 						<div id="tabs-1"></div>
 						<div id="tabs-2">
