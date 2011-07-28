@@ -7,6 +7,8 @@ import java.util.Set;
 
 import javax.persistence.Entity;
 import javax.persistence.EntityManager;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.ManyToMany;
@@ -42,9 +44,8 @@ public class Linia {
 	private Long id;
 	private Integer version;
 	private Integer numer;
-	
-//	private List<Przystanek> przystanki = new ArrayList<Przystanek>();
-	
+	private TypKomunikacji typ;
+
 	private List<PrzystanekTabliczka> przystanekTabliczka = new ArrayList<PrzystanekTabliczka>();
 
 	@Transient //niewidzialny dla bazy danych
@@ -90,25 +91,8 @@ public class Linia {
 	}
 	
 	
-	/**
-	 * Relacja wiele do wielu z przystankami.
-	 * Wystêpuje dodatkowa kolumna numeruj¹ca kolejnoœæ przystanków (kolejnoœæ przejezdzania przez przystanki)
-	 * Relacja zastêpuje relacje dotyczace przystanu poczatkowego i koncowego
-	 * @return
-	 */
-//	@ManyToMany
-//	@OrderColumn
-//	public List<Przystanek> getPrzystanki() {
-//		return przystanki;
-//	}
-//
-//	
-//	public void setPrzystanki(List<Przystanek> przystanki) {
-//		this.przystanki = przystanki;
-//	}
-
 	@OneToMany(mappedBy = "linia")
-	@OrderColumn
+	@OrderColumn(name="przystanektabliczka_order")
 	public List<PrzystanekTabliczka> getPrzystanekTabliczka() {
 		return przystanekTabliczka;
 	}
@@ -117,5 +101,15 @@ public class Linia {
 		this.przystanekTabliczka = przystanekTabliczka;
 	}
 	
+	public void setTyp(TypKomunikacji typ) {
+		this.typ = typ;
+	}
+
+	@NotNull
+	@Enumerated(EnumType.STRING)
+	public TypKomunikacji getTyp() {
+		return typ;
+	}
+
 	
 }

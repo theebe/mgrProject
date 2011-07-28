@@ -34,7 +34,7 @@ import org.postgis.Point;
 @Table(name = "PRZYSTANKI")
 @NamedQueries({
 	//wyciaga z bazy wszystkie przystanki
-	@NamedQuery(name="wszystkiePrzystanki", query="SELECT OBJECT(przyst) FROM Przystanek przyst"),
+	@NamedQuery(name="wszystkiePrzystanki", query="SELECT OBJECT(przyst) FROM Przystanek przyst ORDER BY przyst.nazwa"),
 	@NamedQuery(name="przystankiPoNazwie", query="SELECT OBJECT(przyst) FROM Przystanek przyst where przyst.nazwa like :nazwa"),
 	@NamedQuery(name="przystankiPoLini", query="SELECT przystTabl.przystanek FROM PrzystanekTabliczka przystTabl WHERE przystTabl.linia = :linia")
 	})

@@ -45,9 +45,12 @@ fieldset {
 	overflow: auto;
 }
 
+#tabs-1-cont {
+	
+}
+
 .infoPanel {
 	padding: 10px;
-	
 }
 
 .topSearchPanel {
@@ -69,11 +72,11 @@ fieldset {
 	font-weight: bold;
 	margin: 0 auto;
 	background-color: black;
-	z-index:8000;
+	z-index: 8000;
 }
 
 .popupMenu {
-	height: 25px;
+	height: 20px;
 	width: 100px;
 	text-align: center;
 	padding-top: 5px;
@@ -88,9 +91,10 @@ fieldset {
 	background-color: red;
 }
 
-.popupDodajPrzystanek {
+.popupDodaj {
 	background-color: yellow;
 	color: red;
+	border-top: 1px solid black;
 }
 
 /************************************************************************************
@@ -102,7 +106,6 @@ fieldset {
 	padding: 10px;
 	float: left;
 }
-
 
 .searchButton {
 	margin-left: auto;
@@ -128,11 +131,62 @@ fieldset {
 /******************************************************************************8
 * ADD PRZYSTANEK DIALOG
 */
-
-.addPrzystanekDialog{
+.addPrzystanekDialog {
 	display: none;
-	}
+}
 
+.validateTips {
+	border: 1px solid transparent;
+	padding: 0.3em;
+}
 
+/********************************************************************************8
+* ADD LINIA FORM
+*/
+.addLiniaDialog {
+	display: none;
+}
 
-		.validateTips { border: 1px solid transparent; padding: 0.3em; }
+.addLiniaDialog ul {
+	list-style-type: none;
+	margin: 0;
+	padding: 0;
+	float: left;
+	margin-right: 10px;
+	background: #dfd;
+	padding: 5px;
+	width: 160px;
+	height: 300 px;
+	overflow: auto;
+}
+
+.addLiniaDialog ul li {
+	margin: 5px;
+	padding: 3px;
+	width: 120px;
+	font-weight: 8px;
+	cursor: pointer;
+	float: left;
+}
+
+#listaPrzystankowCont {
+	float: left;
+	margin-right: 10px;
+}
+
+#listaPrzystankowLiniiCont {
+	margin-left: 10px;
+	float: left;
+}
+
+.arrowPrzyst {
+	cursor: pointer;
+}
+
+.arrowPrzystR {
+	float: right;
+}
+
+.arrowPrzystL {
+	float: left;
+}
