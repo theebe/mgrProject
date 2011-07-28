@@ -53,7 +53,15 @@ function searchButtonClick(e) {
 		}
 	}
 	homeBean.setStartTime(startTime, setStartTimeCallback);
-
+	
+	var runAlgorithmCallback = function(result) {
+		if (!result) {
+			alert("Obliczanie trasy nie powiodlo sie!");
+			Seam.Remoting.cancelBatch();
+		}
+	}
+	//homeBean.runAlgorithm(runAlgorithmCallback);
+	//alert("poszlo");
 	// odpalenie zapytan
 	Seam.Remoting.executeBatch();
 }
