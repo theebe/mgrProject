@@ -216,6 +216,10 @@ function homeAddLiniaDialogInit() {
 			});
 	});
 	
+	parseListPrzystankow($(".liniaTyp:checked").val());
+	$(".liniaTyp").change(function(){
+		parseListPrzystankow($(".liniaTyp:checked").val());
+	});
 	
 
 }
@@ -242,7 +246,7 @@ function dodajLinieButtonClick() {
 		// zaczyna sie kolejka zapytan
 
 		Seam.Remoting.startBatch();
-		
+		var listaIdPrzystankow = prepareListeIdPrzystanokow($(".listaPrzystankowLinii li"));
 		
 		$(".addLiniaDialog").dialog("close");
 		// odpalenie zapytan
@@ -328,7 +332,7 @@ function homeFormButtonInit() {
 		time -= 1000 * 600;
 		startTime.setTime(time);
 
-		$("#godzina").val(hoursMinutesToString(time));
+		$("#godzina").val(hoursMinutesToString(startTime));
 
 	});
 
@@ -343,7 +347,7 @@ function homeFormButtonInit() {
 		time += 1000 * 600;
 		startTime.setTime(time);
 
-		$("#godzina").val(hoursMinutesToString(time));
+		$("#godzina").val(hoursMinutesToString(startTime));
 	});
 }
 
@@ -358,6 +362,40 @@ function hoursMinutesToString(time) {
 			: startTime.getMinutes());
 	return dataGodzinaText;
 
+}
+
+/**
+ * parsuje liste przystankow w formularzu dodawania lini,
+ * (aby linia autobusowa nie korzystala z przystankow tramwajowych)
+ */
+function parseListPrzystankow(typ){
+	$(".listaPrzystankowConterner li").each(function(index) {
+		
+		var id = $(this).attr("id");
+		
+		var typPrzyst = id.split("-")[1];
+		if(typPrzyst!=typ){
+			$(this).attr("style", "display:none;");
+		}
+		else{
+			$(this).removeAttr("style");
+		}
+	});
+	
+			
+}
+
+/** 
+ * Przygotowuje liste z id przystankow danej linii
+ * @param l - lista jako obiekty DOM <li>
+ */
+function prepareListeIdPrzystanokow(l){
+	var lista = [];
+	
+	l.each(function(index){
+		
+	});
+	return lista;
 }
 
 function checkLength(o, n, min, max) {

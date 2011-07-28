@@ -14,8 +14,6 @@ import pl.mgrProject.model.TypKomunikacji;
 @Local
 public interface PrzystanekDAO {
 
-	
-
 	@WebRemote
 	public Przystanek savePrzystanek(double lon, double lat, String nazwa, TypKomunikacji typ);
 	

@@ -43,7 +43,7 @@ public class PrzystanekDAOBean implements Serializable, PrzystanekDAO {
 	/**
 	 * Metoda WebRemote
 	 * 
-	 * @return Boolean true jesli doda false jesli nie
+	 * @return Przystanek zwraca null lub przystanek aktualnie dodany
 	 */
 	public Przystanek savePrzystanek(double lon, double lat, String nazwa,
 			TypKomunikacji typ) {
@@ -68,13 +68,12 @@ public class PrzystanekDAOBean implements Serializable, PrzystanekDAO {
 		return p;
 	}
 
-	public void setPrzystanekList(List<Przystanek> przystanekList) {
-		this.przystanekList = przystanekList;
-	}
 
 	public List<Przystanek> getPrzystanekList() {
-		if (przystanekList == null) {
-			List<Przystanek> przystanekList = mgrDatabase.createNamedQuery(
+		Long liczba = (Long)mgrDatabase.createQuery("SELECT COUNT(p) FROM Przystanek p").getSingleResult();
+		log.info("Liczba przystankow w bazie: " + liczba);
+		if (przystanekList == null || liczba!=przystanekList.size()) {
+			przystanekList = mgrDatabase.createNamedQuery(
 					"wszystkiePrzystanki").getResultList();
 			log.info("Pobrano z bazy " + przystanekList.size() + " przystankow");
 		}
