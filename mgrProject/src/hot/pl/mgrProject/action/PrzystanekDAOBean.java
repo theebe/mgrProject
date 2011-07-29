@@ -29,7 +29,7 @@ import pl.mgrProject.model.TypKomunikacji;
  */
 @Stateful
 @Name("przystanekDAO")
-@Scope(ScopeType.CONVERSATION)
+@Scope(ScopeType.SESSION)
 public class PrzystanekDAOBean implements Serializable, PrzystanekDAO {
 
 	@Logger
@@ -70,8 +70,11 @@ public class PrzystanekDAOBean implements Serializable, PrzystanekDAO {
 
 
 	public List<Przystanek> getPrzystanekList() {
+		//Liczba przystankow w bazie
 		Long liczba = (Long)mgrDatabase.createQuery("SELECT COUNT(p) FROM Przystanek p").getSingleResult();
 		log.info("Liczba przystankow w bazie: " + liczba);
+		
+		//jezeli jeszcze nie pobrano z bazy lub liczba przystankow sie rozni
 		if (przystanekList == null || liczba!=przystanekList.size()) {
 			przystanekList = mgrDatabase.createNamedQuery(
 					"wszystkiePrzystanki").getResultList();

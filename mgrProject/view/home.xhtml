@@ -9,7 +9,7 @@
 	xmlns:a="http://richfaces.org/a4j" template="layout/template.xhtml">
 
 	<ui:define name="body">
-		<s:remote include="homeBean, przystanekDAO" />
+		<s:remote include="homeBean, przystanekDAO, liniaDAO" />
 
 		<!-- ***********************************************************************************************
 Rzeczy ktorych nie widac na stronie (popupy i okna dialogowe) 
@@ -67,12 +67,15 @@ Rzeczy ktorych nie widac na stronie (popupy i okna dialogowe)
 						<input type="radio" class="liniaTyp" id="liniaTypT" name="radio"
 							value="T" /><label for="liniaTypT">Tramwajowy</label>
 					</div>
-					<br />
+					<br /> <label for="liniaPowrotna">Stwórz odrazu linię
+						powrotną</label> <input type="checkbox" id="liniaPowrotna"
+						name="liniaPowrotna" checked="checked" /> <br /> <br />
 					<div class="listaPrzystankowConterner">
 						<div id="listaPrzystankowCont">
-							Lista dostepnych przystankow:<br />
-							<ul class="listaPrzystankow droptrue">
 
+							<ul class="listaPrzystankow droptrue">
+								Lista dostepnych przystankow:
+								<br />
 								<ui:repeat value="#{przystanekDAO.przystanekList}"
 									var="przystanek">
 									<li class="ui-state-default przytanekLi"
@@ -84,9 +87,10 @@ Rzeczy ktorych nie widac na stronie (popupy i okna dialogowe)
 							</ul>
 						</div>
 						<div id="listaPrzystankowLiniiCont">
-							Lista przystankow nowej linii:<br />
-							<ul class="listaPrzystankowLinii droptrue">
 
+							<ul class="listaPrzystankowLinii droptrue">
+								Lista przystankow nowej linii:
+								<br />
 							</ul>
 						</div>
 					</div>
@@ -166,8 +170,21 @@ Rzeczy ktorych nie widac na stronie (popupy i okna dialogowe)
 						<div id="tabs-2">
 							<div id="tabs-1-cont">
 								<br /> <a href="#" id="permalink">Link do mapy</a> <br />
-								<s:div id="przystanki">przystanki: <br />
-								</s:div>
+
+								<h:form>
+								<a:region>
+									<a:poll interval="30000" reRender="przystanki" enabled="true"  />
+									<s:div id="przystanki">przystanki: <br />
+										<ui:repeat id="przystankiRepeat" value="#{przystanekDAO.przystanekList}"
+											var="przystanek">
+											<h:outputText value="#{przystanek.id}. #{przystanek.nazwa} - #{przystanek.typ}" /> 
+											<br />
+										</ui:repeat>
+									</s:div>
+									
+									</a:region>
+								</h:form>
+
 							</div>
 						</div>
 						<div id="tabs-3">

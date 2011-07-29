@@ -306,7 +306,6 @@ function onClickEvent(e) {
 						new OpenLayers.Projection("EPSG:4326"));
 
 				removePopupFromMap();
-				updatePrzystankiView();
 
 				// open dialog form
 				$(".addPrzystanekDialog").dialog("open");
@@ -353,16 +352,7 @@ function removePopupFromMap() {
 	crossMarker = null;
 }
 
-function updatePrzystankiView() {
 
-	 $("#przystanki").text("Przystanki:");
-	 $("#przystanki").append("<br />");
-	 
-	for(i =0 ; i<przystanki.length; ++i){
-		$("#przystanki").append(przystanki[i].attributes.id+ " " + przystanki[i].attributes.nazwa + " " + przystanki[i].attributes.typ + "<br />");
-	}
-
-}
 
 /**
  * Funkcja wykonuje sie po wyslaniu zapytania ajax pokazuje loading message
@@ -468,7 +458,6 @@ function getPrzystankiFeatures() {
 			}
 
 			przystankiLayer.addFeatures(przystanki);
-			updatePrzystankiView();
 		}
 
 		przystanekDAO.getPrzystanekList(getAllPrzystankiCallback);

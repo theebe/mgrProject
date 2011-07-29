@@ -138,7 +138,7 @@ var dodajPrzystanekButtonClick = function() {
 				przystanki.push(vect);
 				przystankiLayer.removeAllFeatures();
 				przystankiLayer.addFeatures(przystanki);
-				updatePrzystankiView();
+				
 				alert("Dodano przystanek");
 				$(".addPrzystanekDialog").dialog("close");
 			} else {
@@ -241,12 +241,34 @@ function dodajLinieButtonClick() {
 					"Numer lini = tylko cyfry");
 	
 	bValid = bValid && checkContainer($(".listaPrzystankowLinii li"), "Liczba przystanków" , 1);
-	
-	if (bValid) {
-		// zaczyna sie kolejka zapytan
 
-		Seam.Remoting.startBatch();
+	if (bValid) {
+		
 		var listaIdPrzystankow = prepareListeIdPrzystanokow($(".listaPrzystankowLinii li"));
+		
+		// zaczyna sie kolejka zapytan
+		Seam.Remoting.startBatch();
+
+		var liniaDAO = Seam.Component.getInstance("liniaDAO");
+		
+		var saveLiniaCallback =function(l){
+			if(l){
+				alert("Dodano Linie");
+			}
+			else{
+				alert("Nie dodano linii");
+			}
+		};
+		var exeptionHandler = function(ex){
+			alert("wystapi³ b³¹d: " + ex.getMessage());
+		};
+
+		liniaDAO.saveLinia(parseInt($("#liniaNumer").val()),  
+						   $("#liniaTypRadio input:checked").val(), 
+						   listaIdPrzystankow, 
+						   $("input#liniaPowrotna").is(":checked"), 
+						   saveLiniaCallback, 
+						   exeptionHandler);
 		
 		$(".addLiniaDialog").dialog("close");
 		// odpalenie zapytan
@@ -391,8 +413,14 @@ function parseListPrzystankow(typ){
  */
 function prepareListeIdPrzystanokow(l){
 	var lista = [];
-	
+	var typLinii = $(".liniaTyp:checked").val();
 	l.each(function(index){
+		var id = $(this).attr("id");
+		var idPrzyst = id.split("-")[0];
+		var typPrzyst = id.split("-")[1];
+		if(typPrzyst == typLinii){
+			lista.push(parseInt(idPrzyst));
+		}
 		
 	});
 	return lista;
