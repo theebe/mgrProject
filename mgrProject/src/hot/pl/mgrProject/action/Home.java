@@ -31,6 +31,9 @@ public interface Home {
 	@WebRemote
 	public Boolean setStartTime(Date startTime) ;
 	
+	@WebRemote
+	public Boolean runAlgorithm();
+	
 
 	@Destroy
 	@Remove
