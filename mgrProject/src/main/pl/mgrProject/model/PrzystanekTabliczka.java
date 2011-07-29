@@ -4,7 +4,9 @@ import java.io.Serializable;
 import java.util.HashSet;
 import java.util.Set;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
@@ -85,7 +87,7 @@ public class PrzystanekTabliczka implements Serializable{
 		this.nastepnyPrzystanek = nastepnyPrzystanek;
 	}
 	
-	@OneToMany(mappedBy="przystanekTabliczka")
+	@OneToMany(mappedBy="przystanekTabliczka", fetch=FetchType.EAGER, cascade={CascadeType.ALL})
 	public Set<Odjazd> getOdjazdy() {
 		return odjazdy;
 	}

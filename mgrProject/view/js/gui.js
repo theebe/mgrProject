@@ -274,8 +274,8 @@ function dodajLinieButtonClick() {
 		liniaDAO.saveLinia(parseInt($("#liniaNumer").val()),  
 						   $("#liniaTypRadio input:checked").val(), 
 						   listaIdPrzystankow, 
-						   $("input#liniaPowrotna").is(":checked"), 
-						   saveLiniaCallback, 
+						   false,//$("input#liniaPowrotna").is(":checked"), 
+						   saveLiniaCallback,
 						   exeptionHandler);
 		
 		$(".addLiniaDialog").dialog("close");

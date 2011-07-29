@@ -1,20 +1,21 @@
 package pl.mgrProject.action;
 
 import java.io.Serializable;
+import java.util.EventListener;
+import java.util.EventObject;
 import java.util.List;
 
 import javax.ejb.Remove;
 import javax.ejb.Stateful;
 import javax.persistence.EntityManager;
 
+import org.ajax4jsf.event.PushEventListener;
 import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.Destroy;
-import org.jboss.seam.annotations.Factory;
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Logger;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Scope;
-import org.jboss.seam.annotations.datamodel.DataModel;
 import org.jboss.seam.log.Log;
 import org.postgis.Point;
 
@@ -40,6 +41,8 @@ public class PrzystanekDAOBean implements Serializable, PrzystanekDAO {
 
 	private List<Przystanek> przystanekList = null;
 
+	private PushEventListener listener;
+
 	/**
 	 * Metoda WebRemote
 	 * 
@@ -57,8 +60,9 @@ public class PrzystanekDAOBean implements Serializable, PrzystanekDAO {
 		p.setLocation(location);
 		p.setTyp(typ);
 		try {
-
 			mgrDatabase.persist(p);
+			//zdarzenie uaktualnienia przystankow po stronie przegladarki
+			listener.onEvent(new EventObject(this));
 			log.info("Dodano obiekt przystanek do bazy, nazwa: " + p.getNazwa());
 		} catch (Exception e) {
 			log.info("Blad w zapisie przystanku do bazy, nazwa: "
@@ -68,19 +72,27 @@ public class PrzystanekDAOBean implements Serializable, PrzystanekDAO {
 		return p;
 	}
 
-
 	public List<Przystanek> getPrzystanekList() {
-		//Liczba przystankow w bazie
-		Long liczba = (Long)mgrDatabase.createQuery("SELECT COUNT(p) FROM Przystanek p").getSingleResult();
+		// Liczba przystankow w bazie
+		Long liczba = (Long) mgrDatabase.createQuery(
+				"SELECT COUNT(p) FROM Przystanek p").getSingleResult();
 		log.info("Liczba przystankow w bazie: " + liczba);
-		
-		//jezeli jeszcze nie pobrano z bazy lub liczba przystankow sie rozni
-		if (przystanekList == null || liczba!=przystanekList.size()) {
-			przystanekList = mgrDatabase.createNamedQuery(
-					"wszystkiePrzystanki").getResultList();
+
+		// jezeli jeszcze nie pobrano z bazy lub liczba przystankow sie rozni
+		if (przystanekList == null || liczba != przystanekList.size()) {
+			przystanekList = mgrDatabase
+					.createNamedQuery("wszystkiePrzystanki").getResultList();
 			log.info("Pobrano z bazy " + przystanekList.size() + " przystankow");
 		}
 		return przystanekList;
+	}
+
+	public void addListener(EventListener listener) {
+		synchronized (listener) {
+			if (this.listener != listener) {
+				this.listener = (PushEventListener) listener;
+			}
+		}
 	}
 
 	@Destroy

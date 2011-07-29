@@ -1,5 +1,6 @@
 package pl.mgrProject.action;
 
+import java.util.EventListener;
 import java.util.List;
 
 import javax.ejb.Local;
@@ -23,6 +24,10 @@ public interface PrzystanekDAO {
 	 */
 	@WebRemote(exclude={"linie", "poprzedniePrzystanki"})
 	public List<Przystanek> getPrzystanekList();
+	
+	
+	public void addListener(EventListener listener);
+	
 	
 	@Destroy
 	@Remove

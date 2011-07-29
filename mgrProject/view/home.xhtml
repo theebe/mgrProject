@@ -67,9 +67,10 @@ Rzeczy ktorych nie widac na stronie (popupy i okna dialogowe)
 						<input type="radio" class="liniaTyp" id="liniaTypT" name="radio"
 							value="T" /><label for="liniaTypT">Tramwajowy</label>
 					</div>
-					<br /> <label for="liniaPowrotna">Stwórz odrazu linię
+					<br />
+					<!--  <label for="liniaPowrotna">Stwórz odrazu linię
 						powrotną</label> <input type="checkbox" id="liniaPowrotna"
-						name="liniaPowrotna" checked="checked" /> <br /> <br />
+						name="liniaPowrotna" checked="checked" /> <br />  --><br />
 					<div class="listaPrzystankowConterner">
 						<div id="listaPrzystankowCont">
 
@@ -166,14 +167,16 @@ Rzeczy ktorych nie widac na stronie (popupy i okna dialogowe)
 							<li><a href="#tabs-3">Rozkład</a>
 							</li>
 						</ul>
-						<div id="tabs-1"></div>
+						<div id="tabs-1">
+						
+						</div>
 						<div id="tabs-2">
 							<div id="tabs-1-cont">
 								<br /> <a href="#" id="permalink">Link do mapy</a> <br />
 
 								<h:form>
 								<a:region>
-									<a:poll interval="30000" reRender="przystanki" enabled="true"  />
+									<a:push reRender="przystanki" eventProducer="#{przystanekDAO.addListener}" enabled="true"  interval="10000"/>
 									<s:div id="przystanki">przystanki: <br />
 										<ui:repeat id="przystankiRepeat" value="#{przystanekDAO.przystanekList}"
 											var="przystanek">

@@ -6,10 +6,12 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.ManyToMany;
@@ -102,7 +104,7 @@ public class Przystanek implements Serializable {
 //		this.linie = liniePrzystanki;
 //	}
 
-	@OneToMany(mappedBy="przystanek")
+	@OneToMany(mappedBy="przystanek", cascade={CascadeType.MERGE, CascadeType.REFRESH, CascadeType.REMOVE})
 	public Set<PrzystanekTabliczka> getPrzystanekTabliczki() {
 		return przystanekTabliczki;
 	}

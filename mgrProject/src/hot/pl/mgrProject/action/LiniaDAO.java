@@ -14,8 +14,10 @@ import pl.mgrProject.model.TypKomunikacji;
 @Local
 public interface LiniaDAO {
 
+	
+
 	@WebRemote
-	public Linia saveLinia(Integer numer, TypKomunikacji typ, List<Integer> listaIdPrzystankow, Boolean liniaPowrotna);
+	public Boolean saveLinia(Integer numer, TypKomunikacji typ, List<Long> listaIdPrzystankow, Boolean liniaPowrotna);
 	
 	@WebRemote
 	public List<Linia> getLiniaList();

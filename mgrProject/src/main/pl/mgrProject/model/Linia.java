@@ -1,27 +1,26 @@
 package pl.mgrProject.model;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.EntityManager;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
-import javax.persistence.ManyToMany;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
 import javax.persistence.OrderColumn;
-import javax.persistence.PrePersist;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 import javax.persistence.Version;
-import org.hibernate.validator.*;
-import org.hibernate.HibernateException;
+
+import org.hibernate.validator.NotNull;
+import org.hibernate.validator.Range;
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Name;
 
@@ -46,23 +45,11 @@ public class Linia {
 	private Integer numer;
 	private TypKomunikacji typ;
 
-	private List<PrzystanekTabliczka> przystanekTabliczka = new ArrayList<PrzystanekTabliczka>();
+	private List<PrzystanekTabliczka> przystanekTabliczka;
 
 	@Transient //niewidzialny dla bazy danych
 	@In EntityManager mgrDatabase;
 	
-	
-	
-	@PrePersist //trigger przed createm i updatem w bazie
-	public void beforeCreate() throws HibernateException{
-		//pobiera liczbe lini o tym samym numerze
-		Integer liczba = (Integer)mgrDatabase.createQuery("SELECT COUNT(l.numer) FROM Linia l WHERE l.numer = :numer").setParameter("numer", this.numer).getSingleResult();
-		
-		// liczba == 0, 1, 2
-		if( liczba >= 3 && liczba <0) 
-			//wyrzuca wyjatek, nie zapisze sie do bazy
-			throw new HibernateException("Juz istnieja dwie linie o tym numerze. Nowa linia nie zostala dodana");
-	}
 	
 	@Id @GeneratedValue
 	public Long getId() {
@@ -90,15 +77,24 @@ public class Linia {
 		this.numer = numer;
 	}
 	
-	
-	@OneToMany(mappedBy = "linia")
+	@OneToMany(mappedBy = "linia", cascade={CascadeType.PERSIST, CascadeType.REMOVE, CascadeType.MERGE})
 	@OrderColumn(name="przystanektabliczka_order")
 	public List<PrzystanekTabliczka> getPrzystanekTabliczka() {
+		if(this.przystanekTabliczka == null){
+			this.przystanekTabliczka = new ArrayList<PrzystanekTabliczka>();
+		}
 		return przystanekTabliczka;
 	}
 
 	public void setPrzystanekTabliczka(List<PrzystanekTabliczka> przystanekTabliczka) {
 		this.przystanekTabliczka = przystanekTabliczka;
+	}
+	
+	public void addPrzystanekTabliczka(PrzystanekTabliczka pt){
+		if(this.przystanekTabliczka == null){
+			this.przystanekTabliczka = new ArrayList<PrzystanekTabliczka>();
+		}
+		this.przystanekTabliczka.add(pt);
 	}
 	
 	public void setTyp(TypKomunikacji typ) {
