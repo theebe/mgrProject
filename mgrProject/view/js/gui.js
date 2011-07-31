@@ -53,15 +53,15 @@ function searchButtonClick(e) {
 		}
 	}
 	homeBean.setStartTime(startTime, setStartTimeCallback);
-	
+
 	var runAlgorithmCallback = function(result) {
 		if (!result) {
 			alert("Obliczanie trasy nie powiodlo sie!");
 			Seam.Remoting.cancelBatch();
 		}
 	}
-	//homeBean.runAlgorithm(runAlgorithmCallback);
-	//alert("poszlo");
+	// homeBean.runAlgorithm(runAlgorithmCallback);
+	// alert("poszlo");
 	// odpalenie zapytan
 	Seam.Remoting.executeBatch();
 }
@@ -146,7 +146,7 @@ var dodajPrzystanekButtonClick = function() {
 				przystanki.push(vect);
 				przystankiLayer.removeAllFeatures();
 				przystankiLayer.addFeatures(przystanki);
-				
+
 				alert("Dodano przystanek");
 				$(".addPrzystanekDialog").dialog("close");
 			} else {
@@ -169,32 +169,48 @@ var dodajPrzystanekButtonClick = function() {
  * Funckja inicjalizujaca okno dodawania linii
  */
 function homeAddLiniaDialogInit() {
-	
-	
-	$("#liniaTypRadio").buttonset();
-	$(".addLiniaDialog ul").sortable({
-		connectWith : ".addLiniaDialog ul",
-		scroll: true,
-		placeholder: "ui-state-highlight",
-		receive:function(event,ui){
-			var id ="#" + ui.item.attr("id");	
-			if($(this).hasClass("listaPrzystankow")){
-				$(id).children("span").removeClass("ui-icon-circle-arrow-w arrowPrzystL").addClass("ui-icon-circle-arrow-e arrowPrzystR");
-			}
-			else if($(this).hasClass("listaPrzystankowLinii")){
-				$(id).children("span").removeClass("ui-icon-circle-arrow-e arrowPrzystR").addClass("ui-icon-circle-arrow-w arrowPrzystL");
-			}
-		}
-		
-	});
 
+	// buttony radio
+	$("#liniaTypRadio").buttonset();
+
+	// drag&drop
+	$(".addLiniaDialog ul")
+			.sortable(
+					{
+						connectWith : ".addLiniaDialog ul",
+						scroll : true,
+						placeholder : "ui-state-highlight",
+						receive : function(event, ui) {
+							var id = "#" + ui.item.attr("id");
+							if ($(this).hasClass("listaPrzystankow")) {
+								$(id)
+										.children("span")
+										.removeClass(
+												"ui-icon-circle-arrow-w arrowPrzystL")
+										.addClass(
+												"ui-icon-circle-arrow-e arrowPrzystR");
+							} else if ($(this)
+									.hasClass("listaPrzystankowLinii")) {
+								$(id)
+										.children("span")
+										.removeClass(
+												"ui-icon-circle-arrow-e arrowPrzystR")
+										.addClass(
+												"ui-icon-circle-arrow-w arrowPrzystL");
+							}
+							map.removePopup(przystanekInfoPopup);
+						}
+
+					});
 	$(".listaPrzystankow, .listaPrzystankowLinii").disableSelection();
+
+	// okno dialogowe
 	$(".addLiniaDialog").dialog({
 		autoOpen : false,
 		height : 450,
 		width : 450,
 		modal : false,
-		position: [500, 500],
+		position : [ 500, 500 ],
 		buttons : {
 			"Dodaj linie" : dodajLinieButtonClick,
 			Cancel : function() {
@@ -206,29 +222,71 @@ function homeAddLiniaDialogInit() {
 			$([]).add($("#liniaNumer")).val("").removeClass("ui-state-error");
 		}
 	});
-	
-	$(".arrowPrzystR").click(function() {
-		var element = $(this).parent().get();
-		
-		element.remove();
-		$(".listaPrzystankowLinii").append(element);
-		$(".addLiniaDialog ul").sortable( "refresh" );
-		 $(this).removeClass("ui-icon-circle-arrow-e arrowPrzystR").addClass("ui-icon-circle-arrow-w arrowPrzystL");
-		 
-		 $(".arrowPrzystL").click(function() {
-				var element = $(this).parent().get();
-				element.remove();
-				$(".listaPrzystankow").append(element);
-				$(".addLiniaDialog ul").sortable( "refresh" );
-				 $(this).removeClass("ui-icon-circle-arrow-w arrowPrzystL").addClass("ui-icon-circle-arrow-e arrowPrzystR");
-			});
-	});
-	
+
+	// zdarzenia strzalek <- ->
+	$(".arrowPrzystR")
+			.click(
+					function() {
+						var element = $(this).parent().get();
+
+						element.remove();
+						$(".listaPrzystankowLinii").append(element);
+						$(".addLiniaDialog ul").sortable("refresh");
+						$(this)
+								.removeClass(
+										"ui-icon-circle-arrow-e arrowPrzystR")
+								.addClass("ui-icon-circle-arrow-w arrowPrzystL");
+						map.removePopup(przystanekInfoPopup);
+						$(this).parent().removeClass("ui-state-hover");
+						$(".arrowPrzystL")
+								.click(
+										function() {
+											var element = $(this).parent()
+													.get();
+											element.remove();
+											$(".listaPrzystankow").append(
+													element);
+											$(".addLiniaDialog ul").sortable(
+													"refresh");
+											$(this)
+													.removeClass(
+															"ui-icon-circle-arrow-w arrowPrzystL")
+													.addClass(
+															"ui-icon-circle-arrow-e arrowPrzystR");
+											$(this).parent().removeClass(
+													"ui-state-hover");
+											map
+													.removePopup(przystanekInfoPopup);
+										});
+					});
+
+	// wysietlanie przystankow A lub T po zmianie typu linii
 	parseListPrzystankow($(".liniaTyp:checked").val());
-	$(".liniaTyp").change(function(){
+	// zdarzenie zmiany typu
+	$(".liniaTyp").change(function() {
 		parseListPrzystankow($(".liniaTyp:checked").val());
 	});
-	
+
+	// zdarzenie najechania na nazwe przystanku
+	$(".przytanekLi").hover(
+			// on
+			function() {
+				$(this).addClass("ui-state-hover");
+				var idTyp = getIdTypeFromIdAttr($(this));
+				var przystanekFeature = getPrzystnekFromId(idTyp[0]);
+				var lonLat = new OpenLayers.LonLat(
+						przystanekFeature.geometry.x,
+						przystanekFeature.geometry.y);
+				przystanekInfoPopup = new OpenLayers.Popup.FramedCloud(
+						"przystanekFramedCloud", lonLat, null,
+						przystanekFeature.attributes.nazwa, null, false);
+				map.addPopup(przystanekInfoPopup);
+			},
+			// off
+			function() {
+				$(this).removeClass("ui-state-hover");
+				map.removePopup(przystanekInfoPopup);
+			});
 
 }
 
@@ -247,37 +305,37 @@ function dodajLinieButtonClick() {
 	bValid = bValid
 			&& checkRegexp($("#liniaNumer"), /^[0-9]+$/i,
 					"Numer lini = tylko cyfry");
-	
-	bValid = bValid && checkContainer($(".listaPrzystankowLinii li"), "Liczba przystanków" , 1);
+
+	bValid = bValid
+			&& checkContainer($(".listaPrzystankowLinii li"),
+					"Liczba przystanków", 1);
 
 	if (bValid) {
-		
+
 		var listaIdPrzystankow = prepareListeIdPrzystanokow($(".listaPrzystankowLinii li"));
-		
+
 		// zaczyna sie kolejka zapytan
 		Seam.Remoting.startBatch();
 
 		var liniaDAO = Seam.Component.getInstance("liniaDAO");
-		
-		var saveLiniaCallback =function(l){
-			if(l){
+
+		var saveLiniaCallback = function(l) {
+			if (l) {
 				alert("Dodano Linie");
-			}
-			else{
+			} else {
 				alert("Nie dodano linii");
 			}
 		};
-		var exeptionHandler = function(ex){
+		var exeptionHandler = function(ex) {
 			alert("wystapi³ b³¹d: " + ex.getMessage());
+			alerT(ex.printStackTrace());
 		};
 
-		liniaDAO.saveLinia(parseInt($("#liniaNumer").val()),  
-						   $("#liniaTypRadio input:checked").val(), 
-						   listaIdPrzystankow, 
-						   false,//$("input#liniaPowrotna").is(":checked"), 
-						   saveLiniaCallback,
-						   exeptionHandler);
-		
+		liniaDAO.saveLinia(parseInt($("#liniaNumer").val()), $(
+				"#liniaTypRadio input:checked").val(), listaIdPrzystankow,
+				false,// $("input#liniaPowrotna").is(":checked"),
+				saveLiniaCallback, exeptionHandler);
+
 		$(".addLiniaDialog").dialog("close");
 		// odpalenie zapytan
 		Seam.Remoting.executeBatch();
@@ -395,44 +453,58 @@ function hoursMinutesToString(time) {
 }
 
 /**
- * parsuje liste przystankow w formularzu dodawania lini,
- * (aby linia autobusowa nie korzystala z przystankow tramwajowych)
+ * Pobiera id & typ z objektu jQuery z atrybutu id
+ * 
+ * @param obj
+ *            obiekt jQuery
+ * @returns tablica = [int id, String typ]
  */
-function parseListPrzystankow(typ){
+function getIdTypeFromIdAttr(obj) {
+	var ret = obj.attr("id").split("-");
+	ret[0] = parseInt(ret[0]);
+
+	return ret;
+}
+
+/**
+ * parsuje liste przystankow w formularzu dodawania lini, (aby linia autobusowa
+ * nie korzystala z przystankow tramwajowych)
+ */
+function parseListPrzystankow(typ) {
 	$(".listaPrzystankowConterner li").each(function(index) {
-		
-		var id = $(this).attr("id");
-		
-		var typPrzyst = id.split("-")[1];
-		if(typPrzyst!=typ){
+
+		var typPrzyst = getIdTypeFromIdAttr($(this))[1];
+		if (typPrzyst != typ) {
 			$(this).attr("style", "display:none;");
-		}
-		else{
+		} else {
 			$(this).removeAttr("style");
 		}
 	});
-	
-			
+
 }
 
-/** 
+/**
  * Przygotowuje liste z id przystankow danej linii
- * @param l - lista jako obiekty DOM <li>
+ * 
+ * @param l -
+ *            lista jako obiekty DOM
+ *            <li>
  */
-function prepareListeIdPrzystanokow(l){
+function prepareListeIdPrzystanokow(l) {
 	var lista = [];
 	var typLinii = $(".liniaTyp:checked").val();
-	l.each(function(index){
-		var id = $(this).attr("id");
-		var idPrzyst = id.split("-")[0];
-		var typPrzyst = id.split("-")[1];
-		if(typPrzyst == typLinii){
-			lista.push(parseInt(idPrzyst));
+	l.each(function(index) {
+		// [0] = id, [1] = typ
+		var idTyp = getIdTypeFromIdAttr($(this));
+		if (idTyp[1] == typLinii) {
+			lista.push(idTyp[0]);
 		}
-		
+
 	});
 	return lista;
 }
+
+
 
 function checkLength(o, n, min, max) {
 	if (o.val().length > max || o.val().length < min) {
@@ -455,12 +527,12 @@ function checkRegexp(o, regexp, n) {
 	}
 }
 
-function checkContainer(o, n, min){
-	if(o.length < min){
+function checkContainer(o, n, min) {
+	if (o.length < min) {
 		updateTips(n + "musi byæ wieksza od" + min);
 		return false;
-	}
-	else return true;
+	} else
+		return true;
 }
 
 function updateTips(t) {

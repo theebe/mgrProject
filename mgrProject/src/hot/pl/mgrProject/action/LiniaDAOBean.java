@@ -1,7 +1,7 @@
 package pl.mgrProject.action;
 
 import java.util.ArrayList;
-import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 import javax.ejb.Remove;
@@ -47,8 +47,9 @@ public class LiniaDAOBean implements LiniaDAO {
 		Linia linia = new Linia();
 		linia.setNumer(numer);
 		linia.setTyp(typ);
-		createTabliczkiFromPrzystanki(listaIdPrzystankow, linia);
+		linia.setPrzystanekTabliczka(createTabliczkiFromPrzystanki(listaIdPrzystankow, linia));
 
+		
 		try {
 			mgrDatabase.persist(linia);
 			log.info("Dodano nowa linie do bazy, NUMER LINII: "
@@ -91,12 +92,13 @@ public class LiniaDAOBean implements LiniaDAO {
 	 *            aktualnie stworzona linia
 	 * @return lista nowych tabliczek na przystankach
 	 */
-	private void createTabliczkiFromPrzystanki(List<Long> listaIdPrzystankow,
+	private List<PrzystanekTabliczka> createTabliczkiFromPrzystanki(List<Long> listaIdPrzystankow,
 			Linia linia) {
 		if (listaIdPrzystankow == null || linia == null
 				|| listaIdPrzystankow.size() == 0)
-			return;
+			return null;
 
+		List<PrzystanekTabliczka> przystTablList = new ArrayList<PrzystanekTabliczka>();
 		// od konca (aby od razu ustawic pole nastepnyPrzystanekTabliczka)
 		for (int i = listaIdPrzystankow.size() - 1, j = 0; i >= 0; --i, ++j) {
 			Przystanek p = mgrDatabase.getReference(Przystanek.class,
@@ -107,12 +109,14 @@ public class LiniaDAOBean implements LiniaDAO {
 			if (i == listaIdPrzystankow.size() - 1)
 				pt.setNastepnyPrzystanek(null);
 			else
-				pt.setNastepnyPrzystanek(linia.getPrzystanekTabliczka().get(
+				pt.setNastepnyPrzystanek(przystTablList.get(
 						j - 1));
 
-			linia.addPrzystanekTabliczka(pt);
+			
+			przystTablList.add(pt);
 		}
-		return;
+		Collections.reverse(przystTablList);
+		return przystTablList;
 	}
 
 	private boolean czyLiniaDostepna(Integer numer) {

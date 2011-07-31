@@ -33,6 +33,8 @@ var startTime = null
  */
 var popup = null;
 
+var przystanekInfoPopup = null;
+
 /**
  * ikonki
  */
@@ -140,8 +142,10 @@ function mapInit() {
 	});
 	map.addLayer(gsat);
 
+	///////////////////
 	// Warsty robocze
 
+	//styl do warstwy
 	przystankiLayerStyle = new OpenLayers.Style(
 	// the first argument is a base symbolizer
 	// all other symbolizers in rules will extend this one
@@ -177,7 +181,7 @@ function mapInit() {
 	}
 
 	);
-
+	//dodanie stylu
 	przystankiLayer = new OpenLayers.Layer.Vector("Przystanki", {
 		styleMap : new OpenLayers.StyleMap(przystankiLayerStyle)
 	});
@@ -318,6 +322,26 @@ function onClickEvent(e) {
 			$(".listaPrzystankow").append($(this));
 			 $(this).children("span").removeClass("ui-icon-circle-arrow-w arrowPrzystL").addClass("ui-icon-circle-arrow-e arrowPrzystR");
 		  });
+		
+		$(".arrowPrzystR").click(function() {
+			var element = $(this).parent().get();
+			
+			element.remove();
+			$(".listaPrzystankowLinii").append(element);
+			$(".addLiniaDialog ul").sortable( "refresh" );
+			 $(this).removeClass("ui-icon-circle-arrow-e arrowPrzystR").addClass("ui-icon-circle-arrow-w arrowPrzystL");
+			 $(this).parent().removeClass("ui-state-hover");
+			 $(".arrowPrzystL").click(function() {
+					var element = $(this).parent().get();
+					element.remove();
+					$(".listaPrzystankow").append(element);
+					$(".addLiniaDialog ul").sortable( "refresh" );
+					 $(this).removeClass("ui-icon-circle-arrow-w arrowPrzystL").addClass("ui-icon-circle-arrow-e arrowPrzystR");
+					 map.removePopup(przystanekInfoPopup);
+					 $(this).parent().removeClass("ui-state-hover");
+				});
+		});
+		
 		 $(".addLiniaDialog ul").sortable( "refresh" );
 		 $("#liniaTypA").attr("checked", "checked");
 		 $("#liniaTypT").removeAttr("checked");
@@ -327,6 +351,12 @@ function onClickEvent(e) {
 
 }
 
+/**
+ * FUnkcja ustawia marker starotwy i koncowy
+ * @param s typ markera, 'start' 'stop'
+ * @param sLonLat openlayers.lonlat
+ * @param ic ikona
+ */
 function popupStartStopMarker(s, sLonLat, ic) {
 	if (s == 'start') {
 		if (start) {
@@ -439,32 +469,59 @@ function getPrzystankiFeatures() {
 		var przystanekDAO = Seam.Component.getInstance("przystanekDAO");
 
 		var getAllPrzystankiCallback = function(p) {
+			var i = 0;
+			for (i; i < p.length; i += 1) {
 
-			for (i = 0; i < p.length; i += 1) {
-
-				var lon_lat = new OpenLayers.LonLat(p[i].location.x,
-						p[i].location.y).transform(new OpenLayers.Projection(
-						"EPSG:4326"), map.getProjectionObject());
-
-				var point = new OpenLayers.Geometry.Point(lon_lat.lon,
-						lon_lat.lat);
-				var vect = new OpenLayers.Feature.Vector(point, {
-					nazwa : p[i].nazwa,
-					id : p[i].id,
-					typ : p[i].typ
-				});
+				var vect = createVectorPrzystanek(p[i]);
+				
 				przystanki.push(vect);
 
 			}
 
 			przystankiLayer.addFeatures(przystanki);
-		}
+		};
 
 		przystanekDAO.getPrzystanekList(getAllPrzystankiCallback);
 
 		Seam.Remoting.executeBatch();
 	}
 
+}
+
+/**
+ * Tworzy obiekt vector z encji pl.mgrProject.model.Przystanek
+ * @param przystanek
+ * @returns {OpenLayers.Feature.Vector}
+ */
+function createVectorPrzystanek(przystanek){
+	var lon_lat = new OpenLayers.LonLat(przystanek.location.x,
+			przystanek.location.y).transform(new OpenLayers.Projection(
+			"EPSG:4326"), map.getProjectionObject());
+
+	var point = new OpenLayers.Geometry.Point(lon_lat.lon,
+			lon_lat.lat);
+	var vect = new OpenLayers.Feature.Vector(point, {
+		nazwa : przystanek.nazwa,
+		id : przystanek.id,
+		typ : przystanek.typ
+	});
+	return vect;
+}
+
+/**
+ * pobiera z lokalnej tablicy przystankow (obiekty openlayers.feature.vector)
+ * obiekt z przystanku o zadanym id
+ * @param id -  id przystanku
+ * @returns obiekt openlayers.feature.vector - przystanek
+ */
+function getPrzystnekFromId(id){
+	var i =0, id_tmp=0;
+	for(i=0; i<przystanki.length; ++i){
+		id_tmp = przystanki[i].attributes.id;
+		if(id == id_tmp)
+			return przystanki[i];
+	}
+	return null;
 }
 
 
