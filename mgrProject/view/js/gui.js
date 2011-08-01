@@ -22,7 +22,7 @@ function searchButtonClick(e) {
 
 	// zaczyna sie kolejka zapytan
 	Seam.Remoting.startBatch();
-
+	Seam.Remoting.getContext().setConversationId(seamConversationId );
 	var homeBean = Seam.Component.getInstance("homeBean");
 	var setStartPointCallback = function(result) {
 		if (!result) {
@@ -124,7 +124,7 @@ var dodajPrzystanekButtonClick = function() {
 		// zaczyna sie kolejka zapytan
 
 		Seam.Remoting.startBatch();
-
+		Seam.Remoting.getContext().setConversationId(seamConversationId );
 		// pobiera instancje componentu ejb przystanekDAO
 		var przystanekDAO = Seam.Component.getInstance("przystanekDAO");
 		var savePrzystanekCallback = function(p) {
@@ -316,7 +316,7 @@ function dodajLinieButtonClick() {
 
 		// zaczyna sie kolejka zapytan
 		Seam.Remoting.startBatch();
-
+		Seam.Remoting.getContext().setConversationId(seamConversationId );
 		var liniaDAO = Seam.Component.getInstance("liniaDAO");
 
 		var saveLiniaCallback = function(l) {
@@ -503,6 +503,25 @@ function prepareListeIdPrzystanokow(l) {
 	});
 	return lista;
 }
+
+/**
+ * 
+ */
+function menuOperatoraInit(){
+	$("#listaLiniiLink").click(function(){
+		 $(".mapa").animate({
+			 width: ($(window).width() - 25 - parseInt( $(window).width()*0.5 ) ) 
+		 },950);
+		 $(".infoPanelContainer").animate({
+			    "width": "50%",
+			    "min-width": "500px"
+			  }, 1000
+			  );
+		 
+	});
+	
+}
+
 
 
 

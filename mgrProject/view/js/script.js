@@ -431,6 +431,10 @@ function homeGuiInit() {
 	
 	homeAddLiniaDialogInit();
 	
+	
+	//////////////////////////////////////////////////////////////////////////////////
+	// Menu Operatora 
+	menuOperatoraInit();
 
 	// ustawienie loading message
 	Seam.Remoting.displayLoadingMessage = displayLoadingMessage;
@@ -465,7 +469,8 @@ function getPrzystankiFeatures() {
 
 		// Pobieranie przystankow z bazy
 		Seam.Remoting.startBatch();
-
+		
+		Seam.Remoting.getContext().setConversationId(seamConversationId );
 		var przystanekDAO = Seam.Component.getInstance("przystanekDAO");
 
 		var getAllPrzystankiCallback = function(p) {

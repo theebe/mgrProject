@@ -12,6 +12,7 @@ import javax.persistence.EntityManager;
 import org.ajax4jsf.event.PushEventListener;
 import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.Destroy;
+import org.jboss.seam.annotations.Factory;
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Logger;
 import org.jboss.seam.annotations.Name;
@@ -30,7 +31,7 @@ import pl.mgrProject.model.TypKomunikacji;
  */
 @Stateful
 @Name("przystanekDAO")
-@Scope(ScopeType.SESSION)
+@Scope(ScopeType.CONVERSATION)
 public class PrzystanekDAOBean implements Serializable, PrzystanekDAO {
 
 	@Logger
@@ -39,7 +40,7 @@ public class PrzystanekDAOBean implements Serializable, PrzystanekDAO {
 	@In
 	private EntityManager mgrDatabase;
 
-	private List<Przystanek> przystanekList = null;
+	private List<Przystanek> przystanekList;
 
 	private PushEventListener listener;
 
@@ -72,6 +73,7 @@ public class PrzystanekDAOBean implements Serializable, PrzystanekDAO {
 		return p;
 	}
 
+	@Factory
 	public List<Przystanek> getPrzystanekList() {
 		// Liczba przystankow w bazie
 		Long liczba = (Long) mgrDatabase.createQuery(

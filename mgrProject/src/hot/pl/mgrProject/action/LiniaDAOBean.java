@@ -1,19 +1,28 @@
 package pl.mgrProject.action;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.EventListener;
+import java.util.EventObject;
 import java.util.List;
 
 import javax.ejb.Remove;
 import javax.ejb.Stateful;
 import javax.persistence.EntityManager;
 
+import org.ajax4jsf.event.PushEventListener;
 import org.jboss.seam.ScopeType;
+import org.jboss.seam.annotations.Begin;
 import org.jboss.seam.annotations.Destroy;
+import org.jboss.seam.annotations.Factory;
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Logger;
 import org.jboss.seam.annotations.Name;
+import org.jboss.seam.annotations.Out;
 import org.jboss.seam.annotations.Scope;
+import org.jboss.seam.annotations.datamodel.DataModel;
+import org.jboss.seam.annotations.datamodel.DataModelSelection;
 import org.jboss.seam.log.Log;
 
 import pl.mgrProject.model.Linia;
@@ -23,8 +32,8 @@ import pl.mgrProject.model.TypKomunikacji;
 
 @Stateful
 @Name("liniaDAO")
-@Scope(ScopeType.SESSION)
-public class LiniaDAOBean implements LiniaDAO {
+@Scope(ScopeType.CONVERSATION)
+public class LiniaDAOBean implements LiniaDAO, Serializable {
 
 	@Logger
 	private Log log;
@@ -32,7 +41,16 @@ public class LiniaDAOBean implements LiniaDAO {
 	@In
 	private EntityManager mgrDatabase;
 
-	private List<Linia> liniaList = null;
+	@DataModel
+	private List<Linia> liniaList;
+
+	@DataModelSelection
+	@Out(required = false)
+	private Linia selectedLinia;
+	
+	
+
+	private PushEventListener listener;
 
 	public Boolean saveLinia(Integer numer, TypKomunikacji typ,
 			List<Long> listaIdPrzystankow, Boolean liniaPowrotna) {
@@ -47,11 +65,12 @@ public class LiniaDAOBean implements LiniaDAO {
 		Linia linia = new Linia();
 		linia.setNumer(numer);
 		linia.setTyp(typ);
-		linia.setPrzystanekTabliczka(createTabliczkiFromPrzystanki(listaIdPrzystankow, linia));
+		linia.setPrzystanekTabliczka(createTabliczkiFromPrzystanki(
+				listaIdPrzystankow, linia));
 
-		
 		try {
 			mgrDatabase.persist(linia);
+			listener.onEvent(new EventObject(this));
 			log.info("Dodano nowa linie do bazy, NUMER LINII: "
 					+ linia.getNumer() + ", TYP: " + linia.getTyp()
 					+ ", LINIA POWROTNA" + liniaPowrotna);
@@ -60,26 +79,35 @@ public class LiniaDAOBean implements LiniaDAO {
 			return null;
 		}
 
-
 		return true;
 	}
 
+	@Factory("liniaList")
+	 @Begin(join=true)
 	public List<Linia> getLiniaList() {
 		// pobiera liczbe linii
 		Long liczba = (Long) mgrDatabase.createQuery(
 				"SELECT COUNT(l) FROM Linia l").getSingleResult();
-		log.info("Liczba przystankow w bazie: " + liczba);
+		log.info("Liczba linii w bazie: " + liczba);
 
 		// jezeli jescze lista nie byla pobierana'
 		// lub liczba linii jest inna niz aktualna
 		if (liniaList == null || liczba != liniaList.size()) {
 
 			// pobierz jeszcze raz
-			liniaList = mgrDatabase.createNamedQuery("wszystkiePrzystanki")
+			liniaList = mgrDatabase.createNamedQuery("wszystkieLinie")
 					.getResultList();
 			log.info("Pobrano z bazy " + liniaList.size() + " linii");
 		}
 		return liniaList;
+	}
+
+	public void delete() {
+		if (selectedLinia != null) {
+			mgrDatabase.remove(selectedLinia);
+			log.info("Kasowanie linii nr \"#{selectedLinia.numer}\"");
+			selectedLinia = null;
+		}
 	}
 
 	/**
@@ -92,8 +120,8 @@ public class LiniaDAOBean implements LiniaDAO {
 	 *            aktualnie stworzona linia
 	 * @return lista nowych tabliczek na przystankach
 	 */
-	private List<PrzystanekTabliczka> createTabliczkiFromPrzystanki(List<Long> listaIdPrzystankow,
-			Linia linia) {
+	private List<PrzystanekTabliczka> createTabliczkiFromPrzystanki(
+			List<Long> listaIdPrzystankow, Linia linia) {
 		if (listaIdPrzystankow == null || linia == null
 				|| listaIdPrzystankow.size() == 0)
 			return null;
@@ -109,10 +137,8 @@ public class LiniaDAOBean implements LiniaDAO {
 			if (i == listaIdPrzystankow.size() - 1)
 				pt.setNastepnyPrzystanek(null);
 			else
-				pt.setNastepnyPrzystanek(przystTablList.get(
-						j - 1));
+				pt.setNastepnyPrzystanek(przystTablList.get(j - 1));
 
-			
 			przystTablList.add(pt);
 		}
 		Collections.reverse(przystTablList);
@@ -122,11 +148,21 @@ public class LiniaDAOBean implements LiniaDAO {
 	private boolean czyLiniaDostepna(Integer numer) {
 		Long liczba = (Long) mgrDatabase.createQuery(
 				"SELECT COUNT(l) FROM Linia l").getSingleResult();
-		if (liczba > 2)
+		if (liczba >= 2)
 			return false;
 
 		return true;
 	}
+	
+	
+	public void addListener(EventListener listener) {
+		synchronized (listener) {
+			if (this.listener != listener) {
+				this.listener = (PushEventListener) listener;
+			}
+		}
+	}
+	
 
 	@Destroy
 	@Remove

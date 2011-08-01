@@ -1,5 +1,6 @@
 package pl.mgrProject.action;
 
+import java.util.EventListener;
 import java.util.List;
 
 import javax.ejb.Local;
@@ -19,8 +20,17 @@ public interface LiniaDAO {
 	@WebRemote
 	public Boolean saveLinia(Integer numer, TypKomunikacji typ, List<Long> listaIdPrzystankow, Boolean liniaPowrotna);
 	
+	
+	
 	@WebRemote
 	public List<Linia> getLiniaList();
+
+	
+	public void delete();
+	
+	
+	
+	public void addListener(EventListener listener);
 	
 	@Destroy
 	@Remove

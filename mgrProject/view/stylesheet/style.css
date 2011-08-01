@@ -189,4 +189,18 @@ fieldset {
 
 .arrowPrzystL {
 	float: left;
+	
 }
+
+/****************************************************************
+*/
+.menuOperatoraCont {
+	float: right;
+	padding: 10px;
+	border: 1px dashed black;
+	margin: 5px;
+}
+.menuOperatoraCont ul {
+	list-style-type: none;
+	cursor:pointer;
+	}

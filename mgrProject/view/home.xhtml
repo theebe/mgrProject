@@ -70,23 +70,27 @@ Rzeczy ktorych nie widac na stronie (popupy i okna dialogowe)
 					<br />
 					<!--  <label for="liniaPowrotna">Stwórz odrazu linię
 						powrotną</label> <input type="checkbox" id="liniaPowrotna"
-						name="liniaPowrotna" checked="checked" /> <br />  --><br />
+						name="liniaPowrotna" checked="checked" /> <br />  -->
+					<br />
 					<div class="listaPrzystankowConterner">
-						<div id="listaPrzystankowCont">
 
-							<ul class="listaPrzystankow droptrue">
-								Lista dostepnych przystankow:
-								<br />
-								<ui:repeat value="#{przystanekDAO.przystanekList}"
-									var="przystanek">
-									<li class="ui-state-default przytanekLi"
-										id="#{przystanek.id}-#{przystanek.typ}"><h:outputText
-											value="#{przystanek.nazwa}" /> <span
-										class="ui-icon ui-icon-circle-arrow-e arrowPrzyst arrowPrzystR"></span>
-									</li>
-								</ui:repeat>
-							</ul>
-						</div>
+				
+								<s:div id="listaPrzystankowCont">
+									<ul class="listaPrzystankow droptrue">
+										Lista dostepnych przystankow:<br />
+										
+										<ui:repeat value="#{przystanekDAO.przystanekList}"
+											var="przystanek">
+											<li class="ui-state-default przytanekLi"
+												id="#{przystanek.id}-#{przystanek.typ}"><h:outputText
+													value="#{przystanek.nazwa}" /> <span
+												class="ui-icon ui-icon-circle-arrow-e arrowPrzyst arrowPrzystR"></span>
+											</li>
+										</ui:repeat>
+									</ul>
+								</s:div>
+				
+
 						<div id="listaPrzystankowLiniiCont">
 
 							<ul class="listaPrzystankowLinii droptrue">
@@ -151,7 +155,14 @@ Rzeczy ktorych nie widac na stronie (popupy i okna dialogowe)
 					<s:div styleClass="loadingMessage">
 						<img src="./img/loading.gif" class="loadingMessageGif" /> Prosze czekać...
 					</s:div>
-
+					<s:div id="menuOperatora" styleClass="menuOperatoraCont">
+						<ul>
+							<li><a href="#"  id="listaPrzystankowLink">Lista przystanków</a></li>
+							<li><a href="#"  id="listaLiniiLink">Lista Linii</a></li>
+							
+						</ul>
+						
+					</s:div>
 				</s:div>
 			</s:div>
 			<s:div id="map" styleClass="mapa" />
@@ -160,31 +171,29 @@ Rzeczy ktorych nie widac na stronie (popupy i okna dialogowe)
 
 					<div id="tabs">
 						<ul>
-							<li><a href="#tabs-1">Połączenia</a>
-							</li>
-							<li><a href="#tabs-2">Przystanki</a>
-							</li>
-							<li><a href="#tabs-3">Rozkład</a>
-							</li>
+							<li><a href="#tabs-1">Połączenia</a></li>
+							<li><a href="#tabs-2">Przystanki</a></li>
+							<li><a href="#tabs-3">Rozkład</a></li>
 						</ul>
-						<div id="tabs-1">
-						
-						</div>
+						<div id="tabs-1"></div>
 						<div id="tabs-2">
 							<div id="tabs-1-cont">
 								<br /> <a href="#" id="permalink">Link do mapy</a> <br />
 
 								<h:form>
-								<a:region>
-									<a:push reRender="przystanki" eventProducer="#{przystanekDAO.addListener}" enabled="true"  interval="10000"/>
-									<s:div id="przystanki">przystanki: <br />
-										<ui:repeat id="przystankiRepeat" value="#{przystanekDAO.przystanekList}"
-											var="przystanek">
-											<h:outputText value="#{przystanek.id}. #{przystanek.nazwa} - #{przystanek.typ}" /> 
-											<br />
-										</ui:repeat>
-									</s:div>
-									
+									<a:region>
+										<a:push reRender="przystanki, listaPrzystankowCont"
+											eventProducer="#{przystanekDAO.addListener}" enabled="true"
+											interval="10000" />
+										<s:div id="przystanki">przystanki: <br />
+											<ui:repeat id="przystankiRepeat"
+												value="#{przystanekDAO.przystanekList}" var="przystanek">
+												<h:outputText
+													value="#{przystanek.id}. #{przystanek.nazwa} - #{przystanek.typ}" />
+												<br />
+											</ui:repeat>
+										</s:div>
+
 									</a:region>
 								</h:form>
 
