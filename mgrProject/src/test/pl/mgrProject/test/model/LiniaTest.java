@@ -1,11 +1,9 @@
 package pl.mgrProject.test.model;
-import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
 
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
-import org.testng.annotations.Configuration;
 import org.testng.annotations.Test;
 
 

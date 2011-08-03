@@ -34,14 +34,6 @@ public interface Home {
 	@WebRemote
 	public Boolean runAlgorithm();
 
-	public void setListaLinii(Boolean listaLinii);
-
-	public Boolean isListaLinii() ;
-	
-	public void setPage(String in);
-
-	public String getPage() ;
-
 	@Destroy
 	@Remove
 	public void destory();

@@ -432,9 +432,7 @@ function homeGuiInit() {
 	homeAddLiniaDialogInit();
 	
 	
-	//////////////////////////////////////////////////////////////////////////////////
-	// Menu Operatora 
-	menuOperatoraInit();
+	
 
 	// ustawienie loading message
 	Seam.Remoting.displayLoadingMessage = displayLoadingMessage;
@@ -519,16 +517,25 @@ function createVectorPrzystanek(przystanek){
  * @param id -  id przystanku
  * @returns obiekt openlayers.feature.vector - przystanek
  */
-function getPrzystnekFromId(id){
+function getIPrzystnekFromId(id){
 	var i =0, id_tmp=0;
 	for(i=0; i<przystanki.length; ++i){
 		id_tmp = przystanki[i].attributes.id;
 		if(id == id_tmp)
-			return przystanki[i];
+			return i;
 	}
 	return null;
 }
 
+function deletePrzystanekFromMap(id){
+
+	var i = getIPrzystnekFromId(id);
+	//kasowanie
+	przystanki.splice(i,1);
+	przystankiLayer.removeAllFeatures();
+	przystankiLayer.addFeatures(przystanki);
+	alert("Usuniêto przystanek");
+}
 
 
 

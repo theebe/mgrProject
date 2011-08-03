@@ -50,9 +50,8 @@ public class Przystanek implements Serializable {
 	private Point location;
 	private String nazwa;
 	private TypKomunikacji typ;
-//	private List<Linia> linie = new ArrayList<Linia>();
-	
-	private Set<PrzystanekTabliczka> przystanekTabliczki = new HashSet<PrzystanekTabliczka>();
+
+	private Set<PrzystanekTabliczka> przystanekTabliczki;
 	
 
 	@Id @GeneratedValue
@@ -95,16 +94,8 @@ public class Przystanek implements Serializable {
 	}
 
 	
-//	@ManyToMany(mappedBy="przystanki")
-//	public List<Linia> getLinie() {
-//		return linie;
-//	}
-//
-//	public void setLinie(List<Linia> liniePrzystanki) {
-//		this.linie = liniePrzystanki;
-//	}
 
-	@OneToMany(mappedBy="przystanek", cascade={CascadeType.MERGE, CascadeType.REFRESH, CascadeType.REMOVE})
+	@OneToMany(mappedBy="przystanek", cascade={CascadeType.MERGE, CascadeType.REFRESH})
 	public Set<PrzystanekTabliczka> getPrzystanekTabliczki() {
 		return przystanekTabliczki;
 	}

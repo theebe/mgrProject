@@ -509,32 +509,6 @@ function prepareListeIdPrzystanokow(l) {
 	return lista;
 }
 
-/**
- * 
- */
-var infoPanelContainer = null;
-function menuOperatoraInit(){
-	infoPanelContainer = $(".infoPanelContainer").html();
-	$("#listaLiniiLink").click(function(){
-		//animacja
-		 $(".mapa").animate({
-			 width: ($(window).width() - 25 - parseInt( $(window).width()*0.6 ) ) 
-		 },950);
-		 $(".infoPanelContainer").animate({
-			    "width": "60%",
-			    "min-width": "500px"
-			  }, 1000
-			  );
-		 
-//		 //pobranie strony
-//		 $.get('./listaLinii.seam', function(data) {
-//			  $('.infoPanelContainer').html(data);
-//			  alert(data);
-//			});
-	});
-	
-	
-}
 
 
 
@@ -574,3 +548,27 @@ function updateTips(t) {
 		$(".validateTips").removeClass("ui-state-highlight", 1500);
 	}, 500);
 }
+
+
+function deleteDialogOpen(){
+	
+	$("#dialog-deleteconfirm").dialog({
+		autoOpen : true,
+		resizable : false,
+		height : 200,
+		width: 300,
+		modal : true,
+		buttons : {
+			"Usuñ" : function() {
+				// funkcja zdefiniowana w pliku listaLinii.xhtml,
+				// id="deletePrzystanekJSFunction"
+				deletePrzystanek();
+				$(this).dialog("close");
+			},
+			"Anuluj" : function() {
+				$(this).dialog("close");
+			}
+		}
+	});
+	
+};

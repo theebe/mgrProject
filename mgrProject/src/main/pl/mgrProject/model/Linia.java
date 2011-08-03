@@ -77,7 +77,7 @@ public class Linia {
 		this.numer = numer;
 	}
 	
-	@OneToMany(cascade={CascadeType.PERSIST, CascadeType.REMOVE, CascadeType.MERGE})
+	@OneToMany(cascade={CascadeType.PERSIST, CascadeType.REMOVE})
 	@OrderColumn(name="przystanektabliczka_order")
 	@JoinColumn(name="linia_id", nullable=false)
 	public List<PrzystanekTabliczka> getPrzystanekTabliczka() {

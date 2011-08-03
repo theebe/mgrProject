@@ -41,7 +41,7 @@ fieldset {
 .infoPanelContainer {
 	border: 1px solid green;
 	float: left;
-	width: 330px;
+	
 	overflow: auto;
 }
 
@@ -52,6 +52,7 @@ fieldset {
 .infoPanel {
 	padding: 10px;
 }
+
 
 .topSearchPanel {
 	float: left;
@@ -206,16 +207,18 @@ fieldset {
 	}
 	
 /*******************************************************888
-* Lista linii 
+* Lista linii, przystankow
 */
 .deleteDialogCont{
 	display:none;
 	}
 	
-.listaLiniiContainer{
+.listaContainer{
 	float: left;
-	width: 600px;	
+	width: 400px;	
 }
-#liniaInfo{
+.entityInfo{
 	float: left;
+	padding: 15px;
 	}
+	

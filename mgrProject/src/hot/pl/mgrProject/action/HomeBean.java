@@ -15,9 +15,7 @@ import org.jboss.seam.annotations.Destroy;
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Logger;
 import org.jboss.seam.annotations.Name;
-import org.jboss.seam.annotations.Out;
 import org.jboss.seam.annotations.Scope;
-import org.jboss.seam.annotations.web.RequestParameter;
 import org.jboss.seam.log.Log;
 import org.postgis.Point;
 
@@ -35,11 +33,8 @@ import pl.mgrProject.model.PrzystanekTabliczka;
 @Stateful
 @Scope(ScopeType.CONVERSATION)
 public class HomeBean implements Serializable, Home {
+ 
 
-	@Out(required=false)
-	@RequestParameter("page")
-	private String page;
-	
 	@Logger
 	private Log log;
 	
@@ -51,10 +46,7 @@ public class HomeBean implements Serializable, Home {
 	@In
 	private EntityManager mgrDatabase;
 	
-	@In(required=false) @Out(required=false)
-	private Boolean listaLinii = false; 
-	
-	 
+
 	public Point getStartPoint() {
 		//startPoint.(arg0)
 		return startPoint; 
@@ -237,25 +229,7 @@ public class HomeBean implements Serializable, Home {
 	@Remove
 	public void destory(){}
 
-	public void setListaLinii(Boolean listaLinii) {
-		this.listaLinii = listaLinii;
-	}
 
-	public Boolean isListaLinii() {
-		return listaLinii;
-	}
-
-	public void setPage(String in) {
-		this.page = in;
-	}
-
-	public String getPage() {
-		if(page != null && ("listaLinii".equals(page) || "infoPanel".equals(page)))
-			return page;
-		else
-			return "infoPanel";
-	}
-	
 	
 
 }

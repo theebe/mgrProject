@@ -52,7 +52,6 @@ public class LiniaDAOBean implements LiniaDAO, Serializable {
 	@Out(required = false)
 	private Linia selectedLinia;
 
-
 	public String saveLinia(Integer numer, TypKomunikacji typ,
 			List<Long> listaIdPrzystankow, Boolean liniaPowrotna) {
 
@@ -63,14 +62,13 @@ public class LiniaDAOBean implements LiniaDAO, Serializable {
 		if (!czyLiniaDostepna(numer))
 			return "Istniej¹ juz 2 linie o tym numerze, wybierz inny";
 
-	
 		Linia linia = new Linia();
 		linia.setNumer(numer);
 		linia.setTyp(typ);
 		linia.setPrzystanekTabliczka(createTabliczkiFromPrzystanki(
 				listaIdPrzystankow, linia));
 		saveLinia(linia);
-		
+
 		return "success";
 	}
 
@@ -79,7 +77,7 @@ public class LiniaDAOBean implements LiniaDAO, Serializable {
 		mgrDatabase.persist(l);
 		log.info("Dodano nowa linie do bazy, NUMER LINII: " + l.getNumer()
 				+ ", TYP: " + l.getTyp());
-		
+
 	}
 
 	@Factory("liniaList")
@@ -110,7 +108,6 @@ public class LiniaDAOBean implements LiniaDAO, Serializable {
 			l = null;
 		}
 	}
-	
 
 	public Linia getSelectedLinia() {
 		return selectedLinia;
@@ -119,7 +116,6 @@ public class LiniaDAOBean implements LiniaDAO, Serializable {
 	public void setSelectedLinia(Linia l) {
 		this.selectedLinia = l;
 	}
-
 
 	@Destroy
 	@Remove
@@ -150,10 +146,16 @@ public class LiniaDAOBean implements LiniaDAO, Serializable {
 			PrzystanekTabliczka pt = new PrzystanekTabliczka();
 			pt.setLinia(linia);
 			pt.setPrzystanek(p);
-			if (i == listaIdPrzystankow.size() - 1)
+			if (i == listaIdPrzystankow.size() - 1) {
 				pt.setNastepnyPrzystanek(null);
-			else
+			} else if (i == 0) {
+				pt.setPoprzedniPrzystanek(null);
 				pt.setNastepnyPrzystanek(przystTablList.get(j - 1));
+				przystTablList.get(j - 1).setPoprzedniPrzystanek(pt);
+			} else {
+				pt.setNastepnyPrzystanek(przystTablList.get(j - 1));
+				przystTablList.get(j - 1).setPoprzedniPrzystanek(pt);
+			}
 
 			przystTablList.add(pt);
 		}
