@@ -8,9 +8,9 @@ import javax.persistence.Entity;
 import javax.persistence.EntityManager;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
@@ -77,8 +77,9 @@ public class Linia {
 		this.numer = numer;
 	}
 	
-	@OneToMany(mappedBy = "linia", cascade={CascadeType.PERSIST, CascadeType.REMOVE, CascadeType.MERGE})
+	@OneToMany(cascade={CascadeType.PERSIST, CascadeType.REMOVE, CascadeType.MERGE})
 	@OrderColumn(name="przystanektabliczka_order")
+	@JoinColumn(name="linia_id", nullable=false)
 	public List<PrzystanekTabliczka> getPrzystanekTabliczka() {
 		if(this.przystanekTabliczka == null){
 			this.przystanekTabliczka = new ArrayList<PrzystanekTabliczka>();
@@ -105,7 +106,7 @@ public class Linia {
 	@Enumerated(EnumType.STRING)
 	public TypKomunikacji getTyp() {
 		return typ;
-	}
+	} 
 
 	
 }

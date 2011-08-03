@@ -29,11 +29,18 @@ public interface Home {
 	public Date getStartTime() ;
 
 	@WebRemote
-	public Boolean setStartTime(Date startTime) ;
+	public Boolean setStartTime(Date startTime);
 	
 	@WebRemote
 	public Boolean runAlgorithm();
+
+	public void setListaLinii(Boolean listaLinii);
+
+	public Boolean isListaLinii() ;
 	
+	public void setPage(String in);
+
+	public String getPage() ;
 
 	@Destroy
 	@Remove

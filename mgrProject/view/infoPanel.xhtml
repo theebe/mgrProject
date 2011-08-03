@@ -1,0 +1,59 @@
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:s="http://jboss.com/products/seam/taglib"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:rich="http://richfaces.org/rich"
+	xmlns:a="http://richfaces.org/a4j">
+
+	<s:div styleClass="infoPanel">
+		<s:div rendered="#{homeBean.isListaLinii()}">
+			<h:form>
+				<a:include viewId="listaLinii.xhtml" />
+			</h:form>
+		</s:div>
+		<s:div rendered="#{not homeBean.isListaLinii()}">
+			<div id="tabs">
+				<ul>
+					<li><a href="#tabs-1">Połączenia</a>
+					</li>
+					<li><a href="#tabs-2">Przystanki</a>
+					</li>
+					<li><a href="#tabs-3">Rozkład</a>
+					</li>
+				</ul>
+				<div id="tabs-1"></div>
+				<div id="tabs-2">
+					<div id="tabs-1-cont">
+						<br /> <a href="#" id="permalink">Link do mapy</a> <br />
+
+						<h:form>
+							<a:region>
+								<a:push reRender="przystanki, listaPrzystankowCont"
+									eventProducer="#{przystanekDAO.addListener}" enabled="true"
+									interval="10000" />
+								<s:div id="przystanki">przystanki: <br />
+									<ui:repeat id="przystankiRepeat"
+										value="#{przystanekDAO.przystanekList}" var="przystanek">
+										<h:outputText
+											value="#{przystanek.id}. #{przystanek.nazwa} - #{przystanek.typ}" />
+										<br />
+									</ui:repeat>
+								</s:div>
+
+							</a:region>
+						</h:form>
+
+					</div>
+				</div>
+				<div id="tabs-3">
+					<br /> Tu moze byc rozklad
+				</div>
+			</div>
+		</s:div>
+
+	</s:div>
+</ui:composition>

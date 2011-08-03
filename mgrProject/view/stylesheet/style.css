@@ -204,3 +204,18 @@ fieldset {
 	list-style-type: none;
 	cursor:pointer;
 	}
+	
+/*******************************************************888
+* Lista linii 
+*/
+.deleteDialogCont{
+	display:none;
+	}
+	
+.listaLiniiContainer{
+	float: left;
+	width: 600px;	
+}
+#liniaInfo{
+	float: left;
+	}

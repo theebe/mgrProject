@@ -24,45 +24,45 @@ function searchButtonClick(e) {
 	Seam.Remoting.startBatch();
 	Seam.Remoting.getContext().setConversationId(seamConversationId );
 	var homeBean = Seam.Component.getInstance("homeBean");
-	var setStartPointCallback = function(result) {
-		if (!result) {
-			alert("bledne parametry przystanku startowego");
-			Seam.Remoting.cancelBatch();
-		}
-	}
-	var startLonLat = new OpenLayers.LonLat(start.lonlat.lon, start.lonlat.lat)
-			.transform(map.getProjectionObject(), new OpenLayers.Projection(
-					"EPSG:4326"));
-	homeBean.setStartPoint(startLonLat.lon, startLonLat.lat,
-			setStartPointCallback);
-	var setStopPointCallback = function(result) {
-		if (!result) {
-			alert("bledne parametry przystanku koncowego");
-			Seam.Remoting.cancelBatch();
-		}
-	}
-	var stopLonLat = new OpenLayers.LonLat(stop.lonlat.lon, stop.lonlat.lat)
-			.transform(map.getProjectionObject(), new OpenLayers.Projection(
-					"EPSG:4326"));
-	homeBean.setStopPoint(stopLonLat.lon, stopLonLat.lat, setStopPointCallback);
-
-	var setStartTimeCallback = function(result) {
-		if (!result) {
-			alert("bledna data i czas startowy");
-			Seam.Remoting.cancelBatch();
-		}
-	}
-	homeBean.setStartTime(startTime, setStartTimeCallback);
+//	var setStartPointCallback = function(result) {
+//		if (!result) {
+//			alert("bledne parametry przystanku startowego");
+//			Seam.Remoting.cancelBatch();
+//		}
+//	}
+//	var startLonLat = new OpenLayers.LonLat(start.lonlat.lon, start.lonlat.lat)
+//			.transform(map.getProjectionObject(), new OpenLayers.Projection(
+//					"EPSG:4326"));
+//	homeBean.setStartPoint(startLonLat.lon, startLonLat.lat,
+//			setStartPointCallback);
+//	var setStopPointCallback = function(result) {
+//		if (!result) {
+//			alert("bledne parametry przystanku koncowego");
+//			Seam.Remoting.cancelBatch();
+//		}
+//	}
+//	var stopLonLat = new OpenLayers.LonLat(stop.lonlat.lon, stop.lonlat.lat)
+//			.transform(map.getProjectionObject(), new OpenLayers.Projection(
+//					"EPSG:4326"));
+//	homeBean.setStopPoint(stopLonLat.lon, stopLonLat.lat, setStopPointCallback);
+//
+//	var setStartTimeCallback = function(result) {
+//		if (!result) {
+//			alert("bledna data i czas startowy");
+//			Seam.Remoting.cancelBatch();
+//		}
+//	}
+//	homeBean.setStartTime(startTime, setStartTimeCallback);
 
 	var runAlgorithmCallback = function(result) {
 		if (!result) {
 			alert("Obliczanie trasy nie powiodlo sie!");
 			Seam.Remoting.cancelBatch();
 		}
-	}
-	// homeBean.runAlgorithm(runAlgorithmCallback);
-	// alert("poszlo");
-	// odpalenie zapytan
+	};
+	homeBean.runAlgorithm(runAlgorithmCallback);
+	alert("poszlo");
+ // odpalenie zapytan
 	Seam.Remoting.executeBatch();
 }
 
@@ -320,25 +320,30 @@ function dodajLinieButtonClick() {
 		var liniaDAO = Seam.Component.getInstance("liniaDAO");
 
 		var saveLiniaCallback = function(l) {
-			if (l) {
+			if (l=='success') {
 				alert("Dodano Linie");
 			} else {
-				alert("Nie dodano linii");
+				if(l)
+					alert(l);
+				else{
+					alert("b³¹d w po³¹czeniu");
+				}
 			}
 		};
 		var exeptionHandler = function(ex) {
 			alert("wystapi³ b³¹d: " + ex.getMessage());
-			alerT(ex.printStackTrace());
+			alert(ex.printStackTrace());
 		};
 
 		liniaDAO.saveLinia(parseInt($("#liniaNumer").val()), $(
 				"#liniaTypRadio input:checked").val(), listaIdPrzystankow,
 				false,// $("input#liniaPowrotna").is(":checked"),
-				saveLiniaCallback, exeptionHandler);
+				saveLiniaCallback);//, exeptionHandler);
 
-		$(".addLiniaDialog").dialog("close");
+		
 		// odpalenie zapytan
 		Seam.Remoting.executeBatch();
+		$(".addLiniaDialog").dialog("close");
 	}
 }
 
@@ -507,18 +512,27 @@ function prepareListeIdPrzystanokow(l) {
 /**
  * 
  */
+var infoPanelContainer = null;
 function menuOperatoraInit(){
+	infoPanelContainer = $(".infoPanelContainer").html();
 	$("#listaLiniiLink").click(function(){
+		//animacja
 		 $(".mapa").animate({
-			 width: ($(window).width() - 25 - parseInt( $(window).width()*0.5 ) ) 
+			 width: ($(window).width() - 25 - parseInt( $(window).width()*0.6 ) ) 
 		 },950);
 		 $(".infoPanelContainer").animate({
-			    "width": "50%",
+			    "width": "60%",
 			    "min-width": "500px"
 			  }, 1000
 			  );
 		 
+//		 //pobranie strony
+//		 $.get('./listaLinii.seam', function(data) {
+//			  $('.infoPanelContainer').html(data);
+//			  alert(data);
+//			});
 	});
+	
 	
 }
 

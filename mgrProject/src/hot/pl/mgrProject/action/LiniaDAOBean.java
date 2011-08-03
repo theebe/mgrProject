@@ -9,7 +9,10 @@ import java.util.List;
 
 import javax.ejb.Remove;
 import javax.ejb.Stateful;
+import javax.ejb.TransactionAttribute;
+import javax.ejb.TransactionAttributeType;
 import javax.persistence.EntityManager;
+import javax.persistence.PersistenceException;
 
 import org.ajax4jsf.event.PushEventListener;
 import org.jboss.seam.ScopeType;
@@ -44,70 +47,83 @@ public class LiniaDAOBean implements LiniaDAO, Serializable {
 	@DataModel
 	private List<Linia> liniaList;
 
-	@DataModelSelection
+	@DataModelSelection("liniaList")
+	@In(required = false)
 	@Out(required = false)
 	private Linia selectedLinia;
-	
-	
 
-	private PushEventListener listener;
 
-	public Boolean saveLinia(Integer numer, TypKomunikacji typ,
+	public String saveLinia(Integer numer, TypKomunikacji typ,
 			List<Long> listaIdPrzystankow, Boolean liniaPowrotna) {
 
 		if (numer == 0 || typ == null || listaIdPrzystankow == null
 				|| listaIdPrzystankow.size() == 0)
-			return null;
+			return "Brak numeru lub typu, lub listy przystankow";
 
 		if (!czyLiniaDostepna(numer))
-			return null;
+			return "Istniej¹ juz 2 linie o tym numerze, wybierz inny";
 
+	
 		Linia linia = new Linia();
 		linia.setNumer(numer);
 		linia.setTyp(typ);
 		linia.setPrzystanekTabliczka(createTabliczkiFromPrzystanki(
 				listaIdPrzystankow, linia));
+		saveLinia(linia);
+		
+		return "success";
+	}
 
-		try {
-			mgrDatabase.persist(linia);
-			listener.onEvent(new EventObject(this));
-			log.info("Dodano nowa linie do bazy, NUMER LINII: "
-					+ linia.getNumer() + ", TYP: " + linia.getTyp()
-					+ ", LINIA POWROTNA" + liniaPowrotna);
-		} catch (Exception ex) {
-			log.error("Inny blad " + ex.getMessage());
-			return null;
-		}
+	public void saveLinia(Linia l) {
 
-		return true;
+		mgrDatabase.persist(l);
+		log.info("Dodano nowa linie do bazy, NUMER LINII: " + l.getNumer()
+				+ ", TYP: " + l.getTyp());
+		
 	}
 
 	@Factory("liniaList")
-	 @Begin(join=true)
+	@Begin(join = true)
 	public List<Linia> getLiniaList() {
-		// pobiera liczbe linii
-		Long liczba = (Long) mgrDatabase.createQuery(
-				"SELECT COUNT(l) FROM Linia l").getSingleResult();
-		log.info("Liczba linii w bazie: " + liczba);
 
-		// jezeli jescze lista nie byla pobierana'
-		// lub liczba linii jest inna niz aktualna
-		if (liniaList == null || liczba != liniaList.size()) {
-
-			// pobierz jeszcze raz
-			liniaList = mgrDatabase.createNamedQuery("wszystkieLinie")
-					.getResultList();
-			log.info("Pobrano z bazy " + liniaList.size() + " linii");
-		}
+		// pobierz jeszcze raz
+		liniaList = mgrDatabase.createNamedQuery("wszystkieLinie")
+				.getResultList();
+		log.info("Pobrano z bazy " + liniaList.size() + " linii");
 		return liniaList;
 	}
 
-	public void delete() {
-		if (selectedLinia != null) {
-			mgrDatabase.remove(selectedLinia);
-			log.info("Kasowanie linii nr \"#{selectedLinia.numer}\"");
-			selectedLinia = null;
+	@TransactionAttribute(TransactionAttributeType.REQUIRED)
+	public void merge(Linia l) {
+
+		mgrDatabase.merge(l);
+		log.info("Uaktualniono linie nr " + l.getNumer());
+	}
+
+	public void delete(Linia l) {
+		System.out.println("Delete called!!!!!!!!!!!!!!!!!!!!!!!!!!");
+		if (l != null) {
+			mgrDatabase.remove(l);
+			liniaList.remove(l);
+			System.out.println("REMOVE!!!!!!!!!!!!!!!");
+			log.info("Kasowanie linii nr " + l.getNumer());
+			l = null;
 		}
+	}
+	
+
+	public Linia getSelectedLinia() {
+		return selectedLinia;
+	}
+
+	public void setSelectedLinia(Linia l) {
+		this.selectedLinia = l;
+	}
+
+
+	@Destroy
+	@Remove
+	public void destory() {
 	}
 
 	/**
@@ -146,27 +162,15 @@ public class LiniaDAOBean implements LiniaDAO, Serializable {
 	}
 
 	private boolean czyLiniaDostepna(Integer numer) {
-		Long liczba = (Long) mgrDatabase.createQuery(
-				"SELECT COUNT(l) FROM Linia l").getSingleResult();
+		Long liczba = (Long) mgrDatabase
+				.createQuery(
+						"SELECT COUNT(l) FROM Linia l WHERE l.numer = :numer")
+				.setParameter("numer", numer).getSingleResult();
+		log.info("Liczba linii w bazie: " + liczba);
 		if (liczba >= 2)
 			return false;
 
 		return true;
-	}
-	
-	
-	public void addListener(EventListener listener) {
-		synchronized (listener) {
-			if (this.listener != listener) {
-				this.listener = (PushEventListener) listener;
-			}
-		}
-	}
-	
-
-	@Destroy
-	@Remove
-	public void destory() {
 	}
 
 }

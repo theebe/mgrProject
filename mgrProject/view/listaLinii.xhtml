@@ -1,0 +1,123 @@
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:s="http://jboss.com/products/seam/taglib"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:rich="http://richfaces.org/rich"
+	xmlns:a="http://richfaces.org/a4j" >
+
+	
+		<s:div id="listaLiniiCont" styleClass="listaLiniiContainer">
+
+			<h:outputText value="Brak linii w bazie"
+				rendered="#{liniaList.rowCount eq 0}" />
+			<h:outputText styleClass="tabelaLinii" value="TABELA LINII:"
+				rendered="#{liniaList.rowCount > 0}" />
+			<br />
+			<a:form ajaxSubmit="true">
+			
+				<rich:dataTable id="liniaDataTable" var="linia" value="#{liniaList}"
+					rendered="#{liniaList.rowCount > 0}" rows="10" reRender="scroller">
+					<f:facet name="header">  
+						      Linie
+						    </f:facet>
+					<rich:column sortBy="#{linia.numer}" filterBy="#{linia.numer}"
+						filterEvent="onkeyup">
+						<f:facet name="header">
+						Numer
+					</f:facet>
+						<h:outputText value="#{linia.numer}" />
+					</rich:column>
+
+					<rich:column>
+						<f:facet name="header">
+							<h:outputText value="Typ" />
+						</f:facet>
+						<h:outputText value="#{linia.typ}" />
+					</rich:column>
+					<rich:column>
+						<f:facet name="header">
+						Lista przystanków
+					</f:facet>
+						<rich:dataList var="przyst" value="#{linia.przystanekTabliczka}">
+							<h:outputText value="#{przyst.przystanek.nazwa}" />
+						</rich:dataList>
+					</rich:column>
+					<rich:column>
+						<a:commandLink action="#{liniaDAO.setSelectedLinia(linia)}"
+							reRender="deleteDialog" value="Skaskuj"
+							oncomplete="deleteDialogOpen();">
+						</a:commandLink>
+
+					</rich:column>
+					<rich:column>
+						<a:commandLink action="#{liniaDAO.setSelectedLinia(linia)}"
+							reRender="liniaInfo" value="Pokarz">
+						</a:commandLink>
+
+					</rich:column>
+					<f:facet name="footer">
+						<rich:datascroller id="scroller" for="liniaDataTable" />
+					</f:facet>
+				</rich:dataTable>
+			</a:form>
+		</s:div>
+
+	<s:div id="liniaInfo">
+		<s:div rendered="#{liniaDAO.selectedLinia != null}">
+			 	Linia: <br />
+			 		Id: #{liniaDAO.selectedLinia.id} <br />
+			 		Numer: #{liniaDAO.selectedLinia.numer} <br />
+			 		Typ: #{liniaDAO.selectedLinia.typ}<br />
+		</s:div>
+	</s:div>
+
+	<s:div id="deleteDialog" styleClass="deleteDialogCont">
+		<s:div rendered="#{liniaDAO.selectedLinia != null}">
+			<div id="dialog-deleteconfirm" title="Usunąć linie?">
+				<p>
+					<span class="ui-icon ui-icon-alert"
+						style="float: left; margin-right: .3em;"></span> Czy jesteś pewny
+					aby usunąć linię numer '#{liniaDAO.selectedLinia.numer}' wraz z
+					tabliczkami przystankowymi?
+				</p>
+			</div>
+		</s:div>
+	</s:div>
+
+	<script type="text/javascript">
+		//<![CDATA[
+			 function deleteDialogOpen(){
+				
+				$("#dialog-deleteconfirm").dialog({
+					autoOpen : true,
+					resizable : false,
+					height : 200,
+					width: 300,
+					modal : true,
+					buttons : {
+						"Usuń" : function() {
+							// funkcja zdefiniowana w pliku listaLinii.xhtml,
+							// id="deleteLiniaJSFunction"
+							deleteLinia();
+							$(this).dialog("close");
+						},
+						"Anuluj" : function() {
+							$(this).dialog("close");
+						}
+					}
+				});
+				
+			};
+			//]]>
+		</script>
+	<a:form ajaxSubmit="true" reRender="listaLiniiCont">
+		<a:jsFunction id="deleteLiniaJSFunction" name="deleteLinia"
+			reRender="listaLiniiCont, deleteDialog" ajaxSingle="true"
+			action="#{liniaDAO.delete(liniaDAO.selectedLinia)}" />
+	</a:form>
+
+</ui:composition>
