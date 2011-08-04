@@ -34,6 +34,9 @@ public interface Home {
 	@WebRemote
 	public Boolean runAlgorithm();
 	
+	@WebRemote
+	public Boolean nearest();
+	
 
 	@Destroy
 	@Remove

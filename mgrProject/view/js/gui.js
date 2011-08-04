@@ -60,9 +60,17 @@ function searchButtonClick(e) {
 			Seam.Remoting.cancelBatch();
 		}
 	}
+	
+	var runNearest = function(result) {
+		if (!result) {
+			alert("Szukanie najblizszych przystankow nie powiodlo sie!");
+			Seam.Remoting.cancelBatch();
+		}
+	}
 	// homeBean.runAlgorithm(runAlgorithmCallback);
 	// alert("poszlo");
 	// odpalenie zapytan
+	homeBean.nearest(runNearest);
 	Seam.Remoting.executeBatch();
 }
 

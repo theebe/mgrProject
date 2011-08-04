@@ -8,6 +8,7 @@ import java.util.List;
 
 import javax.ejb.Remove;
 import javax.ejb.Stateful;
+import javax.management.Query;
 import javax.persistence.EntityManager;
 
 import org.jboss.seam.ScopeType;
@@ -184,6 +185,15 @@ public class HomeBean implements Serializable, Home {
 			log.info("HomeBean: Nie znaleziono przystanku startowego.");
 			return false;
 		}
+	}
+	
+	/**
+	 * Wyszukuje najblizsze przystanki w zadanym promieniu.
+	 */
+	public Boolean nearest() {
+//		List<Przystanek> przystanki = mgrDatabase.createNamedQuery("przystankiDoOdleglosci").setParameter("punkt", startPoint).setParameter("odleglosc", 0.2).getResultList();
+		//log.info(przystanki.size());
+		return true;
 	}
 	
 	/**
