@@ -40,3 +40,25 @@ INSERT INTO przystanki(id, location, nazwa, typ, version) VALUES ( nextval ('pub
 INSERT INTO przystanki(id, location, nazwa, typ, version) VALUES ( nextval ('public.hibernate_sequence'), st_geomfromtext('POINT(19.9271335449 50.0565068459)',4326), 'Jubilat', 'A', 0);
 INSERT INTO przystanki(id, location, nazwa, typ, version) VALUES ( nextval ('public.hibernate_sequence'), st_geomfromtext('POINT(19.9266561117 50.0561589878)',4326), 'Jubilat', 'A', 0);
 
+
+-- LINIA  i TABLICZKI
+
+INSERT INTO linie(id, numer, typ, version) VALUES (nextval('public.hibernate_sequence'), 123, 'A', 0);
+
+INSERT INTO przystanek_tabliczki(id, version, linia_id , przystanek_id, przystanektabliczka_order) VALUES (nextval('public.hibernate_sequence'), 0, 26, 18, 0);
+INSERT INTO przystanek_tabliczki(id, version, linia_id , przystanek_id, poprzedniprzystanek_id, przystanektabliczka_order) VALUES (nextval('public.hibernate_sequence'), 0, 26, 21,  27, 1);
+UPDATE przystanek_tabliczki SET nastepnyprzystanek_id = 28, version=version+1 WHERE id = 27;
+INSERT INTO przystanek_tabliczki(id, version, linia_id , przystanek_id, poprzedniprzystanek_id, przystanektabliczka_order) VALUES (nextval('public.hibernate_sequence'), 0, 26, 25, 28, 2);
+UPDATE przystanek_tabliczki SET nastepnyprzystanek_id = 29, version=version+1 WHERE id = 28;
+INSERT INTO przystanek_tabliczki(id, version, linia_id , przystanek_id, poprzedniprzystanek_id, przystanektabliczka_order) VALUES (nextval('public.hibernate_sequence'), 0, 26, 6, 29, 3);
+UPDATE przystanek_tabliczki SET nastepnyprzystanek_id = 30, version=version+1 WHERE id = 29;
+INSERT INTO przystanek_tabliczki(id, version, linia_id, przystanek_id, poprzedniprzystanek_id, przystanektabliczka_order) VALUES (nextval('public.hibernate_sequence'), 0, 26, 5, 30, 4);
+UPDATE przystanek_tabliczki SET nastepnyprzystanek_id = 31, version=version+1 WHERE id = 30;
+INSERT INTO przystanek_tabliczki(id, version, linia_id , przystanek_id, poprzedniprzystanek_id, przystanektabliczka_order) VALUES (nextval('public.hibernate_sequence'), 0, 26, 11,31, 5);
+UPDATE przystanek_tabliczki SET nastepnyprzystanek_id = 32, version=version+1 WHERE id = 31;
+INSERT INTO przystanek_tabliczki(id, version, linia_id , przystanek_id, poprzedniprzystanek_id, przystanektabliczka_order) VALUES (nextval('public.hibernate_sequence'), 0, 26, 14,32, 6);
+UPDATE przystanek_tabliczki SET nastepnyprzystanek_id = 33, version=version+1 WHERE id = 32;
+INSERT INTO przystanek_tabliczki(id, version, linia_id , przystanek_id, poprzedniprzystanek_id, przystanektabliczka_order) VALUES (nextval('public.hibernate_sequence'), 0, 26, 16,33, 7);
+UPDATE przystanek_tabliczki SET nastepnyprzystanek_id = 34, version=version+1 WHERE id = 33;
+
+

@@ -6,10 +6,10 @@
 	xmlns:f="http://java.sun.com/jsf/core"
 	xmlns:h="http://java.sun.com/jsf/html"
 	xmlns:rich="http://richfaces.org/rich"
-	xmlns:a="http://richfaces.org/a4j" template="layout/template.xhtml">
+	xmlns:a="http://richfaces.org/a4j" template="/layout/template.xhtml">
 
 	<ui:define name="body">
-		<s:remote include="homeBean, przystanekDAO, liniaDAO" />
+		<s:remote include="homeBean,przystanekDAO,liniaDAO" />
 
 		<!-- ***********************************************************************************************
 Rzeczy ktorych nie widac na stronie (popupy i okna dialogowe) 
@@ -23,181 +23,21 @@ Rzeczy ktorych nie widac na stronie (popupy i okna dialogowe)
 			</div>
 		</s:div>
 
-		<s:div>
+		<ui:include src="/addPrzystanekDialog.xhtml" />
 
-			<div class="addPrzystanekDialog" title="Nowy przystanek">
-				<p class="validateTips">Wszystkie pola są wymagane.</p>
-				<form>
-					<fieldset>
-						<label for="przystanekNazwa">Nazwa</label> <input type="text"
-							name="przystanekNazwa" id="przystanekNazwa" value=""
-							class="text ui-widget-content ui-corner-all" /> Typ
-						<div id="przystanekTypRadio">
-							<input type="radio" id="przystanekTypA" name="radio" value="A"
-								checked="checked" /><label for="przystanekTypA">Autobusowy</label>
-							<input type="radio" id="przystanekTypT" name="radio" value="T" /><label
-								for="przystanekTypT">Tramwajowy</label>
-						</div>
-						<br /> <label for="przystanekLon">Długość</label> <input
-							type="text" name="przystanekLon" id="przystanekLon"
-							class=" text ui-widget-content ui-corner-all "
-							style="width: 100px" /> <label style="margin-left: 40px"
-							for="przystanekLat">Szerokość</label> <input type="text"
-							name="przystanekLat" id="przystanekLat" value=""
-							class="text ui-widget-content ui-corner-all" style="width: 100px" />
-
-					</fieldset>
-				</form>
-			</div>
-		</s:div>
-
-
-
-		<div class="addLiniaDialog" title="Nowa Linia">
-
-			<p class="validateTips">Wszystkie pola sa wymagane.</p>
-			<form>
-				<fieldset>
-					<label for="liniaNumer">Numer</label> <input type="text"
-						name="liniaNumer" id="liniaNumer" value=""
-						class="text ui-widget-content ui-corner-all" /> <br />Typ
-					<div id="liniaTypRadio">
-						<input type="radio" class="liniaTyp" id="liniaTypA" name="radio"
-							value="A" checked="checked" /><label for="liniaTypA">Autobusowy</label>
-						<input type="radio" class="liniaTyp" id="liniaTypT" name="radio"
-							value="T" /><label for="liniaTypT">Tramwajowy</label>
-					</div>
-					<br />
-					<!--  <label for="liniaPowrotna">Stwórz odrazu linię
-						powrotną</label> <input type="checkbox" id="liniaPowrotna"
-						name="liniaPowrotna" checked="checked" /> <br />  --><br />
-					<div class="listaPrzystankowConterner">
-						<div id="listaPrzystankowCont">
-
-							<ul class="listaPrzystankow droptrue">
-								Lista dostepnych przystankow:
-								<br />
-								<ui:repeat value="#{przystanekDAO.przystanekList}"
-									var="przystanek">
-									<li class="ui-state-default przytanekLi"
-										id="#{przystanek.id}-#{przystanek.typ}"><h:outputText
-											value="#{przystanek.nazwa}" /> <span
-										class="ui-icon ui-icon-circle-arrow-e arrowPrzyst arrowPrzystR"></span>
-									</li>
-								</ui:repeat>
-							</ul>
-						</div>
-						<div id="listaPrzystankowLiniiCont">
-
-							<ul class="listaPrzystankowLinii droptrue">
-								Lista przystankow nowej linii:
-								<br />
-							</ul>
-						</div>
-					</div>
-				</fieldset>
-			</form>
-
-		</div>
+		<ui:include src="/addLiniaDialog.xhtml" />
 		<!-- 
 *********************************************************************************************** -->
 
 		<s:div styleClass="container">
 			<s:div styleClass="topPanelContainer">
-				<s:div styleClass="topPanel">
-
-
-
-
-					<s:div styleClass="topSearchPaneLeft">
-
-						<h:panelGrid columns="4">
-							<h:outputLabel for="start">Start:</h:outputLabel>
-
-							<h:inputText styleClass="text ui-widget-content ui-corner-all"
-								id="start">
-							</h:inputText>
-
-
-							<h:outputLabel for="stop">Stop:</h:outputLabel>
-							<h:inputText styleClass="text ui-widget-content ui-corner-all"
-								id="stop" />
-
-							<h:outputLabel for="data">Data:</h:outputLabel>
-							<h:panelGroup>
-								<button class="dataLeftButton" />
-								<h:inputText
-									styleClass="dataInput  ui-widget-content ui-corner-all"
-									id="data">
-
-								</h:inputText>
-
-								<button class="dataRightButton" />
-							</h:panelGroup>
-
-							<h:outputLabel for="godzina">Godzina:</h:outputLabel>
-							<h:panelGroup>
-								<button class="godzinaLeftButton" />
-								<h:inputText maxlength="5"
-									styleClass="godzinaInput  ui-widget-content ui-corner-all"
-									id="godzina">
-
-								</h:inputText>
-								<button class="godzinaRightButton" />
-							</h:panelGroup>
-						</h:panelGrid>
-						<button class="searchButton">Szukaj</button>
-					</s:div>
-					<s:div styleClass="loadingMessage">
-						<img src="./img/loading.gif" class="loadingMessageGif" /> Prosze czekać...
-					</s:div>
-
-				</s:div>
+				<ui:include src="/topPanel.xhtml" />
 			</s:div>
+
 			<s:div id="map" styleClass="mapa" />
-			<s:div styleClass="infoPanelContainer">
-				<s:div styleClass="infoPanel">
 
-					<div id="tabs">
-						<ul>
-							<li><a href="#tabs-1">Połączenia</a>
-							</li>
-							<li><a href="#tabs-2">Przystanki</a>
-							</li>
-							<li><a href="#tabs-3">Rozkład</a>
-							</li>
-						</ul>
-						<div id="tabs-1">
-						
-						</div>
-						<div id="tabs-2">
-							<div id="tabs-1-cont">
-								<br /> <a href="#" id="permalink">Link do mapy</a> <br />
-
-								<h:form>
-								<a:region>
-									<a:push reRender="przystanki" eventProducer="#{przystanekDAO.addListener}" enabled="true"  interval="10000"/>
-									<s:div id="przystanki">przystanki: <br />
-										<ui:repeat id="przystankiRepeat" value="#{przystanekDAO.przystanekList}"
-											var="przystanek">
-											<h:outputText value="#{przystanek.id}. #{przystanek.nazwa} - #{przystanek.typ}" /> 
-											<br />
-										</ui:repeat>
-									</s:div>
-									
-									</a:region>
-								</h:form>
-
-							</div>
-						</div>
-						<div id="tabs-3">
-							<br /> Tu moze byc rozklad
-						</div>
-					</div>
-
-
-				</s:div>
-
+			<s:div styleClass="infoPanelBag" >
+				<ui:insert name="infoPanel" />
 			</s:div>
 		</s:div>
 	</ui:define>

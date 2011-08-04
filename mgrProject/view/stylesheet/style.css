@@ -41,7 +41,7 @@ fieldset {
 .infoPanelContainer {
 	border: 1px solid green;
 	float: left;
-	width: 330px;
+	
 	overflow: auto;
 }
 
@@ -52,6 +52,7 @@ fieldset {
 .infoPanel {
 	padding: 10px;
 }
+
 
 .topSearchPanel {
 	float: left;
@@ -189,4 +190,35 @@ fieldset {
 
 .arrowPrzystL {
 	float: left;
+	
 }
+
+/****************************************************************
+*/
+.menuOperatoraCont {
+	float: right;
+	padding: 10px;
+	border: 1px dashed black;
+	margin: 5px;
+}
+.menuOperatoraCont ul {
+	list-style-type: none;
+	cursor:pointer;
+	}
+	
+/*******************************************************888
+* Lista linii, przystankow
+*/
+.deleteDialogCont{
+	display:none;
+	}
+	
+.listaContainer{
+	float: left;
+	width: 400px;	
+}
+.entityInfo{
+	float: left;
+	padding: 15px;
+	}
+	

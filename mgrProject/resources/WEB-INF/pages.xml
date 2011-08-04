@@ -3,16 +3,19 @@
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
        xsi:schemaLocation="http://jboss.com/products/seam/pages http://jboss.com/products/seam/pages-2.2.xsd"
 
-       no-conversation-view-id="/home.xhtml"
+  
        login-view-id="/login.xhtml">
 
-    <page view-id="*">
-        <navigation>
-            <rule if-outcome="home">
-                <redirect view-id="/home.xhtml"/>
-            </rule>
-        </navigation>
-    </page>
+ <page view-id="*">
+  <navigation>
+   <rule if-outcome="home">
+    <redirect view-id="/start.xhtml"/>
+   </rule>
+   <rule if-outcome="start">
+    <redirect view-id="/start.xhtml"/>
+   </rule>
+  </navigation>
+ </page>
     
 
     <exception class="org.jboss.seam.framework.EntityNotFoundException">

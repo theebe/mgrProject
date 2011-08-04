@@ -4,22 +4,31 @@ import java.io.Serializable;
 import java.util.EventListener;
 import java.util.EventObject;
 import java.util.List;
+import java.util.Set;
 
+import javax.ejb.EJB;
 import javax.ejb.Remove;
 import javax.ejb.Stateful;
+import javax.ejb.TransactionAttribute;
+import javax.ejb.TransactionAttributeType;
 import javax.persistence.EntityManager;
 
 import org.ajax4jsf.event.PushEventListener;
 import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.Destroy;
+import org.jboss.seam.annotations.Factory;
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Logger;
 import org.jboss.seam.annotations.Name;
+import org.jboss.seam.annotations.Out;
 import org.jboss.seam.annotations.Scope;
+import org.jboss.seam.annotations.datamodel.DataModel;
+import org.jboss.seam.annotations.datamodel.DataModelSelection;
 import org.jboss.seam.log.Log;
 import org.postgis.Point;
 
 import pl.mgrProject.model.Przystanek;
+import pl.mgrProject.model.PrzystanekTabliczka;
 import pl.mgrProject.model.TypKomunikacji;
 
 /**
@@ -30,7 +39,7 @@ import pl.mgrProject.model.TypKomunikacji;
  */
 @Stateful
 @Name("przystanekDAO")
-@Scope(ScopeType.SESSION)
+@Scope(ScopeType.CONVERSATION)
 public class PrzystanekDAOBean implements Serializable, PrzystanekDAO {
 
 	@Logger
@@ -39,9 +48,18 @@ public class PrzystanekDAOBean implements Serializable, PrzystanekDAO {
 	@In
 	private EntityManager mgrDatabase;
 
-	private List<Przystanek> przystanekList = null;
-
 	private PushEventListener listener;
+
+	@EJB(beanName = "PrzystanekTabliczkaDAOBean")
+	private PrzystanekTabliczkaDAO przystanekTabliczkaDAO;
+
+	@DataModel
+	private List<Przystanek> przystanekList;
+
+	@DataModelSelection("przystanekList")
+	@In(required = false)
+	@Out(required = false)
+	private Przystanek selectedPrzystanek;
 
 	/**
 	 * Metoda WebRemote
@@ -61,7 +79,7 @@ public class PrzystanekDAOBean implements Serializable, PrzystanekDAO {
 		p.setTyp(typ);
 		try {
 			mgrDatabase.persist(p);
-			//zdarzenie uaktualnienia przystankow po stronie przegladarki
+			// zdarzenie uaktualnienia przystankow po stronie przegladarki
 			listener.onEvent(new EventObject(this));
 			log.info("Dodano obiekt przystanek do bazy, nazwa: " + p.getNazwa());
 		} catch (Exception e) {
@@ -72,6 +90,7 @@ public class PrzystanekDAOBean implements Serializable, PrzystanekDAO {
 		return p;
 	}
 
+	@Factory
 	public List<Przystanek> getPrzystanekList() {
 		// Liczba przystankow w bazie
 		Long liczba = (Long) mgrDatabase.createQuery(
@@ -93,6 +112,36 @@ public class PrzystanekDAOBean implements Serializable, PrzystanekDAO {
 				this.listener = (PushEventListener) listener;
 			}
 		}
+	}
+
+	@TransactionAttribute(TransactionAttributeType.REQUIRED)
+	public void merge(Przystanek p) {
+
+		mgrDatabase.merge(p);
+		log.info("Uaktualniono przystanek " + p.getNazwa());
+	}
+
+	@TransactionAttribute(TransactionAttributeType.REQUIRED)
+	public void delete(Przystanek p) {
+		if (p != null) {
+			Set<PrzystanekTabliczka> ptSet = p.getPrzystanekTabliczki();
+			if (ptSet != null)
+				for (PrzystanekTabliczka pt : ptSet) 
+					przystanekTabliczkaDAO.delete(pt);
+		
+			mgrDatabase.remove(p);
+			przystanekList.remove(p);
+			log.info("Kasowanie przystanku " + p.getNazwa() + " wraz z tabliczkami z bazy danychSss");
+			p = null;
+		}
+	}
+
+	public Przystanek getSelectedPrzystanek() {
+		return selectedPrzystanek;
+	}
+
+	public void setSelectedPrzystanek(Przystanek p) {
+		this.selectedPrzystanek = p;
 	}
 
 	@Destroy

@@ -29,6 +29,13 @@ public interface PrzystanekDAO {
 	public void addListener(EventListener listener);
 	
 	
+	public void delete(Przystanek p);
+	public void merge(Przystanek p);
+	
+	public Przystanek getSelectedPrzystanek();
+	
+	public void setSelectedPrzystanek(Przystanek p);
+	
 	@Destroy
 	@Remove
 	public void destory();

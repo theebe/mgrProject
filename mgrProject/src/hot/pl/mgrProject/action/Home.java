@@ -29,14 +29,13 @@ public interface Home {
 	public Date getStartTime() ;
 
 	@WebRemote
-	public Boolean setStartTime(Date startTime) ;
+	public Boolean setStartTime(Date startTime);
 	
 	@WebRemote
 	public Boolean runAlgorithm();
 	
-	@WebRemote
-	public Boolean nearest();
-	
+/*	@WebRemote
+	public Boolean nearest();*/
 
 	@Destroy
 	@Remove

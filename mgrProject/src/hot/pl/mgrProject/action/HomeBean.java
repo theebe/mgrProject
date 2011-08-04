@@ -34,8 +34,8 @@ import pl.mgrProject.model.PrzystanekTabliczka;
 @Stateful
 @Scope(ScopeType.CONVERSATION)
 public class HomeBean implements Serializable, Home {
+ 
 
-	
 	@Logger
 	private Log log;
 	
@@ -47,7 +47,7 @@ public class HomeBean implements Serializable, Home {
 	@In
 	private EntityManager mgrDatabase;
 	
-	 
+
 	public Point getStartPoint() {
 		//startPoint.(arg0)
 		return startPoint; 
@@ -187,14 +187,12 @@ public class HomeBean implements Serializable, Home {
 		}
 	}
 	
-	/**
-	 * Wyszukuje najblizsze przystanki w zadanym promieniu.
-	 */
+/*	
 	public Boolean nearest() {
 //		List<Przystanek> przystanki = mgrDatabase.createNamedQuery("przystankiDoOdleglosci").setParameter("punkt", startPoint).setParameter("odleglosc", 0.2).getResultList();
 		//log.info(przystanki.size());
 		return true;
-	}
+	}*/
 	
 	/**
 	 * Zwraca obiekt tabliczki z nastepnego przystanku.
@@ -239,5 +237,7 @@ public class HomeBean implements Serializable, Home {
 	@Remove
 	public void destory(){}
 
+
+	
 
 }

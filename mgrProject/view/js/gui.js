@@ -22,55 +22,56 @@ function searchButtonClick(e) {
 
 	// zaczyna sie kolejka zapytan
 	Seam.Remoting.startBatch();
-
+	Seam.Remoting.getContext().setConversationId(seamConversationId );
 	var homeBean = Seam.Component.getInstance("homeBean");
-	var setStartPointCallback = function(result) {
-		if (!result) {
-			alert("bledne parametry przystanku startowego");
-			Seam.Remoting.cancelBatch();
-		}
-	}
-	var startLonLat = new OpenLayers.LonLat(start.lonlat.lon, start.lonlat.lat)
-			.transform(map.getProjectionObject(), new OpenLayers.Projection(
-					"EPSG:4326"));
-	homeBean.setStartPoint(startLonLat.lon, startLonLat.lat,
-			setStartPointCallback);
-	var setStopPointCallback = function(result) {
-		if (!result) {
-			alert("bledne parametry przystanku koncowego");
-			Seam.Remoting.cancelBatch();
-		}
-	}
-	var stopLonLat = new OpenLayers.LonLat(stop.lonlat.lon, stop.lonlat.lat)
-			.transform(map.getProjectionObject(), new OpenLayers.Projection(
-					"EPSG:4326"));
-	homeBean.setStopPoint(stopLonLat.lon, stopLonLat.lat, setStopPointCallback);
-
-	var setStartTimeCallback = function(result) {
-		if (!result) {
-			alert("bledna data i czas startowy");
-			Seam.Remoting.cancelBatch();
-		}
-	}
-	homeBean.setStartTime(startTime, setStartTimeCallback);
+//	var setStartPointCallback = function(result) {
+//		if (!result) {
+//			alert("bledne parametry przystanku startowego");
+//			Seam.Remoting.cancelBatch();
+//		}
+//	}
+//	var startLonLat = new OpenLayers.LonLat(start.lonlat.lon, start.lonlat.lat)
+//			.transform(map.getProjectionObject(), new OpenLayers.Projection(
+//					"EPSG:4326"));
+//	homeBean.setStartPoint(startLonLat.lon, startLonLat.lat,
+//			setStartPointCallback);
+//	var setStopPointCallback = function(result) {
+//		if (!result) {
+//			alert("bledne parametry przystanku koncowego");
+//			Seam.Remoting.cancelBatch();
+//		}
+//	}
+//	var stopLonLat = new OpenLayers.LonLat(stop.lonlat.lon, stop.lonlat.lat)
+//			.transform(map.getProjectionObject(), new OpenLayers.Projection(
+//					"EPSG:4326"));
+//	homeBean.setStopPoint(stopLonLat.lon, stopLonLat.lat, setStopPointCallback);
+//
+//	var setStartTimeCallback = function(result) {
+//		if (!result) {
+//			alert("bledna data i czas startowy");
+//			Seam.Remoting.cancelBatch();
+//		}
+//	}
+//	homeBean.setStartTime(startTime, setStartTimeCallback);
 
 	var runAlgorithmCallback = function(result) {
 		if (!result) {
 			alert("Obliczanie trasy nie powiodlo sie!");
 			Seam.Remoting.cancelBatch();
 		}
-	}
+	};
 	
 	var runNearest = function(result) {
 		if (!result) {
 			alert("Szukanie najblizszych przystankow nie powiodlo sie!");
 			Seam.Remoting.cancelBatch();
 		}
-	}
+	};
 	// homeBean.runAlgorithm(runAlgorithmCallback);
 	// alert("poszlo");
+	// homeBean.nearest(runNearest);
+
 	// odpalenie zapytan
-	homeBean.nearest(runNearest);
 	Seam.Remoting.executeBatch();
 }
 
@@ -132,7 +133,7 @@ var dodajPrzystanekButtonClick = function() {
 		// zaczyna sie kolejka zapytan
 
 		Seam.Remoting.startBatch();
-
+		Seam.Remoting.getContext().setConversationId(seamConversationId );
 		// pobiera instancje componentu ejb przystanekDAO
 		var przystanekDAO = Seam.Component.getInstance("przystanekDAO");
 		var savePrzystanekCallback = function(p) {
@@ -324,29 +325,34 @@ function dodajLinieButtonClick() {
 
 		// zaczyna sie kolejka zapytan
 		Seam.Remoting.startBatch();
-
+		Seam.Remoting.getContext().setConversationId(seamConversationId );
 		var liniaDAO = Seam.Component.getInstance("liniaDAO");
 
 		var saveLiniaCallback = function(l) {
-			if (l) {
+			if (l=='success') {
 				alert("Dodano Linie");
 			} else {
-				alert("Nie dodano linii");
+				if(l)
+					alert(l);
+				else{
+					alert("b³¹d w po³¹czeniu");
+				}
 			}
 		};
 		var exeptionHandler = function(ex) {
 			alert("wystapi³ b³¹d: " + ex.getMessage());
-			alerT(ex.printStackTrace());
+			alert(ex.printStackTrace());
 		};
 
 		liniaDAO.saveLinia(parseInt($("#liniaNumer").val()), $(
 				"#liniaTypRadio input:checked").val(), listaIdPrzystankow,
 				false,// $("input#liniaPowrotna").is(":checked"),
-				saveLiniaCallback, exeptionHandler);
+				saveLiniaCallback);//, exeptionHandler);
 
-		$(".addLiniaDialog").dialog("close");
+		
 		// odpalenie zapytan
 		Seam.Remoting.executeBatch();
+		$(".addLiniaDialog").dialog("close");
 	}
 }
 
@@ -514,6 +520,8 @@ function prepareListeIdPrzystanokow(l) {
 
 
 
+
+
 function checkLength(o, n, min, max) {
 	if (o.val().length > max || o.val().length < min) {
 		o.addClass("ui-state-error");
@@ -549,3 +557,27 @@ function updateTips(t) {
 		$(".validateTips").removeClass("ui-state-highlight", 1500);
 	}, 500);
 }
+
+
+function deleteDialogOpen(){
+	
+	$("#dialog-deleteconfirm").dialog({
+		autoOpen : true,
+		resizable : false,
+		height : 200,
+		width: 300,
+		modal : true,
+		buttons : {
+			"Usuñ" : function() {
+				// funkcja zdefiniowana w pliku listaLinii.xhtml,
+				// id="deletePrzystanekJSFunction"
+				deletePrzystanek();
+				$(this).dialog("close");
+			},
+			"Anuluj" : function() {
+				$(this).dialog("close");
+			}
+		}
+	});
+	
+};

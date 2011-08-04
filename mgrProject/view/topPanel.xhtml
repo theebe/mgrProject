@@ -1,0 +1,70 @@
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:s="http://jboss.com/products/seam/taglib"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:rich="http://richfaces.org/rich"
+	xmlns:a="http://richfaces.org/a4j">
+
+	<s:div styleClass="topPanel">
+		<s:div styleClass="topSearchPaneLeft">
+
+			<h:panelGrid columns="4">
+				<h:outputLabel for="start">Start:</h:outputLabel>
+
+				<h:inputText styleClass="text ui-widget-content ui-corner-all"
+					id="start">
+				</h:inputText>
+
+
+				<h:outputLabel for="stop">Stop:</h:outputLabel>
+				<h:inputText styleClass="text ui-widget-content ui-corner-all"
+					id="stop" />
+
+				<h:outputLabel for="data">Data:</h:outputLabel>
+				<h:panelGroup>
+					<button class="dataLeftButton" />
+					<h:inputText
+						styleClass="dataInput  ui-widget-content ui-corner-all" id="data">
+
+					</h:inputText>
+
+					<button class="dataRightButton" />
+				</h:panelGroup>
+
+				<h:outputLabel for="godzina">Godzina:</h:outputLabel>
+				<h:panelGroup>
+					<button class="godzinaLeftButton" />
+					<h:inputText maxlength="5"
+						styleClass="godzinaInput  ui-widget-content ui-corner-all"
+						id="godzina">
+
+					</h:inputText>
+					<button class="godzinaRightButton" />
+				</h:panelGroup>
+			</h:panelGrid>
+			<button class="searchButton">Szukaj</button>
+		</s:div>
+
+
+		<s:div styleClass="loadingMessage">
+			<img src="./img/loading.gif" class="loadingMessageGif" /> Prosze czekać...
+						</s:div>
+		<a:outputPanel ajaxRendered="true">
+			<a:status>
+				<img src="./img/loading.gif" class="loadingMessageGif" /> Prosze czekać..
+			</a:status>
+		</a:outputPanel>
+		<s:div id="menuOperatora" styleClass="menuOperatoraCont">
+			<ul>
+				<li><a href="listaPrzystankow.seam">Lista przystanków</a></li>
+				<li><a href="listaLinii.seam">Lista Linii</a></li>
+
+			</ul>
+
+		</s:div>
+	</s:div>
+</ui:composition>

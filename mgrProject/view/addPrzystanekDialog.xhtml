@@ -1,0 +1,39 @@
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:s="http://jboss.com/products/seam/taglib"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:rich="http://richfaces.org/rich"
+	xmlns:a="http://richfaces.org/a4j" >
+
+<s:div>
+
+			<div class="addPrzystanekDialog" title="Nowy przystanek">
+				<p class="validateTips">Wszystkie pola są wymagane.</p>
+				<form>
+					<fieldset>
+						<label for="przystanekNazwa">Nazwa</label> <input type="text"
+							name="przystanekNazwa" id="przystanekNazwa" value=""
+							class="text ui-widget-content ui-corner-all" /> Typ
+						<div id="przystanekTypRadio">
+							<input type="radio" id="przystanekTypA" name="radio" value="A"
+								checked="checked" /><label for="przystanekTypA">Autobusowy</label>
+							<input type="radio" id="przystanekTypT" name="radio" value="T" /><label
+								for="przystanekTypT">Tramwajowy</label>
+						</div>
+						<br /> <label for="przystanekLon">Długość</label> <input
+							type="text" name="przystanekLon" id="przystanekLon"
+							class=" text ui-widget-content ui-corner-all "
+							style="width: 100px" /> <label style="margin-left: 40px"
+							for="przystanekLat">Szerokość</label> <input type="text"
+							name="przystanekLat" id="przystanekLat" value=""
+							class="text ui-widget-content ui-corner-all" style="width: 100px" />
+
+					</fieldset>
+				</form>
+			</div>
+		</s:div>
+</ui:composition>
