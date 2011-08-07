@@ -24,49 +24,54 @@ function searchButtonClick(e) {
 	Seam.Remoting.startBatch();
 	Seam.Remoting.getContext().setConversationId(seamConversationId );
 	var homeBean = Seam.Component.getInstance("homeBean");
-//	var setStartPointCallback = function(result) {
-//		if (!result) {
-//			alert("bledne parametry przystanku startowego");
-//			Seam.Remoting.cancelBatch();
-//		}
-//	}
-//	var startLonLat = new OpenLayers.LonLat(start.lonlat.lon, start.lonlat.lat)
-//			.transform(map.getProjectionObject(), new OpenLayers.Projection(
-//					"EPSG:4326"));
-//	homeBean.setStartPoint(startLonLat.lon, startLonLat.lat,
-//			setStartPointCallback);
-//	var setStopPointCallback = function(result) {
-//		if (!result) {
-//			alert("bledne parametry przystanku koncowego");
-//			Seam.Remoting.cancelBatch();
-//		}
-//	}
-//	var stopLonLat = new OpenLayers.LonLat(stop.lonlat.lon, stop.lonlat.lat)
-//			.transform(map.getProjectionObject(), new OpenLayers.Projection(
-//					"EPSG:4326"));
-//	homeBean.setStopPoint(stopLonLat.lon, stopLonLat.lat, setStopPointCallback);
-//
-//	var setStartTimeCallback = function(result) {
-//		if (!result) {
-//			alert("bledna data i czas startowy");
-//			Seam.Remoting.cancelBatch();
-//		}
-//	}
-//	homeBean.setStartTime(startTime, setStartTimeCallback);
+	var algorithmBean = Seam.Component.getInstance("algorithmBean");
+	
+	var setStartPointCallback = function(result) {
+		if (!result) {
+			alert("bledne parametry przystanku startowego");
+			Seam.Remoting.cancelBatch();
+		}
+	}
+	var startLonLat = new OpenLayers.LonLat(start.lonlat.lon, start.lonlat.lat)
+			.transform(map.getProjectionObject(), new OpenLayers.Projection(
+					"EPSG:4326"));
+	homeBean.setStartPoint(startLonLat.lon, startLonLat.lat, setStartPointCallback);
+	var setStopPointCallback = function(result) {
+		if (!result) {
+			alert("bledne parametry przystanku koncowego");
+			Seam.Remoting.cancelBatch();
+		}
+	}
+	var stopLonLat = new OpenLayers.LonLat(stop.lonlat.lon, stop.lonlat.lat)
+			.transform(map.getProjectionObject(), new OpenLayers.Projection(
+					"EPSG:4326"));
+	homeBean.setStopPoint(stopLonLat.lon, stopLonLat.lat, setStopPointCallback);
 
+	var setStartTimeCallback = function(result) {
+		if (!result) {
+			alert("bledna data i czas startowy");
+			Seam.Remoting.cancelBatch();
+		}
+	}
+	homeBean.setStartTime(startTime, setStartTimeCallback);
+	
+	algorithmBean.setStartPoint(startLonLat.lon, startLonLat.lat, setStartPointCallback);
+	algorithmBean.setStopPoint(stopLonLat.lon, stopLonLat.lat, setStopPointCallback);
+	algorithmBean.run(runAlgorithmCallback);
+	
 	var runAlgorithmCallback = function(result) {
 		if (!result) {
 			alert("Obliczanie trasy nie powiodlo sie!");
 			Seam.Remoting.cancelBatch();
 		}
 	};
-	
-	var runNearest = function(result) {
-		if (!result) {
-			alert("Szukanie najblizszych przystankow nie powiodlo sie!");
-			Seam.Remoting.cancelBatch();
-		}
-	};
+//	
+//	var runNearest = function(result) {
+//		if (!result) {
+//			alert("Szukanie najblizszych przystankow nie powiodlo sie!");
+//			Seam.Remoting.cancelBatch();
+//		}
+//	};
 	// homeBean.runAlgorithm(runAlgorithmCallback);
 	// alert("poszlo");
 	// homeBean.nearest(runNearest);
