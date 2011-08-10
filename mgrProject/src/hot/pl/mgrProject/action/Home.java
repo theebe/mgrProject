@@ -31,11 +31,6 @@ public interface Home {
 	@WebRemote
 	public Boolean setStartTime(Date startTime);
 	
-	@WebRemote
-	public Boolean runAlgorithm();
-	
-/*	@WebRemote
-	public Boolean nearest();*/
 
 	@Destroy
 	@Remove
