@@ -2,6 +2,7 @@ package pl.mgrProject.action;
 
 import java.math.BigInteger;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import javax.ejb.Remove;
@@ -73,14 +74,13 @@ public class AlgorithmBean implements Algorithm {
 		}
 		
 		List<Integer> tabSprawdzone = new ArrayList<Integer>();
-		//tabSprawdzone.add(start);
 		List<Integer> tabTrace = new ArrayList<Integer>();
 		
 		//Algorytm budowania macierzy sasiedztwa. Na razie wagi krawedzi przypisane sa na sztywno.
 		//Po testach wyglada na to, ze dziala poprawnie. Nie uwzglednia przystankow ktore nie sa dodane do zadnej linii.
 		//TODO: Przemyslec dokladniej przypadki kiedy ostatni przystanek(tabliczka) linii nie ma nastepnego.
-		//      Algorytm wymaga aby kazdy wierzholek mial przynajmniej jedna krawedz wychodzaca.
-		//Propozycja: Ostatnia tabliczka linii ma krawedz wychodzaca wskazujaca na ta siebie sama.
+		//      Algorytm wymaga aby istaniala mozliwosc dotarcia do kazdego wierzcholka.
+		//Propozycja: Ostatnia tabliczka linii bedzie wskazywac na dowolny, najblizszy przystanek nalezacy do innej linii.
 		int aktualny = start, nastepny = -1;
 		boolean backTrace = false;
 		while (tabSprawdzone.size() <= tabliczki.size()) {
@@ -137,9 +137,6 @@ public class AlgorithmBean implements Algorithm {
 			}
 		}
 		
-		//TODO Laczenie tabliczek znajdujacych sie na tym samym przystanku (przesiadki piesze)
-		//     uruchomienie algorytmu
-		
 		String info = "";
 		for (int i = 0; i < n; ++i) {
 			info += "[";
@@ -151,7 +148,89 @@ public class AlgorithmBean implements Algorithm {
 		
 		log.info(info);
 		
-		return true;
+		//========================
+		// Laczenie tabliczek na tych samych przystankach.
+		// Kazda z kazda oprocz tych, ktore nie maja zdefiniowanego nastepnego przystanku
+		//========================
+		List<Long> tabSpr = new ArrayList<Long>();
+		List<PrzystanekTabliczka> tabsForCurrent = new ArrayList<PrzystanekTabliczka>();
+		Przystanek current = null;
+		for (PrzystanekTabliczka tab : tabliczki) {
+			if (tabSpr.contains(tab.getId())) {
+				continue;
+			}
+			current = tab.getPrzystanek();
+			tabsForCurrent = mgrDatabase.createNamedQuery("tabliczniPoPrzystanku").setParameter("przystanek", current).getResultList();
+			for (int i = 0; i < tabsForCurrent.size(); ++i) {
+				tabSpr.add(tabsForCurrent.get(i).getId());
+				aktualny = getIndex(tabsForCurrent.get(i).getId(), tabliczki);
+				for(int j = 0; j < tabsForCurrent.size(); ++j) {
+					if (i == j) {
+						continue;
+					}
+					try {
+						tabsForCurrent.get(j).getNastepnyPrzystanek();//jesli tabliczka nie ma nastepnego przystanku to wyrzuci wyjatek
+						nastepny = getIndex(tabsForCurrent.get(j).getId(), tabliczki);
+						E[aktualny][nastepny] = 0;
+					} catch(Exception e) { //tabliczka nie prowadzi do nastepnego przystanku
+						continue;
+					}
+				}
+			}
+		}
+		
+		//==================
+		// Uruchomienie algorytmu Dijkstry
+		//==================
+		if (start != -1) { //jesli przystanek startowy istnieje
+			try {
+				boolean error = true;
+				
+				String tabE = "";
+				for (int i = 0; i < E.length; ++i) {
+					tabE += "[";
+					for (int j = 0; j < E[i].length; ++j) {
+						tabE += E[i][j] + ",";
+					}
+					tabE += "]\n";
+				}
+				log.info("[Dijkstra] n: " + n);
+				log.info("[Dijkstra] E:\n" + tabE);
+				log.info("[Dijkstra] V:\n" + Arrays.toString(V));
+				log.info("[Dijkstra] start: " + start);
+				log.info("[Dijkstra] stop: " + stop);
+				d = new Dijkstra(n, E, V, start);
+				int errors = 0;
+				while (error) {
+					try {
+						log.info("HomeBean: [Dijkstra] 1uruchamianie algorytmu wyszukiwania trasy.");
+						d.run();
+					} catch(ArrayIndexOutOfBoundsException e2) {
+						log.info("HomeBean: [Dijkstra] podczas wykonywania algorytmu wystapil blad.");
+						for (int k = 0; k < e2.getStackTrace().length; ++k) {
+							log.info(e2.getStackTrace()[k].toString());
+						}
+						if (++errors < maxErrors) {
+							//proba naprawienia sytuacji
+							//byc moze trzeba tu jeszcze raz przygotowac graf (do przemyslenia)
+							d = new Dijkstra(n, E, V, start);
+						}
+						//continue;
+					}
+					error = false;
+				}
+				log.info("HomeBean: [Dijkstra] Algorytm zakonczony po " + errors + " bledach.");
+				log.info("Path: " + d.getPath(stop, log));
+				printTrasa(d.getPathTab(stop, log), tabliczki);
+				return true;
+			} catch(Exception e) {
+				log.info("HomeBean: [Dijkstra] Wystapil niepodziewany wyjatek");
+				return false;
+			}
+		} else {
+			log.info("HomeBean: Nie znaleziono przystanku startowego.");
+			return false;
+		}
 	}
 	
 	public Point getStartPoint() {
@@ -214,7 +293,6 @@ public class AlgorithmBean implements Algorithm {
 	}
 	
 	private void printTrasa(ArrayList<Integer> trasa, List<PrzystanekTabliczka> tabliczki) {
-		//PrzystanekTabliczka tmp;
 		String info = "";
 		for (int i : trasa) {
 			info += tabliczki.get(i).getPrzystanek().getNazwa() + " <- ";
