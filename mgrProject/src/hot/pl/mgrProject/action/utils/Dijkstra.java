@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+
 import org.jboss.seam.log.Log;
 
 public class Dijkstra {
@@ -131,11 +132,16 @@ public class Dijkstra {
 			log.info("getPath: " + i);
 		}
 		
-		//result += " <- " + s;
-		
 		return result;
 	}
 	
+	/**
+	 * Zwraca liste ID tabliczek, ktorych kolejnosc definiuje znaleziona trase.
+	 * @param stopID ID przystanku koncowego
+	 * @param log Logger
+	 * @return Lista kolejnych tabliczek definujaca trase przejazdu.
+	 * @throws Exception
+	 */
 	public ArrayList<Integer> getPathTab(int stopID, Log log) throws Exception {
 		ArrayList<Integer> tab = new ArrayList<Integer>();
 		tab.add(stopID);
@@ -145,8 +151,6 @@ public class Dijkstra {
 			i = p[i];
 			log.info("getPathTab: " + i);
 		}
-		
-		//tab.add(s);
 		
 		return tab;
 	}

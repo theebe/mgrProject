@@ -30,9 +30,26 @@ public class AlgorithmBean implements Algorithm {
 	private Log log;
 	@In
 	private EntityManager mgrDatabase;
+	/**
+	 * Punkt startowy wybrany na mapie.
+	 */
 	private Point startPoint;
+	/**
+	 * Punkt koncowy wybrany na mapie.
+	 */
 	private Point stopPoint;
+	/**
+	 * Trasa obliczona przez algorytm w postaci listy ID tabliczek.
+	 */
+	private ArrayList<Integer> path;
+	/**
+	 * Wszystkie tabliczki pobrane z bazy
+	 */
+	private List<PrzystanekTabliczka> tabliczki;
 	
+	/**
+	 * Metoda inicjujaca wszystkie wymagane zmienne, tworzaca macierz sasiedztwa i uruchamiajaca algorytm wyszukiwania trasy.
+	 */
 	public Boolean run() {
 		Przystanek pstart = getClosestToStart();
 		Przystanek pstop  = getClosestToStop();
@@ -55,12 +72,12 @@ public class AlgorithmBean implements Algorithm {
 		Dijkstra d = null;
 		int maxErrors = 3; //maksymalna liczba prob wznowienia algorytmu
 		
-		List<PrzystanekTabliczka> tabliczki = mgrDatabase.createNamedQuery("wszystkieTabliczki").getResultList();
+		tabliczki = mgrDatabase.createNamedQuery("wszystkieTabliczki").getResultList();
 		int n = tabliczki.size();
 		
 		//odwzorowanie przystanku na indeks tablicy poniewaz algorytm operuje na indeksach tablicy
-		start = getIndex(startID, tabliczki);
-		stop  = getIndex(stopID,  tabliczki);
+		start = getIndex(startID);
+		stop  = getIndex(stopID);
 		
 		int[][] E = new int[n][n];  //macierz sasiedztwa
 		Integer[] V = new Integer[n]; //wektor wierzcholkow
@@ -85,7 +102,7 @@ public class AlgorithmBean implements Algorithm {
 		boolean backTrace = false;
 		while (tabSprawdzone.size() <= tabliczki.size()) {
 			try {
-				nastepny = getIndex(tabliczki.get(aktualny).getNastepnyPrzystanek().getId(), tabliczki);
+				nastepny = getIndex(tabliczki.get(aktualny).getNastepnyPrzystanek().getId());
 				if (tabSprawdzone.contains(nastepny)) {
 					E[aktualny][nastepny] = 10;
 					log.info("[A]Laczenie: " + tabliczki.get(aktualny).getId() + ":" + tabliczki.get(nastepny).getId());
@@ -110,7 +127,7 @@ public class AlgorithmBean implements Algorithm {
 			} finally {
 				if (backTrace) {
 					for (int i = tabTrace.size()-1; i >= 0; --i) {
-						nastepny = getIndex(tabliczki.get(tabTrace.get(i)).getId(), tabliczki);
+						nastepny = getIndex(tabliczki.get(tabTrace.get(i)).getId());
 						log.info("Nastepny: " + tabliczki.get(nastepny).getId());
 						E[aktualny][nastepny] = 10;
 						log.info("[D]Laczenie: " + tabliczki.get(aktualny).getId() + ":" + tabliczki.get(nastepny).getId());
@@ -163,14 +180,14 @@ public class AlgorithmBean implements Algorithm {
 			tabsForCurrent = mgrDatabase.createNamedQuery("tabliczniPoPrzystanku").setParameter("przystanek", current).getResultList();
 			for (int i = 0; i < tabsForCurrent.size(); ++i) {
 				tabSpr.add(tabsForCurrent.get(i).getId());
-				aktualny = getIndex(tabsForCurrent.get(i).getId(), tabliczki);
+				aktualny = getIndex(tabsForCurrent.get(i).getId());
 				for(int j = 0; j < tabsForCurrent.size(); ++j) {
 					if (i == j) {
 						continue;
 					}
 					try {
 						tabsForCurrent.get(j).getNastepnyPrzystanek();//jesli tabliczka nie ma nastepnego przystanku to wyrzuci wyjatek
-						nastepny = getIndex(tabsForCurrent.get(j).getId(), tabliczki);
+						nastepny = getIndex(tabsForCurrent.get(j).getId());
 						E[aktualny][nastepny] = 0;
 					} catch(Exception e) { //tabliczka nie prowadzi do nastepnego przystanku
 						continue;
@@ -212,16 +229,15 @@ public class AlgorithmBean implements Algorithm {
 						}
 						if (++errors < maxErrors) {
 							//proba naprawienia sytuacji
-							//byc moze trzeba tu jeszcze raz przygotowac graf (do przemyslenia)
 							d = new Dijkstra(n, E, V, start);
 						}
-						//continue;
 					}
 					error = false;
 				}
 				log.info("HomeBean: [Dijkstra] Algorytm zakonczony po " + errors + " bledach.");
 				log.info("Path: " + d.getPath(stop, log));
-				printTrasa(d.getPathTab(stop, log), tabliczki);
+				path = d.getPathTab(stop, log);
+				printTrasa();
 				return true;
 			} catch(Exception e) {
 				log.info("HomeBean: [Dijkstra] Wystapil niepodziewany wyjatek");
@@ -279,11 +295,10 @@ public class AlgorithmBean implements Algorithm {
 	
 	/**
 	 * Zwraca indeks z tablicy 'tabliczki' odpowiadajacy podanemu ID tabliczki.
-	 * @param id
-	 * @param tabliczki
+	 * @param id ID tabliczki.
 	 * @return
 	 */
-	private int getIndex(Long id, List<PrzystanekTabliczka> tabliczki) {
+	private int getIndex(Long id) {
 		for (int i = 0; i < tabliczki.size(); ++i) {
 			if (tabliczki.get(i).getId() == id) {
 				return i;
@@ -292,12 +307,29 @@ public class AlgorithmBean implements Algorithm {
 		return -1;
 	}
 	
-	private void printTrasa(ArrayList<Integer> trasa, List<PrzystanekTabliczka> tabliczki) {
+	/**
+	 * Wyswietla w oknie logow trase jaka zostala znaleziona przez algorytm.
+	 */
+	private void printTrasa() {
 		String info = "";
-		for (int i : trasa) {
+		for (int i : path) {
 			info += tabliczki.get(i).getPrzystanek().getNazwa() + " <- ";
 		}
 		log.info(info);
+	}
+	
+	/**
+	 * Zwraca znaleziona trase.
+	 * @return Lista kolejnych tabliczek bedaca znaleziona przez algorytm trasa.
+	 */
+	public List<PrzystanekTabliczka> getPath() {
+		List<PrzystanekTabliczka> trasa = new ArrayList<PrzystanekTabliczka>();
+		
+		for (Integer i : path) {
+			trasa.add(tabliczki.get(i));
+		}
+		
+		return trasa;
 	}
 	
 	@Destroy

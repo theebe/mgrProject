@@ -65,16 +65,18 @@ function searchButtonClick(e) {
 			Seam.Remoting.cancelBatch();
 		}
 	};
-//	
-//	var runNearest = function(result) {
-//		if (!result) {
-//			alert("Szukanie najblizszych przystankow nie powiodlo sie!");
-//			Seam.Remoting.cancelBatch();
+	
+	//Rysowanie trasy
+	var getPathCallback = function(result) {
+//		alert(result.length);
+//		drawRoute(result);
+//		for(var i in result) {
+//			alert(result[i].getPrzystanek().getNazwa());
 //		}
-//	};
-	// homeBean.runAlgorithm(runAlgorithmCallback);
-	// alert("poszlo");
-	// homeBean.nearest(runNearest);
+	};
+	
+	//pobranie obliczonej trasy
+	algorithmBean.getPath(getPathCallback);
 
 	// odpalenie zapytan
 	Seam.Remoting.executeBatch();
