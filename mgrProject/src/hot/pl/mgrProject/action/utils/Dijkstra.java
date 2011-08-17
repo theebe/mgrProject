@@ -1,8 +1,11 @@
 package pl.mgrProject.action.utils;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+
+import org.jboss.seam.log.Log;
 
 public class Dijkstra {
 	/**
@@ -118,30 +121,36 @@ public class Dijkstra {
 	 * @return String z reprezentacja najkrotszej sciezki
 	 * @throws Exception
 	 */
-	public String getPath(int stopID) throws Exception {
+	public String getPath(int stopID, Log log) throws Exception {
 		int i = p[stopID];
+		log.info("p[]: " + Arrays.toString(p));
+		log.info("d[]: " + Arrays.toString(d));
 		String result = "" + stopID;
-		
 		while (i != 0) {
 			result += " <- " + i;
-			i = p[i-1];
+			i = p[i];
+			log.info("getPath: " + i);
 		}
-		
-		result += " <- " + s;
 		
 		return result;
 	}
 	
-	public ArrayList<Integer> getPathTab(int stopID) throws Exception {
+	/**
+	 * Zwraca liste ID tabliczek, ktorych kolejnosc definiuje znaleziona trase.
+	 * @param stopID ID przystanku koncowego
+	 * @param log Logger
+	 * @return Lista kolejnych tabliczek definujaca trase przejazdu.
+	 * @throws Exception
+	 */
+	public ArrayList<Integer> getPathTab(int stopID, Log log) throws Exception {
 		ArrayList<Integer> tab = new ArrayList<Integer>();
 		tab.add(stopID);
 		int i = p[stopID];
 		while (i != 0) {
 			tab.add(i);
-			i = p[i-1];
+			i = p[i];
+			log.info("getPathTab: " + i);
 		}
-		
-		tab.add(s);
 		
 		return tab;
 	}
