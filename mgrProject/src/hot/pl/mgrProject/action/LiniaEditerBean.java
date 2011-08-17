@@ -73,7 +73,7 @@ public class LiniaEditerBean implements LiniaEditer, Serializable {
 	@Begin(nested = true)
 	public void setEditedLinia(Long id) {
 		this.editedLinia = mgrDatabase.find(Linia.class, id);
-		mgrDatabase.clear();
+		
 	}
 
 	public Linia getEditedLinia() {
