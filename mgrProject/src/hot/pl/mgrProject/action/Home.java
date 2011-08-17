@@ -11,7 +11,7 @@ import org.postgis.Point;
 
 @Local
 public interface Home {
-	
+	 
 
 	@WebRemote
 	public Point getStartPoint();

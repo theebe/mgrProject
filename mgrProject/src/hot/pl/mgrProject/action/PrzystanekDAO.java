@@ -8,6 +8,7 @@ import javax.ejb.Remove;
 
 import org.jboss.seam.annotations.Destroy;
 import org.jboss.seam.annotations.remoting.WebRemote;
+import org.richfaces.model.selection.Selection;
 
 import pl.mgrProject.model.Przystanek;
 import pl.mgrProject.model.TypKomunikacji;
@@ -35,6 +36,7 @@ public interface PrzystanekDAO {
 	public Przystanek getSelectedPrzystanek();
 	
 	public void setSelectedPrzystanek(Przystanek p);
+
 	
 	@Destroy
 	@Remove

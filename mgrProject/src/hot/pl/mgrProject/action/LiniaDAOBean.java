@@ -2,22 +2,22 @@ package pl.mgrProject.action;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Collections;
-import java.util.EventListener;
-import java.util.EventObject;
+import java.util.GregorianCalendar;
 import java.util.List;
+import java.util.TimeZone;
 
 import javax.ejb.Remove;
 import javax.ejb.Stateful;
 import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
 import javax.persistence.EntityManager;
-import javax.persistence.PersistenceException;
 
-import org.ajax4jsf.event.PushEventListener;
 import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.Begin;
 import org.jboss.seam.annotations.Destroy;
+import org.jboss.seam.annotations.End;
 import org.jboss.seam.annotations.Factory;
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Logger;
@@ -29,8 +29,10 @@ import org.jboss.seam.annotations.datamodel.DataModelSelection;
 import org.jboss.seam.log.Log;
 
 import pl.mgrProject.model.Linia;
+import pl.mgrProject.model.Odjazd;
 import pl.mgrProject.model.Przystanek;
 import pl.mgrProject.model.PrzystanekTabliczka;
+import pl.mgrProject.model.TypDnia;
 import pl.mgrProject.model.TypKomunikacji;
 
 @Stateful
@@ -47,10 +49,11 @@ public class LiniaDAOBean implements LiniaDAO, Serializable {
 	@DataModel
 	private List<Linia> liniaList;
 
-	@DataModelSelection("liniaList")
-	@In(required = false)
-	@Out(required = false)
+	
+	@Out(required=false)
 	private Linia selectedLinia;
+	
+	
 
 	public String saveLinia(Integer numer, TypKomunikacji typ,
 			List<Long> listaIdPrzystankow, Boolean liniaPowrotna) {
@@ -91,37 +94,50 @@ public class LiniaDAOBean implements LiniaDAO, Serializable {
 		return liniaList;
 	}
 
+	
+
 	@TransactionAttribute(TransactionAttributeType.REQUIRED)
-	public void merge(Linia l) {
-
-		mgrDatabase.merge(l);
-		log.info("Uaktualniono linie nr " + l.getNumer());
-	}
-
+	@End
 	public void delete(Linia l) {
-		System.out.println("Delete called!!!!!!!!!!!!!!!!!!!!!!!!!!");
+		
 		if (l != null) {
 			mgrDatabase.remove(l);
 			liniaList.remove(l);
-			System.out.println("REMOVE!!!!!!!!!!!!!!!");
+			
 			log.info("Kasowanie linii nr " + l.getNumer());
 			l = null;
 		}
+	}
+
+	public void cancel() {
+		this.selectedLinia = null;
+		getLiniaList();
 	}
 
 	public Linia getSelectedLinia() {
 		return selectedLinia;
 	}
 
+	
 	public void setSelectedLinia(Linia l) {
 		this.selectedLinia = l;
 	}
-
+	
+	
+	
+	
 	@Destroy
 	@Remove
-	public void destory() {
-	}
+	public void destory() {}
 
+	
+	public TimeZone getTimeZone(){
+		TimeZone tz = new GregorianCalendar().getTimeZone();
+		return tz;
+	}
+	
+	
+	
 	/**
 	 * Funkcja od razu tworzy tabliczke dla kazdym przystanku dla danej linii
 	 * tabliczki sa puste
@@ -137,7 +153,7 @@ public class LiniaDAOBean implements LiniaDAO, Serializable {
 		if (listaIdPrzystankow == null || linia == null
 				|| listaIdPrzystankow.size() == 0)
 			return null;
-
+		
 		List<PrzystanekTabliczka> przystTablList = new ArrayList<PrzystanekTabliczka>();
 		// od konca (aby od razu ustawic pole nastepnyPrzystanekTabliczka)
 		for (int i = listaIdPrzystankow.size() - 1, j = 0; i >= 0; --i, ++j) {
@@ -156,7 +172,7 @@ public class LiniaDAOBean implements LiniaDAO, Serializable {
 				pt.setNastepnyPrzystanek(przystTablList.get(j - 1));
 				przystTablList.get(j - 1).setPoprzedniPrzystanek(pt);
 			}
-
+			pt.setCzasDoNastepnego(1);
 			przystTablList.add(pt);
 		}
 		Collections.reverse(przystTablList);
@@ -174,5 +190,8 @@ public class LiniaDAOBean implements LiniaDAO, Serializable {
 
 		return true;
 	}
+
+	
+
 
 }

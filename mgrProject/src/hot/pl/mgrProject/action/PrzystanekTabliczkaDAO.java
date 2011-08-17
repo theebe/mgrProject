@@ -10,6 +10,8 @@ import pl.mgrProject.model.PrzystanekTabliczka;
 @Local
 public interface PrzystanekTabliczkaDAO {
 
+
+	
 	public void delete(PrzystanekTabliczka pt);
 
 

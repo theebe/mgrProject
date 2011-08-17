@@ -59,7 +59,7 @@ public class PrzystanekTabliczkaDAOBean implements PrzystanekTabliczkaDAO {
 		}
 		if (nastepny != null) {
 			nastepny.setPoprzedniPrzystanek(pt.getPoprzedniPrzystanek());
-			mgrDatabase.merge(poprzedni);
+			mgrDatabase.merge(nastepny);
 		}
 		Linia l = pt.getLinia();
 		l.getPrzystanekTabliczka().remove(pt);
@@ -70,6 +70,10 @@ public class PrzystanekTabliczkaDAOBean implements PrzystanekTabliczkaDAO {
 				+ pt.getLinia().getNumer());
 	}
 
+	
+
+	
+	
 	@Remove
 	@Destroy
 	public void destroy() {

@@ -1,7 +1,7 @@
 package pl.mgrProject.action;
 
-import java.util.EventListener;
 import java.util.List;
+import java.util.TimeZone;
 
 import javax.ejb.Local;
 import javax.ejb.Remove;
@@ -27,9 +27,9 @@ public interface LiniaDAO {
 	 */
 	@WebRemote
 	public String saveLinia(Integer numer, TypKomunikacji typ, List<Long> listaIdPrzystankow, Boolean liniaPowrotna);
-	
-	@WebRemote
+
 	public void saveLinia(Linia l);
+	
 	/**
 	 * Pobiera liste linii
 	 * @return lista liniii
@@ -37,15 +37,15 @@ public interface LiniaDAO {
 	@WebRemote
 	public List<Linia> getLiniaList();
 
-
 	public void delete(Linia l);
-	public void merge(Linia l);
-	
+
+	@WebRemote
 	public Linia getSelectedLinia();
-	
 	public void setSelectedLinia(Linia l);
 	
-	
+
+	public TimeZone getTimeZone();
+	public void cancel();
 	
 	@Destroy
 	@Remove

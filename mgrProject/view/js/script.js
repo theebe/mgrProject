@@ -513,7 +513,7 @@ function createVectorPrzystanek(przystanek){
 
 /**
  * pobiera z lokalnej tablicy przystankow (obiekty openlayers.feature.vector)
- * obiekt z przystanku o zadanym id
+ * indeks obiektu przystanku o zadanym id
  * @param id -  id przystanku
  * @returns obiekt openlayers.feature.vector - przystanek
  */

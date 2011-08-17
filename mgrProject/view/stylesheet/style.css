@@ -41,7 +41,6 @@ fieldset {
 .infoPanelContainer {
 	border: 1px solid green;
 	float: left;
-	
 	overflow: auto;
 }
 
@@ -52,7 +51,6 @@ fieldset {
 .infoPanel {
 	padding: 10px;
 }
-
 
 .topSearchPanel {
 	float: left;
@@ -190,7 +188,6 @@ fieldset {
 
 .arrowPrzystL {
 	float: left;
-	
 }
 
 /****************************************************************
@@ -201,24 +198,58 @@ fieldset {
 	border: 1px dashed black;
 	margin: 5px;
 }
+
 .menuOperatoraCont ul {
 	list-style-type: none;
-	cursor:pointer;
-	}
-	
+	cursor: pointer;
+}
+
 /*******************************************************888
 * Lista linii, przystankow
 */
-.deleteDialogCont{
-	display:none;
-	}
-	
-.listaContainer{
-	float: left;
-	width: 400px;	
+.deleteDialogCont {
+	display: none;
 }
-.entityInfo{
+
+.listaContainer {
+	float: left;
+	width: 400px;
+}
+
+.entityInfo {
 	float: left;
 	padding: 15px;
-	}
+}
+
+/**
+ EDYCJA LINII
+*/
+.edycjaLiniiContainerAll {
+	overflow: auto;
+}
+
+.formularzEdycjiLinii {
+	width: 500px;
+}
+
+.listaPrzystankowLiniiEdit {
+	marging: 0;
+	padding: 0;
 	
+}
+.edycjaLiniiButtons{
+	padding: 10px;
+	}
+.edycjaLiniiButtons button{
+	margin-left: 10px;
+	}
+.ui-spinner {position: relative}
+.ui-spinner-buttons {position: absolute}
+.ui-spinner-button {overflow: hidden}
+.ui-timepicker-div .ui-widget-header { margin-bottom: 8px; }
+.ui-timepicker-div dl { text-align: left; }
+.ui-timepicker-div dl dt { height: 25px; }
+.ui-timepicker-div dl dd { margin: -25px 10px 10px 65px; }
+.ui-timepicker-div td { font-size: 90%; }
+.ui-tpicker-grid-label { background: none; border: none; margin: 0; padding: 0; }
+

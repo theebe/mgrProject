@@ -32,7 +32,6 @@ import org.postgis.Point;
  *
  */
 @Entity
-@Name("przystanek")
 @Table(name = "PRZYSTANKI")
 @NamedQueries({
 	//wyciaga z bazy wszystkie przystanki

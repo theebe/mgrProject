@@ -1,13 +1,11 @@
 package pl.mgrProject.model;
 
 import java.io.Serializable;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.persistence.CascadeType;
-import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.EntityListeners;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
@@ -20,12 +18,12 @@ import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.persistence.Version;
 
+import org.hibernate.annotations.Index;
+import org.hibernate.validator.Min;
 import org.hibernate.validator.NotNull;
-import org.jboss.seam.annotations.Name;
 
 
 @Entity
-@Name("przystanekTabliczka")
 @Table(name = "PRZYSTANEK_TABLICZKI")
 @NamedQueries({
 		// wyciaga z bazy wszystkie Tabliczki
@@ -44,7 +42,9 @@ public class PrzystanekTabliczka implements Serializable {
 	private PrzystanekTabliczka nastepnyPrzystanek;
 	private PrzystanekTabliczka poprzedniPrzystanek;
 
-	private Set<Odjazd> odjazdy;
+	private int czasDoNastepnego;
+	
+	private List<Odjazd> odjazdy;
 
 	@Id
 	@GeneratedValue
@@ -68,6 +68,7 @@ public class PrzystanekTabliczka implements Serializable {
 	@ManyToOne
 	@NotNull
 	@JoinColumn(name = "linia_id", insertable = false, updatable = false, nullable = false)
+	@Index(name="liniaIndex")
 	public Linia getLinia() {
 		return linia;
 	}
@@ -78,6 +79,7 @@ public class PrzystanekTabliczka implements Serializable {
 
 	@ManyToOne
 	@NotNull
+	@Index(name="przystanekIndex")
 	public Przystanek getPrzystanek() {
 		return przystanek;
 	}
@@ -86,15 +88,15 @@ public class PrzystanekTabliczka implements Serializable {
 		this.przystanek = przystanek;
 	}
 
-	@OneToMany(mappedBy = "przystanekTabliczka", fetch = FetchType.EAGER, cascade = { CascadeType.ALL })
-	public Set<Odjazd> getOdjazdy() {
+	@OneToMany(mappedBy = "przystanekTabliczka", cascade= {CascadeType.REMOVE, CascadeType.REFRESH})
+	public List<Odjazd> getOdjazdy() {
 		if (odjazdy == null)
-			odjazdy = new HashSet<Odjazd>();
+			odjazdy = new ArrayList<Odjazd>();
 
 		return odjazdy;
 	}
 
-	public void setOdjazdy(Set<Odjazd> odjazdy) {
+	public void setOdjazdy(List<Odjazd> odjazdy) {
 		this.odjazdy = odjazdy;
 	}
 
@@ -122,5 +124,14 @@ public class PrzystanekTabliczka implements Serializable {
 	@JoinColumn(name="poprzedniPrzystanek_id")
 	public PrzystanekTabliczka getPoprzedniPrzystanek() {
 		return poprzedniPrzystanek;
+	}
+
+	public void setCzasDoNastepnego(int czasDoNastepnego) {
+		this.czasDoNastepnego = czasDoNastepnego;
+	}
+
+	@Min(message="Minimum: 0", value=0)
+	public int getCzasDoNastepnego() {
+		return czasDoNastepnego;
 	}
 }

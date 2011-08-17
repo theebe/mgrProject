@@ -7,102 +7,110 @@
 	xmlns:f="http://java.sun.com/jsf/core"
 	xmlns:h="http://java.sun.com/jsf/html"
 	xmlns:rich="http://richfaces.org/rich"
-	xmlns:a="http://richfaces.org/a4j" template="home.xhtml" >
-<ui:define name="infoPanel">
-<s:div styleClass="infoPanelContainer" id="infoPanelContId" style="width: 800px;">
+	xmlns:a="http://richfaces.org/a4j" template="home.xhtml">
+	<ui:define name="infoPanel">
+		<s:div styleClass="infoPanelContainer" id="infoPanelContId"
+			style="width: 800px;">
 
-	<s:div styleClass="infoPanel">
-			
-		<s:div id="listaPrzystankowTableCont" styleClass="listaContainer">
+			<s:div styleClass="infoPanel">
 
-			<h:outputText value="Brak przystanków w bazie"
-				rendered="#{przystanekList.rowCount eq 0}" />
-			<h:outputText styleClass="tabelaPrzystankow" value="TABELA PRZYSTANKÓW:"
-				rendered="#{przystanekList.rowCount > 0}" />
-			<br />
-			<a:form ajaxSubmit="true">
-			 
-				<rich:dataTable id="przystanekDataTable" var="przystanek" value="#{przystanekList}"
-					rendered="#{przystanekList.rowCount > 0}" rows="10" reRender="scroller">
-					<f:facet name="header">  
+				<s:div id="listaPrzystankowTableCont" styleClass="listaContainer">
+
+					<h:outputText value="Brak przystanków w bazie"
+						rendered="#{przystanekList.rowCount eq 0}" />
+					<h:outputText styleClass="tabelaPrzystankow"
+						value="TABELA PRZYSTANKÓW:"
+						rendered="#{przystanekList.rowCount > 0}" />
+					<br />
+					<a:form ajaxSubmit="true">
+
+						<rich:dataTable id="przystanekDataTable" var="przystanek"
+							value="#{przystanekList}"
+							rendered="#{przystanekList.rowCount > 0}"
+							>
+							<f:facet name="header">  
 						      Przystanki
 						    </f:facet>
-					<rich:column sortBy="#{przystanek.nazwa}" filterBy="#{przystanek.nazwa}"
-						filterEvent="onkeyup">
-						<f:facet name="header">
+							<rich:column sortBy="#{przystanek.nazwa}"
+								filterBy="#{przystanek.nazwa}" filterEvent="onkeyup">
+								<f:facet name="header">
 						Nazwa
 					</f:facet>
-						<h:outputText value="#{przystanek.nazwa}" />
-					</rich:column>
+								<h:outputText value="#{przystanek.nazwa}" />
+							</rich:column>
 
-					<rich:column>
-						<f:facet name="header">
-							<h:outputText value="Typ" />
-						</f:facet>
-						<h:outputText value="#{przystanek.typ}" />
-					</rich:column>
-					<rich:column>
-						<f:facet name="header">
-						Lista linii
-					</f:facet>
-						<!-- <rich:dataList var="przyst" value="#{przystanek.przystanekTabliczki}">
-							<h:outputText value="#{przyst.linia.numer}" />
-						</rich:dataList>
-						 -->
-					</rich:column>
-					<rich:column>
-						<a:commandLink action="#{przystanekDAO.setSelectedPrzystanek(przystanek)}"
-							reRender="deleteDialog" value="Skaskuj"
-							oncomplete="deleteDialogOpen();">
-						</a:commandLink>
+							<rich:column>
+								<f:facet name="header">
+									<h:outputText value="Typ" />
+								</f:facet>
+								<h:outputText value="#{przystanek.typ}" />
+							</rich:column>
+							
+							<rich:column>
+								<a:commandLink
+									action="#{przystanekDAO.setSelectedPrzystanek(przystanek)}"
+									reRender="deleteDialog" value="Skaskuj"
+									oncomplete="deleteDialogOpen();">
+								</a:commandLink>
 
-					</rich:column>
-					<rich:column>
-						<a:commandLink action="#{przystanekDAO.setSelectedPrzystanek(przystanek)}"
-							reRender="przystanekInfo"  value="Pokarz">
-						</a:commandLink>
+							</rich:column>
+							<rich:column>
+								<a:commandLink
+									action="#{przystanekDAO.setSelectedPrzystanek(przystanek)}"
+									reRender="przystanekInfo" value="Pokarz">
+								</a:commandLink>
 
-					</rich:column>
-					<f:facet name="footer">
-						<rich:datascroller id="scroller" for="przystanekDataTable" />
-					</f:facet>
-				</rich:dataTable>
-			</a:form>
-		</s:div>
+							</rich:column>
+						</rich:dataTable>
+					</a:form>
+				</s:div>
 
-	<s:div id="przystanekInfo" styleClass="entityInfo">
-		<s:div rendered="#{przystanekDAO.selectedPrzystanek != null}">
+				<s:div id="przystanekInfo" styleClass="entityInfo">
+					<s:div rendered="#{przystanekDAO.selectedPrzystanek != null}">
 			 	Przystanek: <br />
 			 		Id: #{przystanekDAO.selectedPrzystanek.id} <br />
 			 		Numer: #{przystanekDAO.selectedPrzystanek.nazwa} <br />
 			 		Typ: #{przystanekDAO.selectedPrzystanek.typ}<br />
-		</s:div>
-	</s:div>
+					Lista Linii: <br />
+					<rich:dataList var="przyst"
+								value="#{przystanekDAO.selectedPrzystanek.przystanekTabliczki}">
+								<h:outputText value="#{przyst.linia.numer}" />
+							</rich:dataList>
+					</s:div>
+				</s:div>
 
-	<s:div id="deleteDialog" styleClass="deleteDialogCont">
-		<s:div rendered="#{przystanekDAO.selectedPrzystanek != null}">
-			<div id="dialog-deleteconfirm" title="Usunąć linie?">
-				<p>
-					<span class="ui-icon ui-icon-alert"
-						style="float: left; margin-right: .3em;"></span> Czy jesteś pewny
-					aby usunąć linię numer '#{przystanekDAO.selectedPrzystanek.nazwa}' wraz z
-					tabliczkami przystankowymi?
-				</p>
-			</div>
-		</s:div>
-	</s:div>
+				<s:div id="deleteDialog" styleClass="deleteDialogCont">
+					<s:div rendered="#{przystanekDAO.selectedPrzystanek != null}">
+						<div id="dialog-deleteconfirm" title="Usunąć linie?">
+							<p>
+								<span class="ui-icon ui-icon-alert"
+									style="float: left; margin-right: .3em;"></span> Czy jesteś
+								pewny aby usunąć linię numer
+								'#{przystanekDAO.selectedPrzystanek.nazwa}' wraz z tabliczkami
+								przystankowymi?
+							</p>
+						</div>
+					</s:div>
+				</s:div>
 
-	<a:form ajaxSubmit="true" reRender="listaPrzystankowTableCont">
-		<a:jsFunction id="deletePrzystanekJSFunction" name="deletePrzystanek" oncomplete="deletePrzystanekFromMap(#{przystanekDAO.selectedPrzystanek.id});"
-			reRender="listaPrzystankowTableCont, deleteDialog, przystanekInfo" ajaxSingle="true"
-			action="#{przystanekDAO.delete(przystanekDAO.selectedPrzystanek)}" />
-	</a:form>
-	<h:form>
-									<a:region>
-										<a:push reRender="listaPrzystankowTableCont"
-											eventProducer="#{przystanekDAO.addListener}" enabled="true"
-											interval="10000" /></a:region></h:form>
-	</s:div>
-</s:div>
-</ui:define>
+				<a:form ajaxSubmit="true" reRender="listaPrzystankowTableCont">
+					<a:jsFunction id="deletePrzystanekJSFunction"
+						name="deletePrzystanek"
+						oncomplete="deletePrzystanekFromMap(#{przystanekDAO.selectedPrzystanek.id});"
+						reRender="listaPrzystankowTableCont, deleteDialog, przystanekInfo"
+						ajaxSingle="true"
+						action="#{przystanekDAO.delete(przystanekDAO.selectedPrzystanek)}" />
+				</a:form>
+				<h:form>
+					<a:region>
+						<a:push reRender="listaPrzystankowTableCont"
+							eventProducer="#{przystanekDAO.addListener}" enabled="true"
+							interval="10000" />
+					</a:region>
+				</h:form>
+			</s:div>
+		</s:div>
+		
+	
+	</ui:define>
 </ui:composition>

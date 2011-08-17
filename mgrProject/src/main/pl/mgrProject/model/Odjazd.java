@@ -1,6 +1,6 @@
 package pl.mgrProject.model;
 
-import java.sql.Date;
+import java.util.Date;
 
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
@@ -15,11 +15,10 @@ import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.persistence.Version;
 
+import org.hibernate.annotations.Index;
 import org.hibernate.validator.NotNull;
-import org.jboss.seam.annotations.Name;
 
 @Entity
-@Name("odjazd")
 @Table(name="ODJAZDY")
 @NamedQueries({
 	//wyciaga z bazy wszystkie odjazdy z przystanków
@@ -60,11 +59,12 @@ public class Odjazd {
 	
 	public void setTypDnia(TypDnia typDnia) {
 		this.typDnia = typDnia;
-	}
+	} 
 	
 	
-	@ManyToOne
+	@ManyToOne 
 	@NotNull(message="Odjazd musi byæ przypisany do przystanku i lini")
+	@Index(name = "przystanekTabliczkaIndex")
 	public PrzystanekTabliczka getPrzystanekTabliczka() {
 		return przystanekTabliczka;
 	}
@@ -79,6 +79,7 @@ public class Odjazd {
 	}
 	
 	@NotNull
+	@Temporal(TemporalType.TIME)
 	public Date getCzas() {
 		return czas;
 	}

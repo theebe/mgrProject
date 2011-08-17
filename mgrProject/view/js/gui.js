@@ -273,10 +273,11 @@ function homeAddLiniaDialogInit() {
 			function() {
 				$(this).addClass("ui-state-hover");
 				var idTyp = getIdTypeFromIdAttr($(this));
-				var przystanekFeature = getPrzystnekFromId(idTyp[0]);
+				var przystanekFeature = przystanki[ getIPrzystnekFromId(idTyp[0]) ];
 				var lonLat = new OpenLayers.LonLat(
 						przystanekFeature.geometry.x,
 						przystanekFeature.geometry.y);
+				
 				przystanekInfoPopup = new OpenLayers.Popup.FramedCloud(
 						"przystanekFramedCloud", lonLat, null,
 						przystanekFeature.attributes.nazwa, null, false);
@@ -338,7 +339,7 @@ function dodajLinieButtonClick() {
 		liniaDAO.saveLinia(parseInt($("#liniaNumer").val()), $(
 				"#liniaTypRadio input:checked").val(), listaIdPrzystankow,
 				false,// $("input#liniaPowrotna").is(":checked"),
-				saveLiniaCallback);//, exeptionHandler);
+				saveLiniaCallback, exeptionHandler);
 
 		
 		// odpalenie zapytan

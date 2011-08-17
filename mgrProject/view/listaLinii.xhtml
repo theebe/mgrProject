@@ -9,125 +9,127 @@
 	xmlns:rich="http://richfaces.org/rich"
 	xmlns:a="http://richfaces.org/a4j" template="home.xhtml">
 	<ui:define name="infoPanel">
+
+		<script type="text/javascript" src="js/listaLinii.js"></script>
+
+		<script type="text/javascript" src="js/lib/ui.spinner.js"></script>
+		<script type="text/javascript" src="js/lib/jquery-ui-timepicker-addon.js"></script>
+		
+
 		<s:div styleClass="infoPanelContainer" id="infoPanelContId"
-			style="width: 800px;">
+			style="width: 600px;">
 
 			<s:div styleClass="infoPanel">
-			
-				<a:form ajaxSubmit="true">
-					<s:div id="listaLiniiCont" styleClass="listaContainer">
 
-						<h:outputText value="Brak linii w bazie"
-							rendered="#{liniaList.rowCount eq 0}" />
-						<h:outputText styleClass="tabelaLinii" value="TABELA LINII:"
-							rendered="#{liniaList.rowCount > 0}" />
-						<br />
+				<div class="listaLiniiContainerAll">
+					<a:form ajaxSubmit="true">
+						<s:div id="listaLiniiCont" styleClass="listaContainer">
+
+							<h:outputText value="Brak linii w bazie"
+								rendered="#{liniaList.rowCount eq 0}" />
+							<h:outputText styleClass="tabelaLinii" value="TABELA LINII:"
+								rendered="#{liniaList.rowCount > 0}" />
+							<br />
 
 
-						<rich:dataTable id="liniaDataTable" var="linia"
-							value="#{liniaList}" rendered="#{liniaList.rowCount > 0}"
-							rows="10" reRender="scroller">
-							<f:facet name="header">  
+							<rich:dataTable id="liniaDataTable" var="linia"
+								value="#{liniaList}" rendered="#{liniaList.rowCount > 0}">
+								<f:facet name="header">  
 						      Linie
 						    </f:facet>
-							<rich:column sortBy="#{linia.numer}" filterBy="#{linia.numer}"
-								filterEvent="onkeyup">
-								<f:facet name="header">
+								<rich:column sortBy="#{linia.numer}" filterBy="#{linia.numer}"
+									filterEvent="onkeyup">
+									<f:facet name="header">
 						Numer
 					</f:facet>
-								<h:outputText value="#{linia.numer}" />
-							</rich:column>
+									<h:outputText value="#{linia.numer}" />
+								</rich:column>
 
-							<rich:column>
-								<f:facet name="header">
-									<h:outputText value="Typ" />
-								</f:facet>
-								<h:outputText value="#{linia.typ}" />
-							</rich:column>
+								<rich:column>
+									<f:facet name="header">
+										<h:outputText value="Typ" />
+									</f:facet>
+									<h:outputText value="#{linia.typ}" />
+								</rich:column>
 
-							<rich:column>
-								<a:commandLink action="#{liniaDAO.setSelectedLinia(linia)}"
-									reRender="deleteDialog" value="Skaskuj"
-									oncomplete="deleteDialogOpen();">
-								</a:commandLink>
+								<rich:column>
+									<a:commandLink action="#{liniaDAO.setSelectedLinia(linia)}"
+										reRender="deleteDialog" value="Skaskuj"
+										oncomplete="deleteDialogOpen();" >
+									</a:commandLink>
 
-							</rich:column>
-							<rich:column>
-								<a:commandLink action="#{liniaDAO.setSelectedLinia(linia)}"
-									reRender="liniaInfo" value="Pokarz">
-								</a:commandLink>
+								</rich:column>
+								<rich:column>
+									<a:commandLink action="#{liniaDAO.setSelectedLinia(linia)}"
+										reRender="liniaInfo" value="Pokaz" oncomplete="showSelectedLinia();" >
+									</a:commandLink>
 
-							</rich:column>
-							<f:facet name="footer">
-								<rich:datascroller id="scroller" for="liniaDataTable" />
-							</f:facet>
-						</rich:dataTable>
+								</rich:column>
+								<rich:column>
+									<a:commandLink action="#{liniaEditer.setEditedLinia(linia.id)}"
+										reRender="edycjaLiniiCont" value="Edytuj"
+										oncomplete=" initEdycjaLinii( '#{linia.typ}', #{linia.id} );"
+										eventsQueue="liniaQueue" ignoreDupResponses="true" />
+								</rich:column>
 
-					</s:div>
+							</rich:dataTable>
 
-					<s:div id="liniaInfo" styleClass="entityInfo">
-					
-						<s:div rendered="#{liniaDAO.selectedLinia != null}">
+						</s:div>
+						<a:status id="listaLiniiStatus" onstart="displayLoadingMessage" onstop="hideLoadingMessage" />
+
+
+						<s:div id="liniaInfo" styleClass="entityInfo">
+
+							<s:div rendered="#{liniaDAO.selectedLinia != null}">
 			 	Linia: <br />
 			 		Id: #{liniaDAO.selectedLinia.id} <br />
 			 		Numer: #{liniaDAO.selectedLinia.numer} <br />
 			 		Typ: #{liniaDAO.selectedLinia.typ}<br />
 			 		ListaPrzystanków: <br />
-							<rich:dataList var="przyst"
-								value="#{liniaDAO.selectedLinia.przystanekTabliczka}">
-								<h:outputText value="#{przyst.przystanek.nazwa}" />
-							</rich:dataList>
+								<rich:dataList var="przyst"
+									value="#{liniaDAO.selectedLinia.przystanekTabliczka}">
+									<h:outputText value="#{przyst.przystanek.nazwa}" />
+								</rich:dataList>
+							</s:div>
+						</s:div>
+
+					</a:form>
+
+					<s:div id="deleteDialog" styleClass="deleteDialogCont">
+						<s:div rendered="#{liniaDAO.selectedLinia != null}">
+							<div id="dialog-deleteconfirm" title="Usunąć linie?">
+								<p>
+									<span class="ui-icon ui-icon-alert"
+										style="float: left; margin-right: .3em;"></span> Czy jesteś
+									pewny aby usunąć linię numer '#{liniaDAO.selectedLinia.numer}'
+									wraz z tabliczkami przystankowymi?
+								</p>
+							</div>
 						</s:div>
 					</s:div>
-				
-				</a:form>
-				
-				<s:div id="deleteDialog" styleClass="deleteDialogCont">
-					<s:div rendered="#{liniaDAO.selectedLinia != null}">
-						<div id="dialog-deleteconfirm" title="Usunąć linie?">
-							<p>
-								<span class="ui-icon ui-icon-alert"
-									style="float: left; margin-right: .3em;"></span> Czy jesteś
-								pewny aby usunąć linię numer '#{liniaDAO.selectedLinia.numer}'
-								wraz z tabliczkami przystankowymi?
-							</p>
-						</div>
-					</s:div>
-				</s:div>
 
-				<script type="text/javascript">
-		//<![CDATA[
-			 function deleteDialogOpen(){
-				
-				$("#dialog-deleteconfirm").dialog({
-					autoOpen : true,
-					resizable : false,
-					height : 200,
-					width: 300,
-					modal : true,
-					buttons : {
-						"Usuń" : function() {
-							// funkcja zdefiniowana w pliku listaLinii.xhtml,
-							// id="deleteLiniaJSFunction"
-							deleteLinia();
-							$(this).dialog("close");
-						},
-						"Anuluj" : function() {
-							$(this).dialog("close");
-						}
-					}
-				});
-				
-			};
-			//]]>
-		</script>
-				<a:form ajaxSubmit="true" reRender="listaLiniiCont">
-					<a:jsFunction id="deleteLiniaJSFunction" name="deleteLinia"
-						reRender="listaLiniiCont, deleteDialog, liniaInfo"
-						ajaxSingle="true"
-						action="#{liniaDAO.delete(liniaDAO.selectedLinia)}" />
-				</a:form>
+
+					<a:form ajaxSubmit="true" reRender="listaLiniiCont">
+						<a:jsFunction id="deleteLiniaJSFunction" name="deleteLinia"
+							reRender="listaLiniiCont, deleteDialog, liniaInfo"
+							ajaxSingle="true"
+							action="#{liniaDAO.delete(liniaDAO.selectedLinia)}"
+							 />
+					</a:form>
+
+
+
+				</div>
+
+				<!-- 
+		 #######################################################
+		 EDYCJA
+		 -->
+				<ui:include src="/edycjaLinii.xhtml" />
+
 			</s:div>
+
 		</s:div>
+
 	</ui:define>
 </ui:composition>

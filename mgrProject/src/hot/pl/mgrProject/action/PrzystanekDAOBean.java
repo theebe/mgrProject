@@ -15,7 +15,9 @@ import javax.persistence.EntityManager;
 
 import org.ajax4jsf.event.PushEventListener;
 import org.jboss.seam.ScopeType;
+import org.jboss.seam.annotations.Begin;
 import org.jboss.seam.annotations.Destroy;
+import org.jboss.seam.annotations.End;
 import org.jboss.seam.annotations.Factory;
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Logger;
@@ -60,7 +62,7 @@ public class PrzystanekDAOBean implements Serializable, PrzystanekDAO {
 	@In(required = false)
 	@Out(required = false)
 	private Przystanek selectedPrzystanek;
-
+	
 	/**
 	 * Metoda WebRemote
 	 * 
@@ -105,23 +107,26 @@ public class PrzystanekDAOBean implements Serializable, PrzystanekDAO {
 		}
 		return przystanekList;
 	}
-
+ 
 	public void addListener(EventListener listener) {
 		synchronized (listener) {
 			if (this.listener != listener) {
 				this.listener = (PushEventListener) listener;
-			}
-		}
+			}  
+		}  
 	}
 
 	@TransactionAttribute(TransactionAttributeType.REQUIRED)
+	@End
 	public void merge(Przystanek p) {
 
 		mgrDatabase.merge(p);
 		log.info("Uaktualniono przystanek " + p.getNazwa());
+		
 	}
 
 	@TransactionAttribute(TransactionAttributeType.REQUIRED)
+	@End
 	public void delete(Przystanek p) {
 		if (p != null) {
 			Set<PrzystanekTabliczka> ptSet = p.getPrzystanekTabliczki();
@@ -136,10 +141,13 @@ public class PrzystanekDAOBean implements Serializable, PrzystanekDAO {
 		}
 	}
 
+	
 	public Przystanek getSelectedPrzystanek() {
 		return selectedPrzystanek;
 	}
 
+
+	@Begin(join = true)
 	public void setSelectedPrzystanek(Przystanek p) {
 		this.selectedPrzystanek = p;
 	}
@@ -148,5 +156,7 @@ public class PrzystanekDAOBean implements Serializable, PrzystanekDAO {
 	@Remove
 	public void destory() {
 	}
+
+
 
 }

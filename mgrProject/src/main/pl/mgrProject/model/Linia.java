@@ -8,6 +8,7 @@ import javax.persistence.Entity;
 import javax.persistence.EntityManager;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
@@ -30,7 +31,6 @@ import org.jboss.seam.annotations.Name;
  *
  */
 @Entity
-@Name("linia")
 @Table(name="LINIE")
 @NamedQueries({
 	//wyciaga z bazy wszystkie przystanki
@@ -77,7 +77,7 @@ public class Linia {
 		this.numer = numer;
 	}
 	
-	@OneToMany(cascade={CascadeType.PERSIST, CascadeType.REMOVE})
+	@OneToMany(cascade={CascadeType.REMOVE,CascadeType.PERSIST,CascadeType.REFRESH})
 	@OrderColumn(name="przystanektabliczka_order")
 	@JoinColumn(name="linia_id", nullable=false)
 	public List<PrzystanekTabliczka> getPrzystanekTabliczka() {
