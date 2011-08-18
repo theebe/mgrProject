@@ -1,13 +1,17 @@
-package pl.mgrProject.action.utils;
+package pl.mgrProject.action;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import javax.ejb.Stateless;
 
+import org.jboss.seam.annotations.Name;
 import org.jboss.seam.log.Log;
 
-public class Dijkstra {
+@Stateless
+@Name("dijkstraBean")
+public class DijkstraBean implements Dijkstra {
 	/**
 	 * Wierzcholek startowy.
 	 */
@@ -51,7 +55,7 @@ public class Dijkstra {
 	 * @param V Wierzcholki
 	 * @param s ID przystanku poczatkowego
 	 */
-	public Dijkstra(int n, int[][] E, Integer[] V, int startID) throws Exception {	
+	public void init(int n, int[][] E, Integer[] V, int startID) throws Exception {	
 		this.n = n;
 		this.E = E.clone();
 		this.V = V.clone();

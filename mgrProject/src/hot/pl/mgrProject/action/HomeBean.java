@@ -1,14 +1,11 @@
 package pl.mgrProject.action;
 
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
 import javax.ejb.Remove;
 import javax.ejb.Stateful;
-import javax.management.Query;
 import javax.persistence.EntityManager;
 
 import org.jboss.seam.ScopeType;
@@ -20,8 +17,6 @@ import org.jboss.seam.annotations.Scope;
 import org.jboss.seam.log.Log;
 import org.postgis.Point;
 
-import pl.mgrProject.action.utils.Dijkstra;
-import pl.mgrProject.model.Przystanek;
 import pl.mgrProject.model.PrzystanekTabliczka;
 
 /**
@@ -46,6 +41,8 @@ public class HomeBean implements Serializable, Home {
 	private Date startTime;
 	@In
 	private EntityManager mgrDatabase;
+	@In(create=true)
+	private Algorithm algorithmBean;
 	
 
 	public Point getStartPoint() {
@@ -84,6 +81,19 @@ public class HomeBean implements Serializable, Home {
 			return false;
 		this.startTime = startTime;
 		return true;
+	}
+	
+	public Boolean findRoute() {
+		algorithmBean.setStartPoint(startPoint);
+		algorithmBean.setStopPoint(stopPoint);
+		log.info("jest1");
+		Boolean result = algorithmBean.run();
+		log.info("jest2");
+		return result;
+	}
+	
+	public List<PrzystanekTabliczka> getRoute() {
+		return algorithmBean.getPath();
 	}
 
 	@Destroy

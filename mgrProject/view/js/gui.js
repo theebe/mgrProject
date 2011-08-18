@@ -55,11 +55,12 @@ function searchButtonClick(e) {
 	}
 	homeBean.setStartTime(startTime, setStartTimeCallback);
 	
-	algorithmBean.setStartPoint(startLonLat.lon, startLonLat.lat, setStartPointCallback);
-	algorithmBean.setStopPoint(stopLonLat.lon, stopLonLat.lat, setStopPointCallback);
-	algorithmBean.run(runAlgorithmCallback);
-	
-	var runAlgorithmCallback = function(result) {
+//	algorithmBean.setStartPoint(startLonLat.lon, startLonLat.lat, setStartPointCallback);
+//	algorithmBean.setStopPoint(stopLonLat.lon, stopLonLat.lat, setStopPointCallback);
+	alert("jest1");
+	homeBean.findRoute(findRouteCallback);
+	alert("jest2");
+	var findRouteCallback = function(result) {
 		if (!result) {
 			alert("Obliczanie trasy nie powiodlo sie!");
 			Seam.Remoting.cancelBatch();
@@ -67,8 +68,8 @@ function searchButtonClick(e) {
 	};
 	
 	//Rysowanie trasy
-	var getPathCallback = function(result) {
-//		alert(result.length);
+	var getRouteCallback = function(result) {
+		alert(result.length);
 //		drawRoute(result);
 //		for(var i in result) {
 //			alert(result[i].getPrzystanek().getNazwa());
@@ -76,7 +77,7 @@ function searchButtonClick(e) {
 	};
 	
 	//pobranie obliczonej trasy
-	algorithmBean.getPath(getPathCallback);
+	homeBean.getRoute(getRouteCallback);
 
 	// odpalenie zapytan
 	Seam.Remoting.executeBatch();

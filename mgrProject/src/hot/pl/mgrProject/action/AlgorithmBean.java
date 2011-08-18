@@ -5,31 +5,30 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import javax.ejb.Remove;
-import javax.ejb.Stateful;
+import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 
-import org.jboss.seam.ScopeType;
-import org.jboss.seam.annotations.Destroy;
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Logger;
 import org.jboss.seam.annotations.Name;
-import org.jboss.seam.annotations.Scope;
 import org.jboss.seam.log.Log;
 import org.postgis.Point;
 
-import pl.mgrProject.action.utils.Dijkstra;
 import pl.mgrProject.model.Przystanek;
 import pl.mgrProject.model.PrzystanekTabliczka;
 
-@Stateful
-@Scope(ScopeType.CONVERSATION)
+@Stateless
+//@Scope(ScopeType.CONVERSATION)
 @Name("algorithmBean")
 public class AlgorithmBean implements Algorithm {
 	@Logger
 	private Log log;
 	@In
 	private EntityManager mgrDatabase;
+	@In(create=true)
+	private NeighborhoodMatrix neighborhoodMatrixBean;
+	@In(create=true)
+	private Dijkstra dijkstraBean;
 	/**
 	 * Punkt startowy wybrany na mapie.
 	 */
@@ -68,133 +67,26 @@ public class AlgorithmBean implements Algorithm {
 		Long stopID  = tabStop.getId();;
 		int start = -1;
 		int stop  = -1;
-		int inf = 1000; //nieskonczonosc. Oznacza brak krawedzi miedzy wierzcholkami.
-		Dijkstra d = null;
+//		Dijkstra d = null;
 		int maxErrors = 3; //maksymalna liczba prob wznowienia algorytmu
 		
 		tabliczki = mgrDatabase.createNamedQuery("wszystkieTabliczki").getResultList();
+		neighborhoodMatrixBean.setTabliczki(tabliczki);
 		int n = tabliczki.size();
 		
 		//odwzorowanie przystanku na indeks tablicy poniewaz algorytm operuje na indeksach tablicy
-		start = getIndex(startID);
-		stop  = getIndex(stopID);
+		start = neighborhoodMatrixBean.getIndex(startID);
+		stop  = neighborhoodMatrixBean.getIndex(stopID);
 		
-		int[][] E = new int[n][n];  //macierz sasiedztwa
+		
 		Integer[] V = new Integer[n]; //wektor wierzcholkow
 		
-		//inicjalizacja macierzy sasiedztwa
 		for (int i = 0; i < n; ++i) {
-			for (int j = 0; j < n; ++j) {
-				E[i][j] = i == j ? 0 : inf;
-			}
 			V[i] = i;
 		}
 		
-		List<Integer> tabSprawdzone = new ArrayList<Integer>();
-		List<Integer> tabTrace = new ArrayList<Integer>();
-		
-		//Algorytm budowania macierzy sasiedztwa. Na razie wagi krawedzi przypisane sa na sztywno.
-		//Po testach wyglada na to, ze dziala poprawnie. Nie uwzglednia przystankow ktore nie sa dodane do zadnej linii.
-		//TODO: Przemyslec dokladniej przypadki kiedy ostatni przystanek(tabliczka) linii nie ma nastepnego.
-		//      Algorytm wymaga aby istaniala mozliwosc dotarcia do kazdego wierzcholka.
-		//Propozycja: Ostatnia tabliczka linii bedzie wskazywac na dowolny, najblizszy przystanek nalezacy do innej linii.
-		int aktualny = start, nastepny = -1;
-		boolean backTrace = false;
-		while (tabSprawdzone.size() <= tabliczki.size()) {
-			try {
-				nastepny = getIndex(tabliczki.get(aktualny).getNastepnyPrzystanek().getId());
-				if (tabSprawdzone.contains(nastepny)) {
-					E[aktualny][nastepny] = 10;
-					log.info("[A]Laczenie: " + tabliczki.get(aktualny).getId() + ":" + tabliczki.get(nastepny).getId());
-					tabTrace.add(aktualny);
-					aktualny = nastepny;
-					backTrace = true;
-				} else {
-					log.info("Nastepny: " + tabliczki.get(nastepny).getId());
-					E[aktualny][nastepny] = 10;
-					log.info("[B]Laczenie: " + tabliczki.get(aktualny).getId() + ":" + tabliczki.get(nastepny).getId());
-
-					tabSprawdzone.add(nastepny);
-					tabTrace.add(aktualny);
-					aktualny = nastepny;
-					
-					log.info("TabTrace add " + tabliczki.get(aktualny).getId());
-					log.info("Koniec petli: " + (tabSprawdzone.size() <= tabliczki.size()));
-				}
-			} catch(Exception e) {
-				log.info("Nie ma nastepnego");
-				backTrace = true;
-			} finally {
-				if (backTrace) {
-					for (int i = tabTrace.size()-1; i >= 0; --i) {
-						nastepny = getIndex(tabliczki.get(tabTrace.get(i)).getId());
-						log.info("Nastepny: " + tabliczki.get(nastepny).getId());
-						E[aktualny][nastepny] = 10;
-						log.info("[D]Laczenie: " + tabliczki.get(aktualny).getId() + ":" + tabliczki.get(nastepny).getId());
-						aktualny = nastepny;
-					}
-					tabTrace.clear();
-					log.info("TabTrace clear");
-					backTrace = false;
-					//==============
-					for (int i = 0; i < tabliczki.size(); ++i) {
-						if (!tabSprawdzone.contains(i)) {
-							aktualny = i;
-							tabSprawdzone.add(aktualny);
-							break;
-						} else {
-							aktualny = -1;
-						}
-					}
-					//dzieki temu petla while sie zakonczy
-					if (aktualny == -1) {
-						tabSprawdzone.add(-1);
-					}
-				}
-			}
-		}
-		
-		String info = "";
-		for (int i = 0; i < n; ++i) {
-			info += "[";
-			for (int j = 0; j < n; ++j) {
-				info += E[i][j]+",";
-			}
-			info += "]\n";
-		}
-		
-		log.info(info);
-		
-		//========================
-		// Laczenie tabliczek na tych samych przystankach.
-		// Kazda z kazda oprocz tych, ktore nie maja zdefiniowanego nastepnego przystanku
-		//========================
-		List<Long> tabSpr = new ArrayList<Long>();
-		List<PrzystanekTabliczka> tabsForCurrent = new ArrayList<PrzystanekTabliczka>();
-		Przystanek current = null;
-		for (PrzystanekTabliczka tab : tabliczki) {
-			if (tabSpr.contains(tab.getId())) {
-				continue;
-			}
-			current = tab.getPrzystanek();
-			tabsForCurrent = mgrDatabase.createNamedQuery("tabliczniPoPrzystanku").setParameter("przystanek", current).getResultList();
-			for (int i = 0; i < tabsForCurrent.size(); ++i) {
-				tabSpr.add(tabsForCurrent.get(i).getId());
-				aktualny = getIndex(tabsForCurrent.get(i).getId());
-				for(int j = 0; j < tabsForCurrent.size(); ++j) {
-					if (i == j) {
-						continue;
-					}
-					try {
-						tabsForCurrent.get(j).getNastepnyPrzystanek();//jesli tabliczka nie ma nastepnego przystanku to wyrzuci wyjatek
-						nastepny = getIndex(tabsForCurrent.get(j).getId());
-						E[aktualny][nastepny] = 0;
-					} catch(Exception e) { //tabliczka nie prowadzi do nastepnego przystanku
-						continue;
-					}
-				}
-			}
-		}
+		neighborhoodMatrixBean.create(start);
+		int[][] E = neighborhoodMatrixBean.getE();
 		
 		//==================
 		// Uruchomienie algorytmu Dijkstry
@@ -216,12 +108,12 @@ public class AlgorithmBean implements Algorithm {
 				log.info("[Dijkstra] V:\n" + Arrays.toString(V));
 				log.info("[Dijkstra] start: " + start);
 				log.info("[Dijkstra] stop: " + stop);
-				d = new Dijkstra(n, E, V, start);
+				dijkstraBean.init(n, E, V, start);
 				int errors = 0;
 				while (error) {
 					try {
 						log.info("HomeBean: [Dijkstra] 1uruchamianie algorytmu wyszukiwania trasy.");
-						d.run();
+						dijkstraBean.run();
 					} catch(ArrayIndexOutOfBoundsException e2) {
 						log.info("HomeBean: [Dijkstra] podczas wykonywania algorytmu wystapil blad.");
 						for (int k = 0; k < e2.getStackTrace().length; ++k) {
@@ -229,14 +121,14 @@ public class AlgorithmBean implements Algorithm {
 						}
 						if (++errors < maxErrors) {
 							//proba naprawienia sytuacji
-							d = new Dijkstra(n, E, V, start);
+							dijkstraBean.init(n, E, V, start);
 						}
 					}
 					error = false;
 				}
 				log.info("HomeBean: [Dijkstra] Algorytm zakonczony po " + errors + " bledach.");
-				log.info("Path: " + d.getPath(stop, log));
-				path = d.getPathTab(stop, log);
+				log.info("Path: " + dijkstraBean.getPath(stop, log));
+				path = dijkstraBean.getPathTab(stop, log);
 				printTrasa();
 				return true;
 			} catch(Exception e) {
@@ -253,13 +145,8 @@ public class AlgorithmBean implements Algorithm {
 		return startPoint;
 	}
 	
-	public Boolean setStartPoint(double x, double y) {
-		if(x == 0 || y == 0) {
-			return false;
-		}
-		
-		startPoint = new Point(x, y);
-		startPoint.setSrid(4326);
+	public Boolean setStartPoint(Point p) {
+		startPoint = p;
 		log.info("[AlgorithmBean] startPoint set");
 		return true;
 	}
@@ -268,13 +155,8 @@ public class AlgorithmBean implements Algorithm {
 		return stopPoint;
 	}
 	
-	public Boolean setStopPoint(double x, double y) {
-		if(x == 0 || y == 0) {
-			return false;
-		}
-		
-		stopPoint = new Point(x, y);
-		stopPoint.setSrid(4326);
+	public Boolean setStopPoint(Point p) {
+		stopPoint = p;
 		log.info("[AlgorithmBean] stopPoint set");
 		return true;
 	}
@@ -291,20 +173,6 @@ public class AlgorithmBean implements Algorithm {
 		Przystanek p = mgrDatabase.getReference(Przystanek.class, id.longValue());
 		log.info("[AlgorithmBean] Znaleziono najblizszy przystanek: " + p.getNazwa());
 		return p;
-	}
-	
-	/**
-	 * Zwraca indeks z tablicy 'tabliczki' odpowiadajacy podanemu ID tabliczki.
-	 * @param id ID tabliczki.
-	 * @return
-	 */
-	private int getIndex(Long id) {
-		for (int i = 0; i < tabliczki.size(); ++i) {
-			if (tabliczki.get(i).getId() == id) {
-				return i;
-			}
-		}
-		return -1;
 	}
 	
 	/**
@@ -330,13 +198,5 @@ public class AlgorithmBean implements Algorithm {
 		}
 		
 		return trasa;
-	}
-	
-	@Destroy
-	public void destroy() {
-	}
-	
-	@Remove
-	public void remove() {
 	}
 }
