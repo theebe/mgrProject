@@ -3,10 +3,7 @@ package pl.mgrProject.action;
 import java.util.List;
 
 import javax.ejb.Local;
-import javax.ejb.Remove;
 
-import org.jboss.seam.annotations.Destroy;
-import org.jboss.seam.annotations.remoting.WebRemote;
 import org.postgis.Point;
 
 import pl.mgrProject.model.Przystanek;

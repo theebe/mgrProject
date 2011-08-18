@@ -18,7 +18,6 @@ import pl.mgrProject.model.Przystanek;
 import pl.mgrProject.model.PrzystanekTabliczka;
 
 @Stateless
-//@Scope(ScopeType.CONVERSATION)
 @Name("algorithmBean")
 public class AlgorithmBean implements Algorithm {
 	@Logger
@@ -37,6 +36,14 @@ public class AlgorithmBean implements Algorithm {
 	 * Punkt koncowy wybrany na mapie.
 	 */
 	private Point stopPoint;
+	/**
+	 * Indeks punktu startowego.
+	 */
+	private int start = -1;
+	/**
+	 * Indeks punktu kocowego.
+	 */
+	private int stop  = -1;
 	/**
 	 * Trasa obliczona przez algorytm w postaci listy ID tabliczek.
 	 */
@@ -59,16 +66,12 @@ public class AlgorithmBean implements Algorithm {
 		log.info("Liczba tabliczek dla stop: " + tabForStop.size());
 			//pobieranie pierwszej tabliczki z listy dla danego przystanku pocz¹tkowego
 			//na razie nie wiadomo dla której tabliczki mozna znalezc krotsza trase.
-			//bedzie sie trzeba nad tym jeszcze zastanowic
+			//Polaczenie tabliczek na tych samych przystankach zagwarantuje znalezienie najkrótszej trasy.
 		PrzystanekTabliczka tabStart = tabForStart.get(0);
 		PrzystanekTabliczka tabStop  = tabForStop.get(0);
 
 		Long startID = tabStart.getId();
 		Long stopID  = tabStop.getId();;
-		int start = -1;
-		int stop  = -1;
-//		Dijkstra d = null;
-		int maxErrors = 3; //maksymalna liczba prob wznowienia algorytmu
 		
 		tabliczki = mgrDatabase.createNamedQuery("wszystkieTabliczki").getResultList();
 		neighborhoodMatrixBean.setTabliczki(tabliczki);
@@ -78,81 +81,49 @@ public class AlgorithmBean implements Algorithm {
 		start = neighborhoodMatrixBean.getIndex(startID);
 		stop  = neighborhoodMatrixBean.getIndex(stopID);
 		
-		
-		Integer[] V = new Integer[n]; //wektor wierzcholkow
-		
-		for (int i = 0; i < n; ++i) {
-			V[i] = i;
-		}
-		
 		neighborhoodMatrixBean.create(start);
 		int[][] E = neighborhoodMatrixBean.getE();
+		Integer[] V = neighborhoodMatrixBean.getV();
 		
 		//==================
 		// Uruchomienie algorytmu Dijkstry
 		//==================
 		if (start != -1) { //jesli przystanek startowy istnieje
 			try {
-				boolean error = true;
-				
-				String tabE = "";
-				for (int i = 0; i < E.length; ++i) {
-					tabE += "[";
-					for (int j = 0; j < E[i].length; ++j) {
-						tabE += E[i][j] + ",";
-					}
-					tabE += "]\n";
-				}
 				log.info("[Dijkstra] n: " + n);
-				log.info("[Dijkstra] E:\n" + tabE);
 				log.info("[Dijkstra] V:\n" + Arrays.toString(V));
 				log.info("[Dijkstra] start: " + start);
 				log.info("[Dijkstra] stop: " + stop);
 				dijkstraBean.init(n, E, V, start);
-				int errors = 0;
-				while (error) {
-					try {
-						log.info("HomeBean: [Dijkstra] 1uruchamianie algorytmu wyszukiwania trasy.");
-						dijkstraBean.run();
-					} catch(ArrayIndexOutOfBoundsException e2) {
-						log.info("HomeBean: [Dijkstra] podczas wykonywania algorytmu wystapil blad.");
-						for (int k = 0; k < e2.getStackTrace().length; ++k) {
-							log.info(e2.getStackTrace()[k].toString());
-						}
-						if (++errors < maxErrors) {
-							//proba naprawienia sytuacji
-							dijkstraBean.init(n, E, V, start);
-						}
+				
+				try {
+					log.info("AlgorithmBean: [Dijkstra] uruchamianie algorytmu wyszukiwania trasy.");
+					dijkstraBean.run();
+				} catch(ArrayIndexOutOfBoundsException e2) {
+					log.info("AlgorithmBean: [Dijkstra] podczas wykonywania algorytmu wystapil blad.");
+					for (int k = 0; k < e2.getStackTrace().length; ++k) {
+						log.info(e2.getStackTrace()[k].toString());
 					}
-					error = false;
 				}
-				log.info("HomeBean: [Dijkstra] Algorytm zakonczony po " + errors + " bledach.");
-				log.info("Path: " + dijkstraBean.getPath(stop, log));
-				path = dijkstraBean.getPathTab(stop, log);
+
+				log.info("AlgorithmBean: [Dijkstra] Algorytm zakonczony popomyslnie.");
+				path = dijkstraBean.getPathTab(stop);
 				printTrasa();
 				return true;
 			} catch(Exception e) {
-				log.info("HomeBean: [Dijkstra] Wystapil niepodziewany wyjatek");
+				log.info("AlgorithmBean: [Dijkstra] Wystapil niepodziewany wyjatek");
 				return false;
 			}
 		} else {
-			log.info("HomeBean: Nie znaleziono przystanku startowego.");
+			log.info("AlgorithmBean: Nie znaleziono przystanku startowego.");
 			return false;
 		}
-	}
-	
-	public Point getStartPoint() {
-		return startPoint;
 	}
 	
 	public Boolean setStartPoint(Point p) {
 		startPoint = p;
 		log.info("[AlgorithmBean] startPoint set");
 		return true;
-	}
-	
-	public Point getStopPoint() {
-		return stopPoint;
 	}
 	
 	public Boolean setStopPoint(Point p) {
@@ -178,7 +149,8 @@ public class AlgorithmBean implements Algorithm {
 	/**
 	 * Wyswietla w oknie logow trase jaka zostala znaleziona przez algorytm.
 	 */
-	private void printTrasa() {
+	private void printTrasa() throws Exception {
+		log.info("Route: " + dijkstraBean.getPath(stop));
 		String info = "";
 		for (int i : path) {
 			info += tabliczki.get(i).getPrzystanek().getNazwa() + " <- ";

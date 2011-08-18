@@ -24,6 +24,7 @@ public class NeighborhoodMatrixBean implements NeighborhoodMatrix {
 	private int start;
 	private List<PrzystanekTabliczka> tabliczki;
 	private int[][] E;  //macierz sasiedztwa
+	private Integer[] V; //wektor wierzcholkow
 	private int n;
 	private int inf = 1000; //nieskonczonosc. Oznacza brak krawedzi miedzy wierzcholkami.
 	
@@ -31,18 +32,20 @@ public class NeighborhoodMatrixBean implements NeighborhoodMatrix {
 		this.start = start;
 		this.n = tabliczki.size();
 		E = new int[n][n];
+		V = new Integer[n];
 		
 		//inicjalizacja macierzy sasiedztwa
 		for (int i = 0; i < n; ++i) {
 			for (int j = 0; j < n; ++j) {
 				E[i][j] = i == j ? 0 : inf;
 			}
+			V[i] = i;
 		}
 		
 		buildMatrix();
 		joinTabs();
 	}
-	
+
 	private void buildMatrix() {
 		//Algorytm budowania macierzy sasiedztwa. Na razie wagi krawedzi przypisane sa na sztywno.
 		//Po testach wyglada na to, ze dziala poprawnie. Nie uwzglednia przystankow ktore nie sa dodane do zadnej linii.
@@ -108,17 +111,7 @@ public class NeighborhoodMatrixBean implements NeighborhoodMatrix {
 				}
 			}
 		}
-		
-		String info = "";
-		for (int i = 0; i < n; ++i) {
-			info += "[";
-			for (int j = 0; j < n; ++j) {
-				info += E[i][j]+",";
-			}
-			info += "]\n";
-		}
-		
-		log.info(info);
+		printE();
 	}
 	
 	private void joinTabs() {
@@ -155,8 +148,25 @@ public class NeighborhoodMatrixBean implements NeighborhoodMatrix {
 		}
 	}
 	
+	public void printE() {
+		String info = "";
+		for (int i = 0; i < n; ++i) {
+			info += "[";
+			for (int j = 0; j < n; ++j) {
+				info += E[i][j]+",";
+			}
+			info += "]\n";
+		}
+		
+		log.info(info);
+	}
+	
 	public int[][] getE() {
 		return E;
+	}
+	
+	public Integer[] getV() {
+		return V;
 	}
 
 	/**

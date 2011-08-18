@@ -86,9 +86,7 @@ public class HomeBean implements Serializable, Home {
 	public Boolean findRoute() {
 		algorithmBean.setStartPoint(startPoint);
 		algorithmBean.setStopPoint(stopPoint);
-		log.info("jest1");
 		Boolean result = algorithmBean.run();
-		log.info("jest2");
 		return result;
 	}
 	

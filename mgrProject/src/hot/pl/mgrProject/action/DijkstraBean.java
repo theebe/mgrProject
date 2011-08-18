@@ -4,14 +4,18 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+
 import javax.ejb.Stateless;
 
+import org.jboss.seam.annotations.Logger;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.log.Log;
 
 @Stateless
 @Name("dijkstraBean")
 public class DijkstraBean implements Dijkstra {
+	@Logger
+	private Log log;
 	/**
 	 * Wierzcholek startowy.
 	 */
@@ -125,15 +129,15 @@ public class DijkstraBean implements Dijkstra {
 	 * @return String z reprezentacja najkrotszej sciezki
 	 * @throws Exception
 	 */
-	public String getPath(int stopID, Log log) throws Exception {
+	public String getPath(int stopID) throws Exception {
 		int i = p[stopID];
 		log.info("p[]: " + Arrays.toString(p));
 		log.info("d[]: " + Arrays.toString(d));
 		String result = "" + stopID;
+		
 		while (i != 0) {
 			result += " <- " + i;
 			i = p[i];
-			log.info("getPath: " + i);
 		}
 		
 		return result;
@@ -146,14 +150,14 @@ public class DijkstraBean implements Dijkstra {
 	 * @return Lista kolejnych tabliczek definujaca trase przejazdu.
 	 * @throws Exception
 	 */
-	public ArrayList<Integer> getPathTab(int stopID, Log log) throws Exception {
+	public ArrayList<Integer> getPathTab(int stopID) throws Exception {
 		ArrayList<Integer> tab = new ArrayList<Integer>();
 		tab.add(stopID);
 		int i = p[stopID];
+		
 		while (i != 0) {
 			tab.add(i);
 			i = p[i];
-			log.info("getPathTab: " + i);
 		}
 		
 		return tab;
