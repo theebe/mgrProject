@@ -26,8 +26,7 @@
 
 						<rich:dataTable id="przystanekDataTable" var="przystanek"
 							value="#{przystanekList}"
-							rendered="#{przystanekList.rowCount > 0}"
-							>
+							rendered="#{przystanekList.rowCount > 0}">
 							<f:facet name="header">  
 						      Przystanki
 						    </f:facet>
@@ -45,7 +44,7 @@
 								</f:facet>
 								<h:outputText value="#{przystanek.typ}" />
 							</rich:column>
-							
+
 							<rich:column>
 								<a:commandLink
 									action="#{przystanekDAO.setSelectedPrzystanek(przystanek)}"
@@ -72,10 +71,9 @@
 			 		Numer: #{przystanekDAO.selectedPrzystanek.nazwa} <br />
 			 		Typ: #{przystanekDAO.selectedPrzystanek.typ}<br />
 					Lista Linii: <br />
-					<rich:dataList var="przyst"
-								value="#{przystanekDAO.selectedPrzystanek.przystanekTabliczki}">
-								<h:outputText value="#{przyst.linia.numer}" />
-							</rich:dataList>
+						<ui:repeat var="pt" value="#{przystanekDAO.selectedPrzystanek.przystanekTabliczki}">
+							<h:outputText value="#{pt.linia.numer}" />
+						</ui:repeat>
 					</s:div>
 				</s:div>
 
@@ -110,7 +108,7 @@
 				</h:form>
 			</s:div>
 		</s:div>
-		
-	
+
+
 	</ui:define>
 </ui:composition>

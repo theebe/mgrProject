@@ -129,7 +129,7 @@ public class PrzystanekDAOBean implements Serializable, PrzystanekDAO {
 	@End
 	public void delete(Przystanek p) {
 		if (p != null) {
-			Set<PrzystanekTabliczka> ptSet = p.getPrzystanekTabliczki();
+			List<PrzystanekTabliczka> ptSet = p.getPrzystanekTabliczki();
 			if (ptSet != null)
 				for (PrzystanekTabliczka pt : ptSet) 
 					przystanekTabliczkaDAO.delete(pt);

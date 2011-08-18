@@ -85,15 +85,6 @@ function initEdycjaLinii(typ, id) {
 
 
 function showSelectedLinia(){
-	linia = getSelectedLinia();
-	
-}
-
-
-function getSelectedLinia(){
-	
-	var liniaRet = null;
-	
 	Seam.Remoting.startBatch();
 	Seam.Remoting.getContext().setConversationId(seamConversationId );
 	// pobiera instancje componentu ejb przystanekDAO
@@ -101,17 +92,21 @@ function getSelectedLinia(){
 	
 	var getLiniaCallback = function (l){
 		if(l){
-			
-			liniaRet = l;
+			showLiniaOnMap(l);
 		}
 	}
 	liniaDAO.getSelectedLinia(getLiniaCallback);
 	
 	// odpalenie zapytan
 	Seam.Remoting.executeBatch();
-	
-	
-	return liniaRet;
 }
+
+function backView(){
+	
+	$(".edycjaLiniiContainerAll").attr("style", "display: none;");
+	$(".listaLiniiContainerAll").removeAttr("style");
+}
+
+
 
 

@@ -539,3 +539,7 @@ function deletePrzystanekFromMap(id){
 
 
 
+function showLiniaOnMap(linia){
+
+	alert(linia.numer);
+}

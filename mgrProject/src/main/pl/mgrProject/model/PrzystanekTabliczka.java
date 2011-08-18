@@ -65,7 +65,7 @@ public class PrzystanekTabliczka implements Serializable {
 		this.version = version;
 	}
 
-	@ManyToOne
+	@ManyToOne(fetch=FetchType.EAGER)
 	@NotNull
 	@JoinColumn(name = "linia_id", insertable = false, updatable = false, nullable = false)
 	@Index(name="liniaIndex")
@@ -88,7 +88,7 @@ public class PrzystanekTabliczka implements Serializable {
 		this.przystanek = przystanek;
 	}
 
-	@OneToMany(mappedBy = "przystanekTabliczka", cascade= {CascadeType.REMOVE, CascadeType.REFRESH})
+	@OneToMany(mappedBy = "przystanekTabliczka", cascade= {CascadeType.ALL})
 	public List<Odjazd> getOdjazdy() {
 		if (odjazdy == null)
 			odjazdy = new ArrayList<Odjazd>();
@@ -105,7 +105,7 @@ public class PrzystanekTabliczka implements Serializable {
 
 	}
 
-	@OneToOne
+	@OneToOne(fetch=FetchType.LAZY)
 	@JoinColumn(name="nastepnyPrzystanek_id")
 	public PrzystanekTabliczka getNastepnyPrzystanek() {
 		return nastepnyPrzystanek;
@@ -120,7 +120,7 @@ public class PrzystanekTabliczka implements Serializable {
 		this.poprzedniPrzystanek = poprzedniPrzystanek;
 	}
 
-	@OneToOne
+	@OneToOne(fetch=FetchType.LAZY)
 	@JoinColumn(name="poprzedniPrzystanek_id")
 	public PrzystanekTabliczka getPoprzedniPrzystanek() {
 		return poprzedniPrzystanek;

@@ -68,8 +68,8 @@ function searchButtonClick(e) {
 	
 	//Rysowanie trasy
 	var getPathCallback = function(result) {
-//		alert(result.length);
-//		drawRoute(result);
+		alert(result.length);
+		drawRoute(result);
 //		for(var i in result) {
 //			alert(result[i].getPrzystanek().getNazwa());
 //		}
@@ -589,3 +589,12 @@ function deleteDialogOpen(){
 	});
 	
 };
+
+
+
+
+function drawRoute(trasa){
+	for(var i in trasa) {
+		alert(trasa[i].getPrzystanek().getNazwa());
+	}
+}	
