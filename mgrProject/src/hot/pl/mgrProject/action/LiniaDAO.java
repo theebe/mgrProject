@@ -43,6 +43,8 @@ public interface LiniaDAO {
 	public Linia getSelectedLinia();
 	public void setSelectedLinia(Linia l);
 	
+	@WebRemote
+	public Linia getLinia(Long id);
 
 	public TimeZone getTimeZone();
 	public void cancel();

@@ -191,7 +191,7 @@
 
 						<div>
 							<div class="edycjaLiniiButtons">
-								<button onclick="saveLinia();" class="zapiszLinieButton">Zapisz</button>
+ 								<button onclick="saveLinia();" class="zapiszLinieButton">Zapisz</button>
 								<button onclick="cancelLinia();" class="cancelButton">Anuluj</button>
 
 								<a:form ajaxSubmit="true" reRender="listaLiniiCont">
@@ -209,6 +209,7 @@
 										ajaxSingle="true" action="#{liniaEditer.cancel()}"
 										oncomplete=" backView();" />
 								</a:form>
+							
 							</div>
 						</div>
 					</h:form>

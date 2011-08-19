@@ -35,6 +35,12 @@ var popup = null;
 
 var przystanekInfoPopup = null;
 
+
+/**
+ * Linia na ktorej pracujemy
+ */
+var liniaVect = null;
+
 /**
  * ikonki
  */
@@ -150,9 +156,12 @@ function mapInit() {
 	// the first argument is a base symbolizer
 	// all other symbolizers in rules will extend this one
 	{
-		fillColor : "#9800ED",
+		fillColor : "#ff00ED",
 		fillOpacity : 1,
-		strokeColor : "#9800ed",
+		strokeColor : "#9800FF",
+		strokeWidth: 4,
+		strokeLinecap: "square",
+		strokeDashstyle: "solid",
 		pointRadius : 1,
 		graphicOpacity: 1,
 		graphicWidth : 30,
@@ -537,9 +546,48 @@ function deletePrzystanekFromMap(id){
 	alert("Usuniêto przystanek");
 }
 
+function showPrzystanekOnMap(id){
+	var przystanekFeature = przystanki[getIPrzystnekFromId(id)];
+	var lonLat = new OpenLayers.LonLat(
+			przystanekFeature.geometry.x,
+			przystanekFeature.geometry.y);
+
+	przystanekInfoPopup = new OpenLayers.Popup.FramedCloud(
+			"przystanekFramedCloud", lonLat, null,
+			przystanekFeature.attributes.nazwa, null,
+			false);
+	map.addPopup(przystanekInfoPopup);
+}
+
+function hidePrzystanek(){
+	map.removePopup(przystanekInfoPopup);
+}
 
 
 function showLiniaOnMap(linia){
+	if(liniaVect != null) 
+		hideLinia();
+	
+	var przystTablList = linia.przystanekTabliczka;
+	var points = [];
 
-	alert(linia.numer);
+	var i =0
+	for(i; i<przystTablList.length; ++i){
+		var przystTabl = przystTablList[i];
+		var przystanekGeometry = przystanki[getIPrzystnekFromId(przystTabl.przystanek.id)].geometry;
+		points.push(przystanekGeometry);
+	}
+	var lineString = new OpenLayers.Geometry.LineString(points);
+	liniaVect = new OpenLayers.Feature.Vector(lineString,{
+		id: 	linia.id,
+		numer: 	linia.numer
+	});
+	
+	przystankiLayer.addFeatures([liniaVect]);
+	
+}
+
+function hideLinia(){
+	przystankiLayer.removeFeatures([liniaVect]);
+	liniaVect = null;
 }

@@ -289,20 +289,12 @@ function homeAddLiniaDialogInit() {
 			function() {
 				$(this).addClass("ui-state-hover");
 				var idTyp = getIdTypeFromIdAttr($(this));
-				var przystanekFeature = przystanki[ getIPrzystnekFromId(idTyp[0]) ];
-				var lonLat = new OpenLayers.LonLat(
-						przystanekFeature.geometry.x,
-						przystanekFeature.geometry.y);
-				
-				przystanekInfoPopup = new OpenLayers.Popup.FramedCloud(
-						"przystanekFramedCloud", lonLat, null,
-						przystanekFeature.attributes.nazwa, null, false);
-				map.addPopup(przystanekInfoPopup);
+				showPrzystanekOnMap(idTyp[0]);
 			},
 			// off
 			function() {
 				$(this).removeClass("ui-state-hover");
-				map.removePopup(przystanekInfoPopup);
+				hidePrzystanek();
 			});
 
 }

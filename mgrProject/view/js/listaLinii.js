@@ -1,7 +1,3 @@
-/**
- * Linia na ktorej pracujemy
- */
-var linia = null;
 
 function deleteDialogOpen() {
 
@@ -27,7 +23,8 @@ function deleteDialogOpen() {
 };
 
 function initEdycjaLinii(typ, id) {
-
+	
+	showLinia(id);
 	// zamien widoki
 	$(".listaLiniiContainerAll").attr("style", "display: none;");
 	$(".edycjaLiniiContainerAll").removeAttr("style");
@@ -58,21 +55,12 @@ function initEdycjaLinii(typ, id) {
 						function() {
 							$(this).addClass("ui-state-hover");
 							var idTyp = getIdTypeFromIdAttr($(this));
-							var przystanekFeature = przystanki[getIPrzystnekFromId(idTyp[0])];
-							var lonLat = new OpenLayers.LonLat(
-									przystanekFeature.geometry.x,
-									przystanekFeature.geometry.y);
-
-							przystanekInfoPopup = new OpenLayers.Popup.FramedCloud(
-									"przystanekFramedCloud", lonLat, null,
-									przystanekFeature.attributes.nazwa, null,
-									false);
-							map.addPopup(przystanekInfoPopup);
+							showPrzystanekOnMap(idTyp[0]);
 						},
 						// off
 						function() {
 							$(this).removeClass("ui-state-hover");
-							map.removePopup(przystanekInfoPopup);
+							hidePrzystanek();
 						});
 
 		$(".zapiszLinieButton").button();
@@ -96,6 +84,23 @@ function showSelectedLinia(){
 		}
 	}
 	liniaDAO.getSelectedLinia(getLiniaCallback);
+	
+	// odpalenie zapytan
+	Seam.Remoting.executeBatch();
+}
+
+function showLinia(id){
+	Seam.Remoting.startBatch();
+	Seam.Remoting.getContext().setConversationId(seamConversationId );
+	// pobiera instancje componentu ejb przystanekDAO
+	var liniaDAO = Seam.Component.getInstance("liniaDAO");
+	
+	var getLiniaCallback = function (l){
+		if(l){
+			showLiniaOnMap(l);
+		}
+	}
+	liniaDAO.getLinia(id, getLiniaCallback);
 	
 	// odpalenie zapytan
 	Seam.Remoting.executeBatch();

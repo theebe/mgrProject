@@ -74,11 +74,13 @@ public class LiniaEditerBean implements LiniaEditer, Serializable {
 		log.info("Uaktualniono linie nr " + editedLinia.getNumer());
 		mgrDatabase.flush();
 		editedLinia = null;
+		destory();
 	}
 
 	@End(beforeRedirect=true)
 	public void cancel() {
 		this.editedLinia = null;
+		destory();
 	}
 
 	@Begin(nested = true)
