@@ -60,7 +60,7 @@ function searchButtonClick(e) {
 			setStartPointCallback);
 	algorithmBean.setStopPoint(stopLonLat.lon, stopLonLat.lat,
 			setStopPointCallback);
-	algorithmBean.run(runAlgorithmCallback);
+	algorithmBean.run(runAlgorithmCallback, runAlgorithmExeptionHandler);
 
 	var runAlgorithmCallback = function(result) {
 		if (!result) {
@@ -68,6 +68,9 @@ function searchButtonClick(e) {
 			Seam.Remoting.cancelBatch();
 		}
 	};
+	var runAlgorithmExeptionHandler = function (ex) {
+		alert("blad: " + ex.printStackTrace()) ;
+	}
 
 	// Rysowanie trasy
 	var getPathCallback = function(result) {
@@ -600,7 +603,7 @@ function drawRoute(trasa) {
 	var liniaStartVect = new OpenLayers.Feature.Vector(
 					new OpenLayers.Geometry.LineString(points), 
 					{},
-					{strokeColor : "#AAAAFF",
+					{strokeColor : "#BBBBFF",
 						strokeWidth: 4,
 						strokeLinecap: "square",
 						strokeDashstyle: "solid"});
