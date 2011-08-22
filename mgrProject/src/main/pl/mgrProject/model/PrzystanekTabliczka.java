@@ -28,7 +28,7 @@ import org.hibernate.validator.NotNull;
 @NamedQueries({
 		// wyciaga z bazy wszystkie Tabliczki
 		@NamedQuery(name = "wszystkieTabliczki", query = "SELECT OBJECT(przystTabl) FROM PrzystanekTabliczka przystTabl"),
-		@NamedQuery(name = "tabliczniPoPrzystanku", query = "SELECT przystTabl FROM PrzystanekTabliczka przystTabl WHERE przystTabl.przystanek = :przystanek"), 
+		@NamedQuery(name = "tabliczkiPoPrzystanku", query = "SELECT przystTabl FROM PrzystanekTabliczka przystTabl WHERE przystTabl.przystanek = :przystanek"), 
 		@NamedQuery(name = "tabliczkiPoLinii", query = "SELECT przystTabl FROM PrzystanekTabliczka przystTabl WHERE przystTabl.linia = :linia") 
 		})
 public class PrzystanekTabliczka implements Serializable {

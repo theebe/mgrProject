@@ -3,6 +3,7 @@ package pl.mgrProject.action;
 import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 import javax.ejb.Remove;
@@ -54,8 +55,8 @@ public class AlgorithmBean implements Algorithm {
 		Przystanek pstart = getClosestToStart();
 		Przystanek pstop  = getClosestToStop();
 		
-		List<PrzystanekTabliczka> tabForStart = mgrDatabase.createNamedQuery("tabliczniPoPrzystanku").setParameter("przystanek", pstart).getResultList();
-		List<PrzystanekTabliczka> tabForStop = mgrDatabase.createNamedQuery("tabliczniPoPrzystanku").setParameter("przystanek", pstop).getResultList();
+		List<PrzystanekTabliczka> tabForStart = mgrDatabase.createNamedQuery("tabliczkiPoPrzystanku").setParameter("przystanek", pstart).getResultList();
+		List<PrzystanekTabliczka> tabForStop = mgrDatabase.createNamedQuery("tabliczkiPoPrzystanku").setParameter("przystanek", pstop).getResultList();
 		log.info("Liczba tabliczek dla start: " + tabForStart.size());
 		log.info("Liczba tabliczek dla stop: " + tabForStop.size());
 			//pobieranie pierwszej tabliczki z listy dla danego przystanku pocz¹tkowego
@@ -177,7 +178,7 @@ public class AlgorithmBean implements Algorithm {
 				continue;
 			}
 			current = tab.getPrzystanek();
-			tabsForCurrent = mgrDatabase.createNamedQuery("tabliczniPoPrzystanku").setParameter("przystanek", current).getResultList();
+			tabsForCurrent = mgrDatabase.createNamedQuery("tabliczkiPoPrzystanku").setParameter("przystanek", current).getResultList();
 			for (int i = 0; i < tabsForCurrent.size(); ++i) {
 				tabSpr.add(tabsForCurrent.get(i).getId());
 				aktualny = getIndex(tabsForCurrent.get(i).getId());
@@ -329,6 +330,9 @@ public class AlgorithmBean implements Algorithm {
 			trasa.add(tabliczki.get(i));
 		}
 		
+		//nie wiem czemu ale trasa byla od tylu
+		//trzeba ja obrocic
+		Collections.reverse(trasa);
 		return trasa;
 	}
 	

@@ -42,6 +42,11 @@ var przystanekInfoPopup = null;
 var liniaVect = null;
 
 /**
+ * trasa, tablica obiektow typu OpenLayers.Feature.Vector
+ */
+var path = [];
+
+/**
  * ikonki
  */
 var iconCross = null;

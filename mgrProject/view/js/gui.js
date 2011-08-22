@@ -22,10 +22,10 @@ function searchButtonClick(e) {
 
 	// zaczyna sie kolejka zapytan
 	Seam.Remoting.startBatch();
-	Seam.Remoting.getContext().setConversationId(seamConversationId );
+	Seam.Remoting.getContext().setConversationId(seamConversationId);
 	var homeBean = Seam.Component.getInstance("homeBean");
 	var algorithmBean = Seam.Component.getInstance("algorithmBean");
-	
+
 	var setStartPointCallback = function(result) {
 		if (!result) {
 			alert("bledne parametry przystanku startowego");
@@ -35,7 +35,8 @@ function searchButtonClick(e) {
 	var startLonLat = new OpenLayers.LonLat(start.lonlat.lon, start.lonlat.lat)
 			.transform(map.getProjectionObject(), new OpenLayers.Projection(
 					"EPSG:4326"));
-	homeBean.setStartPoint(startLonLat.lon, startLonLat.lat, setStartPointCallback);
+	homeBean.setStartPoint(startLonLat.lon, startLonLat.lat,
+			setStartPointCallback);
 	var setStopPointCallback = function(result) {
 		if (!result) {
 			alert("bledne parametry przystanku koncowego");
@@ -54,28 +55,26 @@ function searchButtonClick(e) {
 		}
 	}
 	homeBean.setStartTime(startTime, setStartTimeCallback);
-	
-	algorithmBean.setStartPoint(startLonLat.lon, startLonLat.lat, setStartPointCallback);
-	algorithmBean.setStopPoint(stopLonLat.lon, stopLonLat.lat, setStopPointCallback);
+
+	algorithmBean.setStartPoint(startLonLat.lon, startLonLat.lat,
+			setStartPointCallback);
+	algorithmBean.setStopPoint(stopLonLat.lon, stopLonLat.lat,
+			setStopPointCallback);
 	algorithmBean.run(runAlgorithmCallback);
-	
+
 	var runAlgorithmCallback = function(result) {
 		if (!result) {
 			alert("Obliczanie trasy nie powiodlo sie!");
 			Seam.Remoting.cancelBatch();
 		}
 	};
-	
-	//Rysowanie trasy
+
+	// Rysowanie trasy
 	var getPathCallback = function(result) {
-		alert(result.length);
 		drawRoute(result);
-//		for(var i in result) {
-//			alert(result[i].getPrzystanek().getNazwa());
-//		}
 	};
-	
-	//pobranie obliczonej trasy
+
+	// pobranie obliczonej trasy
 	algorithmBean.getPath(getPathCallback);
 
 	// odpalenie zapytan
@@ -140,7 +139,7 @@ var dodajPrzystanekButtonClick = function() {
 		// zaczyna sie kolejka zapytan
 
 		Seam.Remoting.startBatch();
-		Seam.Remoting.getContext().setConversationId(seamConversationId );
+		Seam.Remoting.getContext().setConversationId(seamConversationId);
 		// pobiera instancje componentu ejb przystanekDAO
 		var przystanekDAO = Seam.Component.getInstance("przystanekDAO");
 		var savePrzystanekCallback = function(p) {
@@ -285,17 +284,17 @@ function homeAddLiniaDialogInit() {
 
 	// zdarzenie najechania na nazwe przystanku
 	$(".przytanekLi").hover(
-			// on
-			function() {
-				$(this).addClass("ui-state-hover");
-				var idTyp = getIdTypeFromIdAttr($(this));
-				showPrzystanekOnMap(idTyp[0]);
-			},
-			// off
-			function() {
-				$(this).removeClass("ui-state-hover");
-				hidePrzystanek();
-			});
+	// on
+	function() {
+		$(this).addClass("ui-state-hover");
+		var idTyp = getIdTypeFromIdAttr($(this));
+		showPrzystanekOnMap(idTyp[0]);
+	},
+	// off
+	function() {
+		$(this).removeClass("ui-state-hover");
+		hidePrzystanek();
+	});
 
 }
 
@@ -325,16 +324,16 @@ function dodajLinieButtonClick() {
 
 		// zaczyna sie kolejka zapytan
 		Seam.Remoting.startBatch();
-		Seam.Remoting.getContext().setConversationId(seamConversationId );
+		Seam.Remoting.getContext().setConversationId(seamConversationId);
 		var liniaDAO = Seam.Component.getInstance("liniaDAO");
 
 		var saveLiniaCallback = function(l) {
-			if (l=='success') {
+			if (l == 'success') {
 				alert("Dodano Linie");
 			} else {
-				if(l)
+				if (l)
 					alert(l);
-				else{
+				else {
 					alert("b³¹d w po³¹czeniu");
 				}
 			}
@@ -349,7 +348,6 @@ function dodajLinieButtonClick() {
 				false,// $("input#liniaPowrotna").is(":checked"),
 				saveLiniaCallback, exeptionHandler);
 
-		
 		// odpalenie zapytan
 		Seam.Remoting.executeBatch();
 		$(".addLiniaDialog").dialog("close");
@@ -518,10 +516,6 @@ function prepareListeIdPrzystanokow(l) {
 	return lista;
 }
 
-
-
-
-
 function checkLength(o, n, min, max) {
 	if (o.val().length > max || o.val().length < min) {
 		o.addClass("ui-state-error");
@@ -558,14 +552,13 @@ function updateTips(t) {
 	}, 500);
 }
 
+function deleteDialogOpen() {
 
-function deleteDialogOpen(){
-	
 	$("#dialog-deleteconfirm").dialog({
 		autoOpen : true,
 		resizable : false,
 		height : 200,
-		width: 300,
+		width : 300,
 		modal : true,
 		buttons : {
 			"Usuñ" : function() {
@@ -579,14 +572,75 @@ function deleteDialogOpen(){
 			}
 		}
 	});
-	
+
 };
 
-
-
-
-function drawRoute(trasa){
-	for(var i in trasa) {
-		alert(trasa[i].getPrzystanek().getNazwa());
+function drawRoute(trasa) {
+	$("#tabs-1").text(" ");
+	
+		przystankiLayer.removeFeatures(path);
+	
+	if (trasa == null || trasa.length == 0) {
+		if ($("#tabs"))
+			$("#tabs-1").text("Brak trasy");
+		else
+			alert("Brak trasy");
+		return;
 	}
-}	
+
+	// cala trasa
+	var tablicaLinii = [];
+	var points = [];
+
+	// od start do przystanku
+	points.push( new OpenLayers.Geometry.Point(start.lonlat.lon,
+			start.lonlat.lat) );
+	points.push( przystanki[getIPrzystnekFromId(trasa[0].przystanek.id)].geometry );
+	
+	var liniaStartVect = new OpenLayers.Feature.Vector(
+					new OpenLayers.Geometry.LineString(points), 
+					{},
+					{strokeColor : "#AAAAFF",
+						strokeWidth: 4,
+						strokeLinecap: "square",
+						strokeDashstyle: "solid"});
+	
+	path.push(liniaStartVect);
+	points = [];
+	
+	var j = 1; 
+	$("#tabs-1").append((j++) + ". Pieszo ok ilosc m	 w linii prostej <br />" );
+	var i = 0;
+	//trasa
+	for (i; i < trasa.length; ++i) {
+		$("#tabs-1").append(
+				(j++) + ". " + trasa[i].przystanek.nazwa + "<br />");
+		points.push(przystanki[getIPrzystnekFromId(trasa[i].przystanek.id)].geometry );
+	}
+	
+	var liniaVect = new OpenLayers.Feature.Vector(
+			new OpenLayers.Geometry.LineString(points));
+	path.push(liniaVect);
+	points = [];
+	
+	// od ostatniego przystanku do stpo
+	points.push( new OpenLayers.Geometry.Point(stop.lonlat.lon,
+			stop.lonlat.lat) );
+	points.push( przystanki[getIPrzystnekFromId(trasa[trasa.length-1].przystanek.id)].geometry );
+	
+	var liniaStopVect = new OpenLayers.Feature.Vector(
+			new OpenLayers.Geometry.LineString(points), 
+			{},
+			{strokeColor : "#AAAAFF",
+				strokeWidth: 4,
+				strokeLinecap: "square",
+				strokeDashstyle: "solid"});
+	
+	path.push(liniaStopVect);
+	points = [];
+	
+	$("#tabs-1").append((j++) + ". Pieszo ok ilosc m	 w linii prostej <br />" );
+	
+	przystankiLayer.addFeatures(path);
+	
+}
