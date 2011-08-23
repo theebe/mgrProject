@@ -55,8 +55,8 @@
 							</rich:column>
 							<rich:column>
 								<a:commandLink
-									action="#{przystanekDAO.setSelectedPrzystanek(przystanek)}"
-									reRender="przystanekInfo" value="Pokarz">
+									action="#{przystanekDAO.setSelectedPrzystanek(przystanek)}" 
+									reRender="przystanekInfo" value="Pokarz" oncomplete="hidePrzystanek(); showPrzystanekOnMap(#{przystanek.id});">
 								</a:commandLink>
 
 							</rich:column>

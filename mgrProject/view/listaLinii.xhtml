@@ -72,9 +72,10 @@
 								<rich:column>
 									<a:commandLink
 										eventsQueue="liniaQueue" ignoreDupResponses="true"
+										 actionListener="#{liniaDAO.setSelectedLinia(linia)}"
 										 action="#{liniaEditer.setEditedLinia(linia.id)}"
 										reRender="edycjaLiniiCont" value="Edytuj" onclick="displayLoadingMessage();"
-										oncomplete="hideLoadingMessage(); initEdycjaLinii( '#{linia.typ}', #{linia.id} );"
+										oncomplete="hideLoadingMessage(); initEdycjaLinii( '#{linia.typ}', #{linia.id} ); showSelectedLinia();"
 										 />
 								</rich:column>
 

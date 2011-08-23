@@ -24,7 +24,7 @@ function deleteDialogOpen() {
 
 function initEdycjaLinii(typ, id) {
 	
-	showLinia(id);
+	
 	// zamien widoki
 	$(".listaLiniiContainerAll").attr("style", "display: none;");
 	$(".edycjaLiniiContainerAll").removeAttr("style");
@@ -36,6 +36,8 @@ function initEdycjaLinii(typ, id) {
 
 	// jest formularz
 	if ($(".formularzEdycjiLinii")) {
+		
+		showSelectedLinia();
 
 		// spinner (czas do next)
 		$(".czasDoNastSpinner").spinner({
@@ -89,22 +91,7 @@ function showSelectedLinia(){
 	Seam.Remoting.executeBatch();
 }
 
-function showLinia(id){
-	Seam.Remoting.startBatch();
-	Seam.Remoting.getContext().setConversationId(seamConversationId );
-	// pobiera instancje componentu ejb przystanekDAO
-	var liniaDAO = Seam.Component.getInstance("liniaDAO");
-	
-	var getLiniaCallback = function (l){
-		if(l){
-			showLiniaOnMap(l);
-		}
-	}
-	liniaDAO.getLinia(id, getLiniaCallback);
-	
-	// odpalenie zapytan
-	Seam.Remoting.executeBatch();
-}
+
 
 function backView(){
 	

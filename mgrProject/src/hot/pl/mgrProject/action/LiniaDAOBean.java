@@ -84,8 +84,7 @@ public class LiniaDAOBean implements LiniaDAO, Serializable {
 	}
 
 	public Linia getLinia(Long id){
-		Linia l = mgrDatabase.find(Linia.class, id);
-		return l;
+		return mgrDatabase.find(Linia.class, id);
 	}
 	
 	@Factory("liniaList")
