@@ -566,7 +566,9 @@ function showPrzystanekOnMap(id){
 }
 
 function hidePrzystanek(){
-	map.removePopup(przystanekInfoPopup);
+	if(przystanekInfoPopup != null)
+		map.removePopup(przystanekInfoPopup);
+	przystanekInfoPopup = null;
 }
 
 
