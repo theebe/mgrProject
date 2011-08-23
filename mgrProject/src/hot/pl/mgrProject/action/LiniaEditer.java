@@ -1,5 +1,7 @@
 package pl.mgrProject.action;
 
+import java.util.List;
+
 import javax.ejb.Local;
 import javax.ejb.Remove;
 
@@ -15,7 +17,7 @@ public interface LiniaEditer {
 	public void setEditedLinia(Long id);
 	public Linia getEditedLinia();
 	
-	public String merge();
+	public void merge();
 	
 	public void cancel();
 
@@ -24,6 +26,8 @@ public interface LiniaEditer {
 	public void removeOdjazd(Odjazd o);
 	public void addOdjazdSw();
 	public void addOdjazdPo();
+	
+	public List<PrzystanekTabliczka> getPtList();
 	
 	@Destroy
 	@Remove

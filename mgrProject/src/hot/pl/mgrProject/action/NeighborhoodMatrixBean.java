@@ -128,7 +128,7 @@ public class NeighborhoodMatrixBean implements NeighborhoodMatrix {
 				continue;
 			}
 			current = tab.getPrzystanek();
-			tabsForCurrent = mgrDatabase.createNamedQuery("tabliczniPoPrzystanku").setParameter("przystanek", current).getResultList();
+			tabsForCurrent = mgrDatabase.createNamedQuery("tabliczkiPoPrzystanku").setParameter("przystanek", current).getResultList();
 			for (int i = 0; i < tabsForCurrent.size(); ++i) {
 				tabSpr.add(tabsForCurrent.get(i).getId());
 				aktualny = getIndex(tabsForCurrent.get(i).getId());

@@ -2,12 +2,5 @@
 <page xmlns="http://jboss.com/products/seam/pages"
  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jboss.com/products/seam/pages http://jboss.com/products/seam/pages-2.2.xsd">
  <begin-conversation join="true"/>
- <navigation>
-  <rule if-outcome="merge">
-   <redirect view-id="/listaLinii.xhml" />
-  </rule>
-  <rule if-outcome="cancel">
-  <redirect view-id="/listaLinii.xhml" />
-  </rule>
- </navigation>
+
 </page>

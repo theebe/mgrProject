@@ -50,7 +50,7 @@ public class Przystanek implements Serializable {
 	private String nazwa;
 	private TypKomunikacji typ;
 
-	private Set<PrzystanekTabliczka> przystanekTabliczki;
+	private List<PrzystanekTabliczka> przystanekTabliczki;
 	
 
 	@Id @GeneratedValue
@@ -95,11 +95,11 @@ public class Przystanek implements Serializable {
 	
 
 	@OneToMany(mappedBy="przystanek", cascade={CascadeType.MERGE, CascadeType.REFRESH})
-	public Set<PrzystanekTabliczka> getPrzystanekTabliczki() {
+	public List<PrzystanekTabliczka> getPrzystanekTabliczki() {
 		return przystanekTabliczki;
 	}
 
-	public void setPrzystanekTabliczki(Set<PrzystanekTabliczka> przystanekTabliczki) {
+	public void setPrzystanekTabliczki(List<PrzystanekTabliczka> przystanekTabliczki) {
 		this.przystanekTabliczki = przystanekTabliczki;
 	}
 

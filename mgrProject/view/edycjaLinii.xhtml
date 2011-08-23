@@ -17,7 +17,7 @@
 
 			<s:div rendered="#{liniaEditer.editedLinia == null}">
 				Brak wybranej linii.<br />
-				<s:button action="cancel" styleClass="cancelButton">Wstecz</s:button>
+				<s:link value="Wstecz" actionListener="#{liniaEditer.cancel()}"></s:link>
 			</s:div>
 
 
@@ -31,17 +31,20 @@
 						class="ui-widget-header ui-widget-content ui-corner-all ui-helper-clearfix text">
 						<span>Edycja Linia</span>
 					</div>
+					<h:form>
 
-					<div>
+						<div>
 
-						<p class="validateTips ui-state-error-text"></p>
+							<p class="validateTips ui-state-error-text"></p>
 
-						<h:form>
 
 							<label for="liniaNumer">Numer</label>
-							<input type="text" name="liniaNumer" id="liniaNumerEdit"
+							<h:inputText  size="3" id="liniaNumerEdit"
 								style="width: 150px" value="#{editedLinia.numer}"
-								class="text ui-widget-content ui-corner-all" />
+								class="text ui-widget-content ui-corner-all">
+								<a:support eventsQueue="liniaQueue" ignoreDupResponses="true"
+									event="onchange" timeout="500" />
+							</h:inputText>
 							<br />Typ: <br />
 							<h:outputText value="Autobusowa"
 								rendered="#{editedLinia.typ == 'A'}" />
@@ -94,8 +97,7 @@
 													</tr>
 												</thead>
 												<tbody>
-													<ui:repeat var="przyst"
-														value="#{editedLinia.przystanekTabliczka}">
+													<ui:repeat var="przyst" value="#{ptList}">
 
 														<tr class="rich-table-row przystanekRow"
 															id="#{przyst.przystanek.id}-#{przyst.przystanek.typ}">
@@ -111,13 +113,15 @@
 																			value="#{odjazd.czas}">
 																			<f:convertDateTime timeZone="#{liniaDAO.timeZone}"
 																				type="time" pattern="HH:mm" />
-																					<a:support
-																					eventsQueue="liniaQueue" ignoreDupResponses="true"
-																				actionListener="#{liniaEditer.change}"
-																				oncomplete=" initEdycjaLinii( '#{editedLinia.typ}', #{editedLinia.id} ) ;"
-																				event="onchange" timeout="500"
-																				reRender="listaPrzystankowLiniiCont" />
+
 																		</h:inputText>
+																		<a:jsFunction id="changeLiniaJSFunction"
+																			name="changeOdjazd" eventsQueue="liniaQueue"
+																			ignoreDupResponses="true"
+																			reRender="listaPrzystankowLiniiCont"
+																			action="#{liniaEditer.change}"
+																			oncomplete=" initEdycjaLinii( '#{editedLinia.typ}', #{editedLinia.id} ) ;" />
+
 																		<h:outputText value=", "
 																			rendered="#{odjazd.typDnia == 'DZIEN_POWSZEDNI'}" />
 																	</ui:repeat>
@@ -142,12 +146,7 @@
 																			value="#{odjazd.czas}">
 																			<f:convertDateTime timeZone="#{liniaDAO.timeZone}"
 																				type="time" pattern="HH:mm" />
-																			<a:support
-																			eventsQueue="liniaQueue" ignoreDupResponses="true"
-																				actionListener="#{liniaEditer.change}"
-																				oncomplete=" initEdycjaLinii( '#{editedLinia.typ}', #{editedLinia.id} ) ;"
-																				event="onchange" timeout="500"
-																				reRender="listaPrzystankowLiniiCont" />
+
 																		</h:inputText>
 																		<h:outputText value=", "
 																			rendered="#{odjazd.typDnia == 'SWIETA'}" />
@@ -168,8 +167,8 @@
 																	value="#{przyst.czasDoNastepnego}"
 																	styleClass="czasDoNastSpinner"
 																	rendered="#{przyst.nastepnyPrzystanek != null}">
-																	<a:support
-																	eventsQueue="liniaQueue" ignoreDupResponses="true"
+																	<a:support eventsQueue="liniaQueue"
+																		ignoreDupResponses="true"
 																		actionListener="#{liniaEditer.change}"
 																		oncomplete=" initEdycjaLinii( '#{editedLinia.typ}', #{editedLinia.id} ) ;"
 																		event="onchange" reRender="listaPrzystankowLiniiCont" />
@@ -186,18 +185,34 @@
 								</s:div>
 							</div>
 
-						</h:form>
 
-					</div>
 
-					<div>
-						<div class="edycjaLiniiButtons">
-							<a:commandButton action="#{liniaEditer.merge}"
-								styleClass="zapiszLinieButton" oncomplete="alert('Zapisano');">Zapisz</a:commandButton>
-							<s:button action="cancel" styleClass="cancelButton">Cancel</s:button>
 						</div>
-					</div>
 
+						<div>
+							<div class="edycjaLiniiButtons">
+ 								<button onclick="saveLinia();" class="zapiszLinieButton">Zapisz</button>
+								<button onclick="cancelLinia();" class="cancelButton">Anuluj</button>
+
+								<a:form ajaxSubmit="true" reRender="listaLiniiCont">
+									<a:jsFunction id="saveLiniaJSFunction" name="saveLinia"
+										reRender="listaLiniiCont, deleteDialog, liniaInfo"
+										ajaxSingle="true" action="#{liniaEditer.merge()}"
+										eventsQueue="liniaQueue" ignoreDupResponses="true"
+										oncomplete="alert('zapisano'); backView();" />
+								</a:form>
+
+								<a:form ajaxSubmit="true" reRender="listaLiniiCont">
+									<a:jsFunction id="saveLiniaJSFunction" name="cancelLinia"
+										eventsQueue="liniaQueue" ignoreDupResponses="true"
+										reRender="listaLiniiCont, deleteDialog, liniaInfo"
+										ajaxSingle="true" action="#{liniaEditer.cancel()}"
+										oncomplete=" backView();" />
+								</a:form>
+							
+							</div>
+						</div>
+					</h:form>
 				</div>
 
 

@@ -25,7 +25,8 @@ import org.hibernate.validator.NotNull;
 	@NamedQuery(name="wszystkieOdjazdy", query="SELECT odj FROM Odjazd odj"),
 	@NamedQuery(name="odjazdyZPrzystanku", query="SELECT odj FROM Odjazd odj WHERE odj.przystanekTabliczka.przystanek = :przystanek "),
 	@NamedQuery(name="odjazdyLini", query="SELECT odj FROM Odjazd odj WHERE odj.przystanekTabliczka.linia = :linia"),
-	@NamedQuery(name="odjazdyLiniZPrzystanku", query="SELECT odj FROM Odjazd odj WHERE  odj.przystanekTabliczka.przystanek = :przystanek AND odj.przystanekTabliczka.linia = :linia")
+	@NamedQuery(name="odjazdyLiniZPrzystanku", query="SELECT odj FROM Odjazd odj WHERE  odj.przystanekTabliczka.przystanek = :przystanek AND odj.przystanekTabliczka.linia = :linia"),
+	@NamedQuery(name="odjazdyPrzystanekTabliczka", query="SELECT odj FROM Odjazd odj WHERE odj.przystanekTabliczka = :przystanekTabl")
 	})
 public class Odjazd {
 

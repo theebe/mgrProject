@@ -14,7 +14,9 @@
 
 		<script type="text/javascript" src="js/lib/ui.spinner.js"></script>
 		<script type="text/javascript" src="js/lib/jquery-ui-timepicker-addon.js"></script>
-		
+		<script type="text/javascript">
+		var editedLiniaCID = #{conversation.id};
+		</script>
 
 		<s:div styleClass="infoPanelContainer" id="infoPanelContId"
 			style="width: 600px;">
@@ -55,21 +57,25 @@
 								<rich:column>
 									<a:commandLink action="#{liniaDAO.setSelectedLinia(linia)}"
 										reRender="deleteDialog" value="Skaskuj"
-										oncomplete="deleteDialogOpen();" >
+										oncomplete="deleteDialogOpen();" 
+										eventsQueue="liniaQueue" ignoreDupResponses="true" >
 									</a:commandLink>
 
 								</rich:column>
 								<rich:column>
-									<a:commandLink action="#{liniaDAO.setSelectedLinia(linia)}"
-										reRender="liniaInfo" value="Pokaz" oncomplete="showSelectedLinia();" >
+									<a:commandLink 
+									eventsQueue="liniaQueue" ignoreDupResponses="true" action="#{liniaDAO.setSelectedLinia(linia)}" onclick="displayLoadingMessage();"
+										reRender="liniaInfo" value="Pokaz" oncomplete="hideLoadingMessage(); showSelectedLinia();" >
 									</a:commandLink>
 
 								</rich:column>
 								<rich:column>
-									<a:commandLink action="#{liniaEditer.setEditedLinia(linia.id)}"
-										reRender="edycjaLiniiCont" value="Edytuj"
-										oncomplete=" initEdycjaLinii( '#{linia.typ}', #{linia.id} );"
-										eventsQueue="liniaQueue" ignoreDupResponses="true" />
+									<a:commandLink
+										eventsQueue="liniaQueue" ignoreDupResponses="true"
+										 action="#{liniaEditer.setEditedLinia(linia.id)}"
+										reRender="edycjaLiniiCont" value="Edytuj" onclick="displayLoadingMessage();"
+										oncomplete="hideLoadingMessage(); initEdycjaLinii( '#{linia.typ}', #{linia.id} );"
+										 />
 								</rich:column>
 
 							</rich:dataTable>

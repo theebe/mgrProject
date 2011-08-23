@@ -59,11 +59,18 @@ public class AlgorithmBean implements Algorithm {
 	public Boolean run() {
 		Przystanek pstart = getClosestToStart();
 		Przystanek pstop  = getClosestToStop();
+
+		List<PrzystanekTabliczka> tabForStart = mgrDatabase.createNamedQuery("tabliczkiPoPrzystanku").setParameter("przystanek", pstart).getResultList();
+		List<PrzystanekTabliczka> tabForStop = mgrDatabase.createNamedQuery("tabliczkiPoPrzystanku").setParameter("przystanek", pstop).getResultList();
 		
-		List<PrzystanekTabliczka> tabForStart = mgrDatabase.createNamedQuery("tabliczniPoPrzystanku").setParameter("przystanek", pstart).getResultList();
-		List<PrzystanekTabliczka> tabForStop = mgrDatabase.createNamedQuery("tabliczniPoPrzystanku").setParameter("przystanek", pstop).getResultList();
 		log.info("Liczba tabliczek dla start: " + tabForStart.size());
 		log.info("Liczba tabliczek dla stop: " + tabForStop.size());
+		
+		if (tabForStart.size() == 0 || tabForStop.size() == 0) {
+			log.info("Nie mozna znalezc trasy.");
+			return false;
+		}
+		
 			//pobieranie pierwszej tabliczki z listy dla danego przystanku pocz¹tkowego
 			//na razie nie wiadomo dla której tabliczki mozna znalezc krotsza trase.
 			//Polaczenie tabliczek na tych samych przystankach zagwarantuje znalezienie najkrótszej trasy.
@@ -112,6 +119,8 @@ public class AlgorithmBean implements Algorithm {
 				return true;
 			} catch(Exception e) {
 				log.info("AlgorithmBean: [Dijkstra] Wystapil niepodziewany wyjatek");
+				
+				e.printStackTrace();
 				return false;
 			}
 		} else {
@@ -150,6 +159,10 @@ public class AlgorithmBean implements Algorithm {
 	 * Wyswietla w oknie logow trase jaka zostala znaleziona przez algorytm.
 	 */
 	private void printTrasa() throws Exception {
+		if (path == null) {
+			return;
+		}
+		
 		log.info("Route: " + dijkstraBean.getPath(stop));
 		String info = "";
 		for (int i : path) {
@@ -163,6 +176,10 @@ public class AlgorithmBean implements Algorithm {
 	 * @return Lista kolejnych tabliczek bedaca znaleziona przez algorytm trasa.
 	 */
 	public List<PrzystanekTabliczka> getPath() {
+		if (path == null) {
+			return new ArrayList<PrzystanekTabliczka>();
+		}
+		
 		List<PrzystanekTabliczka> trasa = new ArrayList<PrzystanekTabliczka>();
 		
 		for (Integer i : path) {
