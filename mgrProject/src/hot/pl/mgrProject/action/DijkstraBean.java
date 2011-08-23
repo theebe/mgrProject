@@ -140,6 +140,8 @@ public class DijkstraBean implements Dijkstra {
 			i = p[i];
 		}
 		
+		result += s;
+		
 		return result;
 	}
 	
@@ -159,6 +161,8 @@ public class DijkstraBean implements Dijkstra {
 			tab.add(i);
 			i = p[i];
 		}
+		
+		tab.add(s);
 		
 		return tab;
 	}
