@@ -57,9 +57,9 @@ function searchButtonClick(e) {
 	
 //	algorithmBean.setStartPoint(startLonLat.lon, startLonLat.lat, setStartPointCallback);
 //	algorithmBean.setStopPoint(stopLonLat.lon, stopLonLat.lat, setStopPointCallback);
-	alert("jest1");
+
 	homeBean.findRoute(findRouteCallback);
-	alert("jest2");
+
 	var findRouteCallback = function(result) {
 		if (!result) {
 			alert("Obliczanie trasy nie powiodlo sie!");
@@ -69,7 +69,7 @@ function searchButtonClick(e) {
 	
 	//Rysowanie trasy
 	var getRouteCallback = function(result) {
-		alert(result.length);
+//		alert(result.length);
 //		drawRoute(result);
 //		for(var i in result) {
 //			alert(result[i].getPrzystanek().getNazwa());
