@@ -281,13 +281,14 @@ function onClickEvent(e) {
 	start_stopLayer.addMarker(crossMarker);
 
 	// dodanie popupu
-	if (popup)
+	if (popup)//jezeli popup juz jest skasuj poprzedni
 		map.removePopup(popup);
 	
 	popup = new OpenLayers.Popup('menu', lonlat, new OpenLayers.Size(100, 120),
 			$(".popupContent").html(), true);
 
 	popup.setBackgroundColor('darkblue');
+	popup.panMapIfOutOfView = true;
 	map.addPopup(popup);
 
 	// Eventy popup menu: Start stop etc

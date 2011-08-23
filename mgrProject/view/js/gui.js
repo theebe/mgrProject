@@ -579,9 +579,12 @@ function deleteDialogOpen() {
 };
 
 function drawRoute(trasa) {
+	//czyszczenie starej strasy
 	$("#tabs-1").text(" ");
-	
+	if(path.length!=0){
 		przystankiLayer.removeFeatures(path);
+		path = [];
+	}
 	
 	if (trasa == null || trasa.length == 0) {
 		if ($("#tabs"))
@@ -596,25 +599,32 @@ function drawRoute(trasa) {
 	var points = [];
 
 	// od start do przystanku
+	// dodajemy punkt startowy
 	points.push( new OpenLayers.Geometry.Point(start.lonlat.lon,
 			start.lonlat.lat) );
+	//dodajemy punkt przystanku nablizszego do start
 	points.push( przystanki[getIPrzystnekFromId(trasa[0].przystanek.id)].geometry );
-	
+	//tworze linie
+	var liniaDoStart = new OpenLayers.Geometry.LineString(points);
+	//tworze obiekt wektorowy linii wraz z stylem
 	var liniaStartVect = new OpenLayers.Feature.Vector(
-					new OpenLayers.Geometry.LineString(points), 
+					liniaDoStart, 
 					{},
 					{strokeColor : "#BBBBFF",
 						strokeWidth: 4,
 						strokeLinecap: "square",
 						strokeDashstyle: "solid"});
 	
+	//dodaje wektor do tablicy w ktorej jest cala wyznaczona trasa
 	path.push(liniaStartVect);
 	points = [];
-	
+	// obliczam odleglosc z buta do najblizszego przystanku  (float w metrach)
+	var odlPieszoDoStart = liniaDoStart.getGeodesicLength(map.getProjectionObject());
 	var j = 1; 
-	$("#tabs-1").append((j++) + ". Pieszo ok ilosc m	 w linii prostej <br />" );
+	$("#tabs-1").append((j++) + ". Pieszo ok "+ parseInt(odlPieszoDoStart) +" m w linii prostej <br />" );
 	var i = 0;
-	//trasa
+	
+	//trasa wyznaczona przez alg dijkstry
 	for (i; i < trasa.length; ++i) {
 		$("#tabs-1").append(
 				(j++) + ". " + trasa[i].przystanek.nazwa + "<br />");
@@ -626,13 +636,13 @@ function drawRoute(trasa) {
 	path.push(liniaVect);
 	points = [];
 	
-	// od ostatniego przystanku do stpo
+	// od ostatniego przystanku do stop
 	points.push( new OpenLayers.Geometry.Point(stop.lonlat.lon,
 			stop.lonlat.lat) );
 	points.push( przystanki[getIPrzystnekFromId(trasa[trasa.length-1].przystanek.id)].geometry );
-	
+	var liniaDoStop = new OpenLayers.Geometry.LineString(points);
 	var liniaStopVect = new OpenLayers.Feature.Vector(
-			new OpenLayers.Geometry.LineString(points), 
+			liniaDoStop, 
 			{},
 			{strokeColor : "#AAAAFF",
 				strokeWidth: 4,
@@ -641,8 +651,8 @@ function drawRoute(trasa) {
 	
 	path.push(liniaStopVect);
 	points = [];
-	
-	$("#tabs-1").append((j++) + ". Pieszo ok ilosc m	 w linii prostej <br />" );
+	var odlPieszoDoStop = liniaDoStop.getGeodesicLength(map.getProjectionObject());
+	$("#tabs-1").append((j++) + ". Pieszo ok " + parseInt(odlPieszoDoStop) + " m w linii prostej <br />" );
 	
 	przystankiLayer.addFeatures(path);
 	

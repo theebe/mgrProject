@@ -242,7 +242,7 @@ public class AlgorithmBean implements Algorithm {
 				return true;
 			} catch(Exception e) {
 				log.info("HomeBean: [Dijkstra] Wystapil niepodziewany wyjatek");
-				
+				e.printStackTrace();
 				return false;
 			}
 		} else {
