@@ -37,6 +37,7 @@ function searchButtonClick(e) {
 		if (!result) {
 			alert("bledne parametry przystanku startowego");
 			Seam.Remoting.cancelBatch();
+			return;
 		}
 	}
 	var startLonLat = new OpenLayers.LonLat(start.lonlat.lon, start.lonlat.lat)
@@ -48,6 +49,7 @@ function searchButtonClick(e) {
 		if (!result) {
 			alert("bledne parametry przystanku koncowego");
 			Seam.Remoting.cancelBatch();
+			return;
 		}
 	}
 	var stopLonLat = new OpenLayers.LonLat(stop.lonlat.lon, stop.lonlat.lat)
@@ -59,27 +61,28 @@ function searchButtonClick(e) {
 		if (!result) {
 			alert("bledna data i czas startowy");
 			Seam.Remoting.cancelBatch();
+			return;
 		}
 	}
 	homeBean.setStartTime(startTime, setStartTimeCallback);
 	homeBean.setStartPoint(startLonLat.lon, startLonLat.lat, setStartPointCallback);
 	homeBean.setStopPoint(stopLonLat.lon, stopLonLat.lat, setStopPointCallback);
-	homeBean.findRoute(findRouteCallback);
-
+	
 	var findRouteCallback = function(result) {
-		if (!result) {
+	
+		
+		if (result == null) {
 			alert("Obliczanie trasy nie powiodlo sie!");
 			Seam.Remoting.cancelBatch();
+			return;
+		}
+		else{
+			drawRoute(result);
 		}
 	};
+	
+	homeBean.findRoute(findRouteCallback);
 
-	// Rysowanie trasy
-	var getPathCallback = function(result) {
-		drawRoute(result);
-	};
-
-	// pobranie obliczonej trasy
-	homeBean.getRoute(getPathCallback);
 
 	// odpalenie zapytan
 	Seam.Remoting.executeBatch();

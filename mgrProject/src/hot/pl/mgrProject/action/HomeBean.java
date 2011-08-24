@@ -84,16 +84,16 @@ public class HomeBean implements Serializable, Home {
 		return true;
 	}
 	
-	public Boolean findRoute() {
+	public List<PrzystanekTabliczka> findRoute() {
 		algorithmBean.setStartPoint(startPoint);
 		algorithmBean.setStopPoint(stopPoint);
 		Boolean result = algorithmBean.run();
-		return result;
+		if(result)
+			return algorithmBean.getPath();
+		else return null;
 	}
 	
-	public List<PrzystanekTabliczka> getRoute() {
-		return algorithmBean.getPath();
-	}
+
 
 	@Destroy
 	@Remove
