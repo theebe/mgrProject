@@ -62,22 +62,16 @@ function searchButtonClick(e) {
 		}
 	}
 	homeBean.setStartTime(startTime, setStartTimeCallback);
+	homeBean.setStartPoint(startLonLat.lon, startLonLat.lat, setStartPointCallback);
+	homeBean.setStopPoint(stopLonLat.lon, stopLonLat.lat, setStopPointCallback);
+	homeBean.findRoute(findRouteCallback);
 
-	algorithmBean.setStartPoint(startLonLat.lon, startLonLat.lat,
-			setStartPointCallback);
-	algorithmBean.setStopPoint(stopLonLat.lon, stopLonLat.lat,
-			setStopPointCallback);
-	algorithmBean.run(runAlgorithmCallback, runAlgorithmExeptionHandler);
-
-	var runAlgorithmCallback = function(result) {
+	var findRouteCallback = function(result) {
 		if (!result) {
 			alert("Obliczanie trasy nie powiodlo sie!");
 			Seam.Remoting.cancelBatch();
 		}
 	};
-	var runAlgorithmExeptionHandler = function (ex) {
-		alert("blad: " + ex.printStackTrace()) ;
-	}
 
 	// Rysowanie trasy
 	var getPathCallback = function(result) {
@@ -85,7 +79,7 @@ function searchButtonClick(e) {
 	};
 
 	// pobranie obliczonej trasy
-	algorithmBean.getPath(getPathCallback);
+	homeBean.getRoute(getPathCallback);
 
 	// odpalenie zapytan
 	Seam.Remoting.executeBatch();
