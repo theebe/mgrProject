@@ -1,4 +1,4 @@
-package pl.mgrProject.action;
+package pl.mgrProject.action.algorithm;
 
 import java.math.BigInteger;
 import java.util.ArrayList;

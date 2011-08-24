@@ -17,6 +17,7 @@ import org.jboss.seam.annotations.Scope;
 import org.jboss.seam.log.Log;
 import org.postgis.Point;
 
+import pl.mgrProject.action.algorithm.Algorithm;
 import pl.mgrProject.model.PrzystanekTabliczka;
 
 /**
