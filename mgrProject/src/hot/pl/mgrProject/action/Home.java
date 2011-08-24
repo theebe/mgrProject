@@ -1,6 +1,7 @@
 package pl.mgrProject.action;
 
 import java.util.Date;
+import java.util.List;
 
 import javax.ejb.Local;
 import javax.ejb.Remove;
@@ -8,6 +9,8 @@ import javax.ejb.Remove;
 import org.jboss.seam.annotations.Destroy;
 import org.jboss.seam.annotations.remoting.WebRemote;
 import org.postgis.Point;
+
+import pl.mgrProject.model.PrzystanekTabliczka;
 
 @Local
 public interface Home {
@@ -30,6 +33,12 @@ public interface Home {
 
 	@WebRemote
 	public Boolean setStartTime(Date startTime);
+	
+	@WebRemote
+	public Boolean findRoute();
+	
+	@WebRemote
+	public List<PrzystanekTabliczka> getRoute();
 	
 
 	@Destroy
