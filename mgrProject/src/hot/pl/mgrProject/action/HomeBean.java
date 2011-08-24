@@ -17,6 +17,7 @@ import org.jboss.seam.annotations.Scope;
 import org.jboss.seam.log.Log;
 import org.postgis.Point;
 
+import pl.mgrProject.action.algorithm.Algorithm;
 import pl.mgrProject.model.PrzystanekTabliczka;
 
 /**
@@ -83,16 +84,16 @@ public class HomeBean implements Serializable, Home {
 		return true;
 	}
 	
-	public Boolean findRoute() {
+	public List<PrzystanekTabliczka> findRoute() {
 		algorithmBean.setStartPoint(startPoint);
 		algorithmBean.setStopPoint(stopPoint);
 		Boolean result = algorithmBean.run();
-		return result;
+		if(result)
+			return algorithmBean.getPath();
+		else return null;
 	}
 	
-	public List<PrzystanekTabliczka> getRoute() {
-		return algorithmBean.getPath();
-	}
+
 
 	@Destroy
 	@Remove

@@ -16,6 +16,13 @@ function searchButtonClick(e) {
 		alert("parse error: " + parseResult);
 		return;
 	}
+	
+	//czyszczenie starej strasy
+	$("#tabs-1").text(" ");
+	if(path.length!=0){
+		przystankiLayer.removeFeatures(path);
+		path = [];
+	}
 
 	// ///////////////////////////////////////////////////////////////////////////////////////
 	// SEAM REMOTING
@@ -30,6 +37,7 @@ function searchButtonClick(e) {
 		if (!result) {
 			alert("bledne parametry przystanku startowego");
 			Seam.Remoting.cancelBatch();
+			return;
 		}
 	}
 	var startLonLat = new OpenLayers.LonLat(start.lonlat.lon, start.lonlat.lat)
@@ -41,6 +49,7 @@ function searchButtonClick(e) {
 		if (!result) {
 			alert("bledne parametry przystanku koncowego");
 			Seam.Remoting.cancelBatch();
+			return;
 		}
 	}
 	var stopLonLat = new OpenLayers.LonLat(stop.lonlat.lon, stop.lonlat.lat)
@@ -52,27 +61,28 @@ function searchButtonClick(e) {
 		if (!result) {
 			alert("bledna data i czas startowy");
 			Seam.Remoting.cancelBatch();
+			return;
 		}
 	}
 	homeBean.setStartTime(startTime, setStartTimeCallback);
 	homeBean.setStartPoint(startLonLat.lon, startLonLat.lat, setStartPointCallback);
 	homeBean.setStopPoint(stopLonLat.lon, stopLonLat.lat, setStopPointCallback);
-	homeBean.findRoute(findRouteCallback);
-
+	
 	var findRouteCallback = function(result) {
-		if (!result) {
+	
+		
+		if (result == null) {
 			alert("Obliczanie trasy nie powiodlo sie!");
 			Seam.Remoting.cancelBatch();
+			return;
+		}
+		else{
+			drawRoute(result);
 		}
 	};
+	
+	homeBean.findRoute(findRouteCallback);
 
-	// Rysowanie trasy
-	var getPathCallback = function(result) {
-		drawRoute(result);
-	};
-
-	// pobranie obliczonej trasy
-	homeBean.getRoute(getPathCallback);
 
 	// odpalenie zapytan
 	Seam.Remoting.executeBatch();
@@ -573,12 +583,7 @@ function deleteDialogOpen() {
 };
 
 function drawRoute(trasa) {
-	//czyszczenie starej strasy
-	$("#tabs-1").text(" ");
-	if(path.length!=0){
-		przystankiLayer.removeFeatures(path);
-		path = [];
-	}
+	
 	
 	if (trasa == null || trasa.length == 0) {
 		if ($("#tabs"))
@@ -614,14 +619,25 @@ function drawRoute(trasa) {
 	points = [];
 	// obliczam odleglosc z buta do najblizszego przystanku  (float w metrach)
 	var odlPieszoDoStart = liniaDoStart.getGeodesicLength(map.getProjectionObject());
-	var j = 1; 
-	$("#tabs-1").append((j++) + ". Pieszo ok "+ parseInt(odlPieszoDoStart) +" m w linii prostej <br />" );
-	var i = 0;
 	
+	$("#tabs-1").append("<ol></ol>")
+	$("#tabs-1 ol").append("<li>Pieszo ok "+ parseInt(odlPieszoDoStart) +" m w linii prostej </li>" );
+	
+	var i = 0;
+	var idLinii = null;
 	//trasa wyznaczona przez alg dijkstry
 	for (i; i < trasa.length; ++i) {
-		$("#tabs-1").append(
-				(j++) + ". " + trasa[i].przystanek.nazwa + "<br />");
+		
+		if(idLinii != trasa[i].linia.id){
+			////////////////////////////////////////////////////////////////////////////////////////////
+			// TODO: wyswietlanie przesiadki na mapie
+			
+			idLinii = trasa[i].linia.id;
+			$("#tabs-1 ol").append("<li id=\"liniaList-" + idLinii + "\">Linia nr "+ trasa[i].linia.numer + ":</li>");
+			$("#liniaList-" + idLinii).append("<ul></ul>");
+		}
+		
+		$("#liniaList-" + idLinii + " ul").append("<li>" + trasa[i].przystanek.nazwa + "</li>");
 		points.push(przystanki[getIPrzystnekFromId(trasa[i].przystanek.id)].geometry );
 	}
 	
@@ -646,8 +662,7 @@ function drawRoute(trasa) {
 	path.push(liniaStopVect);
 	points = [];
 	var odlPieszoDoStop = liniaDoStop.getGeodesicLength(map.getProjectionObject());
-	$("#tabs-1").append((j++) + ". Pieszo ok " + parseInt(odlPieszoDoStop) + " m w linii prostej <br />" );
-	
+	$("#tabs-1 ol").append( "<li>Pieszo ok " + parseInt(odlPieszoDoStop) + " m w linii prostej </li>" );
 	przystankiLayer.addFeatures(path);
 	
 }

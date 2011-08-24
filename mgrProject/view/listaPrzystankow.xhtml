@@ -46,7 +46,7 @@
 							</rich:column>
 
 							<rich:column>
-								<a:commandLink
+								<a:commandLink ignoreDupResponses="true"
 									action="#{przystanekDAO.setSelectedPrzystanek(przystanek)}"
 									reRender="deleteDialog" value="Skaskuj"
 									oncomplete="deleteDialogOpen();">
@@ -55,7 +55,7 @@
 							</rich:column>
 							<rich:column>
 								<a:commandLink
-									action="#{przystanekDAO.setSelectedPrzystanek(przystanek)}" 
+									action="#{przystanekDAO.setSelectedPrzystanek(przystanek)}" ignoreDupResponses="true"
 									reRender="przystanekInfo" value="Pokarz" oncomplete="hidePrzystanek(); showPrzystanekOnMap(#{przystanek.id});">
 								</a:commandLink>
 
