@@ -1,7 +1,9 @@
 package pl.mgrProject.action.algorithm;
 
 import java.util.ArrayList;
+import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Set;
 
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
@@ -11,6 +13,7 @@ import org.jboss.seam.annotations.Logger;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.log.Log;
 
+import pl.mgrProject.model.Linia;
 import pl.mgrProject.model.Przystanek;
 import pl.mgrProject.model.PrzystanekTabliczka;
 
@@ -28,6 +31,7 @@ public class NeighborhoodMatrixBean implements NeighborhoodMatrix {
 	private int n;
 	private int inf = 1000; //nieskonczonosc. Oznacza brak krawedzi miedzy wierzcholkami.
 	
+	@Override
 	public void create(int start) {
 		this.start = start;
 		this.n = tabliczki.size();
@@ -45,7 +49,7 @@ public class NeighborhoodMatrixBean implements NeighborhoodMatrix {
 		buildMatrix();
 		joinTabs();
 	}
-
+	
 	private void buildMatrix() {
 		//Algorytm budowania macierzy sasiedztwa. Na razie wagi krawedzi przypisane sa na sztywno.
 		//Po testach wyglada na to, ze dziala poprawnie. Nie uwzglednia przystankow ktore nie sa dodane do zadnej linii.
@@ -115,39 +119,42 @@ public class NeighborhoodMatrixBean implements NeighborhoodMatrix {
 	}
 	
 	private void joinTabs() {
-		//========================
-		// Laczenie tabliczek na tych samych przystankach.
-		// Kazda z kazda oprocz tych, ktore nie maja zdefiniowanego nastepnego przystanku
-		//========================
+		List<Linia> linie;
+		List<Przystanek> przystankiTmp = new ArrayList<Przystanek>();
+		
+		//pobranie tylko istniejacych linii aby nie laczyc przystankow, ktore nie sa w zadnej linii
+		linie = mgrDatabase.createNamedQuery("wszystkieLinie").getResultList();
+		log.info("Liczba linii: " + linie.size());
+		
+		//pobranie przystankow dla istniejacych linii
+		for (Linia l : linie) {
+			przystankiTmp.addAll(mgrDatabase.createNamedQuery("przystankiPoLinii")
+					.setParameter("linia", l)
+					.getResultList());
+		}
+		Set<Przystanek> przystanki = new LinkedHashSet<Przystanek>(przystankiTmp);
+		log.info("Liczba przystankow: " + przystanki.size());
+		
+		//laczenie tabliczek na tych samych przystankach. Przesiadki piesze bez przemieszczania sie.
+		//TODO: Mozliwosc zrownoleglenia
 		int aktualny = -1, nastepny = -1;
-		List<Long> tabSpr = new ArrayList<Long>();
-		List<PrzystanekTabliczka> tabsForCurrent = new ArrayList<PrzystanekTabliczka>();
-		Przystanek current = null;
-		for (PrzystanekTabliczka tab : tabliczki) {
-			if (tabSpr.contains(tab.getId())) {
-				continue;
-			}
-			current = tab.getPrzystanek();
-			tabsForCurrent = mgrDatabase.createNamedQuery("tabliczkiPoPrzystanku").setParameter("przystanek", current).getResultList();
-			for (int i = 0; i < tabsForCurrent.size(); ++i) {
-				tabSpr.add(tabsForCurrent.get(i).getId());
-				aktualny = getIndex(tabsForCurrent.get(i).getId());
-				for(int j = 0; j < tabsForCurrent.size(); ++j) {
-					if (i == j) {
-						continue;
-					}
-					try {
-						tabsForCurrent.get(j).getNastepnyPrzystanek();//jesli tabliczka nie ma nastepnego przystanku to wyrzuci wyjatek
-						nastepny = getIndex(tabsForCurrent.get(j).getId());
-						E[aktualny][nastepny] = 0;
-					} catch(Exception e) { //tabliczka nie prowadzi do nastepnego przystanku
-						continue;
-					}
+		for (Przystanek p : przystanki) {
+			//pobranie wszystkich tabliczek z aktualnego przystanku
+			List<PrzystanekTabliczka> pTab = p.getPrzystanekTabliczki();
+			log.info("pTab: " + pTab.size());
+			for (int i = 0; i < pTab.size(); ++i) {
+				aktualny = getIndex(pTab.get(i).getId());
+				for (int j = 0; j < pTab.size(); ++j) {
+					if (i == j) continue; //nie laczymy tabliczki samej z soba
+					nastepny = getIndex(pTab.get(j).getId());
+					E[aktualny][nastepny] = 0; //przesiadka piesza
 				}
 			}
 		}
+		printE();
 	}
 	
+	@Override
 	public void printE() {
 		String info = "";
 		for (int i = 0; i < n; ++i) {
@@ -161,10 +168,12 @@ public class NeighborhoodMatrixBean implements NeighborhoodMatrix {
 		log.info(info);
 	}
 	
+	@Override
 	public int[][] getE() {
 		return E;
 	}
 	
+	@Override
 	public Integer[] getV() {
 		return V;
 	}
@@ -174,6 +183,7 @@ public class NeighborhoodMatrixBean implements NeighborhoodMatrix {
 	 * @param id ID tabliczki.
 	 * @return Index tabliczki, lub -1 jesli nie znaleziono.
 	 */
+	@Override
 	public int getIndex(Long id) {
 		for (int i = 0; i < tabliczki.size(); ++i) {
 			if (tabliczki.get(i).getId() == id) {
@@ -183,6 +193,7 @@ public class NeighborhoodMatrixBean implements NeighborhoodMatrix {
 		return -1;
 	}
 	
+	@Override
 	public void setTabliczki(List<PrzystanekTabliczka> tabliczki) {
 		this.tabliczki = tabliczki;
 	}

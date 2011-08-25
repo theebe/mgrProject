@@ -116,7 +116,7 @@ public class DijkstraBean implements Dijkstra {
 			for (int i = 0; i < nThreads-1; ++i) {
 				result.add(exec.submit(new FindMinD(Q, i*(n/nThreads), (i+1)*(n/nThreads))));
 			}
-			result.add(exec.submit(new FindMinD(Q, (nThreads-1)*(n/nThreads), n))); //jak wyjdzie nieparzysta liczba watkow to ostatni bierze tablice do konca
+			result.add(exec.submit(new FindMinD(Q, (nThreads-1)*(n/nThreads), n))); //ostatni watek bierze wektor do konca
 			
 			for (Future<Integer> f : result) {
 				Integer i;
@@ -145,19 +145,7 @@ public class DijkstraBean implements Dijkstra {
 			Q.set(minDIndex, 1000);
 			S.add(u);
 			
-			//sprawdzanie sasiadow analizowanego wierzcholka.
-//			int neighbor = -1;
-//			
-//			for (int i = 0; i < n; ++i) {
-//				neighbor = E[u][i]; //E[u-1][i]
-//				if (neighbor != inf) {
-//					if (d[u] + neighbor < d[i]) { //d[u-1]
-//						p[i] = u;
-//						d[i] = d[u] + neighbor; //d[u-1]
-//					}
-//				}
-//			}
-			
+			//sprawdzanie sasiadow analizowanego wierzcholka.			
 			exec = Executors.newFixedThreadPool(nThreads);
 			
 			for (int i = 0; i < nThreads-1; ++i) {
@@ -178,8 +166,8 @@ public class DijkstraBean implements Dijkstra {
 	 */
 	public String getPath(int stopID) throws Exception {
 		int i = p[stopID];
-		log.info("p[]: " + Arrays.toString(p));
-		log.info("d[]: " + Arrays.toString(d));
+		//log.info("p[]: " + Arrays.toString(p));
+		//log.info("d[]: " + Arrays.toString(d));
 		String result = "" + stopID;
 		
 		while (i != 0) {
@@ -236,7 +224,7 @@ public class DijkstraBean implements Dijkstra {
 					minDIndex = i;
 				}
 			}
-			log.info("========== start: " + start + ", stop: " + stop + ", index: " + minDIndex);
+			//log.info("========== start: " + start + ", stop: " + stop + ", index: " + minDIndex);
 			return minDIndex;
 		}
 	}
@@ -267,13 +255,6 @@ public class DijkstraBean implements Dijkstra {
 					}
 				}
 			}
-			
-//			ArrayList<int[]> result = new ArrayList<int[]>();
-//			result.add(Arrays.copyOfRange(p, start, stop-1));
-//			result.add(Arrays.copyOfRange(d, start, stop-1));
-			
-//			return result;
-		}
-		
+		}	
 	}
 }

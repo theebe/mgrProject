@@ -13,4 +13,5 @@ public interface NeighborhoodMatrix {
 	public Integer[] getV();
 	public int getIndex(Long id);
 	public void setTabliczki(List<PrzystanekTabliczka> tabliczki);
+	public void printE();
 }
