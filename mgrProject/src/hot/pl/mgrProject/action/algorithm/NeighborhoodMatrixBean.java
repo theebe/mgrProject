@@ -66,14 +66,14 @@ public class NeighborhoodMatrixBean implements NeighborhoodMatrix {
 			try {
 				nastepny = getIndex(tabliczki.get(aktualny).getNastepnyPrzystanek().getId());
 				if (tabSprawdzone.contains(nastepny)) {
-					E[aktualny][nastepny] = 10;
+					E[aktualny][nastepny] = getEdgeWeight(tabliczki.get(aktualny));
 					log.info("[A]Laczenie: " + tabliczki.get(aktualny).getId() + ":" + tabliczki.get(nastepny).getId());
 					tabTrace.add(aktualny);
 					aktualny = nastepny;
 					backTrace = true;
 				} else {
 					log.info("Nastepny: " + tabliczki.get(nastepny).getId());
-					E[aktualny][nastepny] = 10;
+					E[aktualny][nastepny] = getEdgeWeight(tabliczki.get(aktualny));
 					log.info("[B]Laczenie: " + tabliczki.get(aktualny).getId() + ":" + tabliczki.get(nastepny).getId());
 
 					tabSprawdzone.add(nastepny);
@@ -91,7 +91,7 @@ public class NeighborhoodMatrixBean implements NeighborhoodMatrix {
 					for (int i = tabTrace.size()-1; i >= 0; --i) {
 						nastepny = getIndex(tabliczki.get(tabTrace.get(i)).getId());
 						log.info("Nastepny: " + tabliczki.get(nastepny).getId());
-						E[aktualny][nastepny] = 10;
+						E[aktualny][nastepny] = getEdgeWeight(tabliczki.get(aktualny));
 						log.info("[D]Laczenie: " + tabliczki.get(aktualny).getId() + ":" + tabliczki.get(nastepny).getId());
 						aktualny = nastepny;
 					}
@@ -197,4 +197,13 @@ public class NeighborhoodMatrixBean implements NeighborhoodMatrix {
 	public void setTabliczki(List<PrzystanekTabliczka> tabliczki) {
 		this.tabliczki = tabliczki;
 	}
+	
+	private int getEdgeWeight(PrzystanekTabliczka pt) {
+		int weight = -1;
+		
+		weight = pt.getCzasDoNastepnego();
+		
+		return weight;
+	}
+
 }

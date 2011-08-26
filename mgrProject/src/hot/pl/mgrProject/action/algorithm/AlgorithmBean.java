@@ -3,10 +3,13 @@ package pl.mgrProject.action.algorithm;
 import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Calendar;
 import java.util.Collections;
+import java.util.Date;
 import java.util.List;
 
 import javax.ejb.Stateless;
+import javax.management.timer.Timer;
 import javax.persistence.EntityManager;
 
 import org.jboss.seam.annotations.In;
@@ -15,6 +18,7 @@ import org.jboss.seam.annotations.Name;
 import org.jboss.seam.log.Log;
 import org.postgis.Point;
 
+import pl.mgrProject.model.Odjazd;
 import pl.mgrProject.model.Przystanek;
 import pl.mgrProject.model.PrzystanekTabliczka;
 
@@ -53,10 +57,15 @@ public class AlgorithmBean implements Algorithm {
 	 * Wszystkie tabliczki pobrane z bazy
 	 */
 	private List<PrzystanekTabliczka> tabliczki;
+	/**
+	 * Czas rozpoczecia.
+	 */
+	private Calendar startTime;
 	
 	/**
 	 * Metoda inicjujaca wszystkie wymagane zmienne, tworzaca macierz sasiedztwa i uruchamiajaca algorytm wyszukiwania trasy.
 	 */
+	@Override
 	public Boolean run() {
 		Przystanek pstart = getClosestToStart();
 		Przystanek pstop  = getClosestToStop();
@@ -72,10 +81,13 @@ public class AlgorithmBean implements Algorithm {
 			return false;
 		}
 		
-			//pobieranie pierwszej tabliczki z listy dla danego przystanku pocz¹tkowego
-			//na razie nie wiadomo dla której tabliczki mozna znalezc krotsza trase.
-			//Polaczenie tabliczek na tych samych przystankach zagwarantuje znalezienie najkrótszej trasy.
-		PrzystanekTabliczka tabStart = tabForStart.get(0);
+		//PrzystanekTabliczka tabStart = tabForStart.get(0);
+		//pobieramy tabliczke dla start, dla ktorej jest dostepny najwczesniejszy odjazd
+		PrzystanekTabliczka tabStart = checkTime(tabForStart);
+		if (tabStart == null) {
+			log.info("Brak rozkladu jazdy dla przystanku startowego.");
+			return false;
+		}
 		PrzystanekTabliczka tabStop  = tabForStop.get(0);
 
 		Long startID = tabStart.getId();
@@ -130,18 +142,21 @@ public class AlgorithmBean implements Algorithm {
 		}
 	}
 	
+	@Override
 	public Boolean setStartPoint(Point p) {
 		startPoint = p;
 		log.info("[AlgorithmBean] startPoint set");
 		return true;
 	}
 	
+	@Override
 	public Boolean setStopPoint(Point p) {
 		stopPoint = p;
 		log.info("[AlgorithmBean] stopPoint set");
 		return true;
 	}
 	
+	@Override
 	public Przystanek getClosestToStart() {
 		BigInteger id = (BigInteger)mgrDatabase.createNativeQuery("select foo.id from (select p.id, st_distance_sphere(p.location, ST_GeomFromText('POINT(" + startPoint.x + " " + startPoint.y + ")', 4326)) as odleglosc from przystanki p order by odleglosc limit 1) as foo").getResultList().get(0);
 		Przystanek p = mgrDatabase.getReference(Przystanek.class, id.longValue());
@@ -149,6 +164,7 @@ public class AlgorithmBean implements Algorithm {
 		return p;
 	}
 	
+	@Override
 	public Przystanek getClosestToStop() {
 		BigInteger id = (BigInteger)mgrDatabase.createNativeQuery("select foo.id from (select p.id, st_distance_sphere(p.location, ST_GeomFromText('POINT(" + stopPoint.x + " " + stopPoint.y + ")', 4326)) as odleglosc from przystanki p order by odleglosc limit 1) as foo").getResultList().get(0);
 		Przystanek p = mgrDatabase.getReference(Przystanek.class, id.longValue());
@@ -176,6 +192,7 @@ public class AlgorithmBean implements Algorithm {
 	 * Zwraca znaleziona trase.
 	 * @return Lista kolejnych tabliczek bedaca znaleziona przez algorytm trasa.
 	 */
+	@Override
 	public List<PrzystanekTabliczka> getPath() {
 		if (path == null) {
 			return new ArrayList<PrzystanekTabliczka>();
@@ -186,7 +203,60 @@ public class AlgorithmBean implements Algorithm {
 		for (Integer i : path) {
 			trasa.add(tabliczki.get(i));
 		}
+		
 		Collections.reverse(trasa);
 		return trasa;
+	}
+	
+	/**
+	 * Zwraca tabliczke, z ktorej jest dostepny najwczesniejszy odjazd.
+	 * @return Tabliczka z najwczesniejszym odjazdem.
+	 */
+	private PrzystanekTabliczka checkTime(List<PrzystanekTabliczka> tabs) {
+		int index = -1; //indeks przystanku z najwczesniejszym odjazdem
+		
+		for (int i = 0; i < tabs.size(); ++i) {
+			List<Odjazd> odj = tabs.get(i).getOdjazdy();
+			if (odj.size() == 0) continue;
+			Calendar min = Calendar.getInstance();
+			min.set(Calendar.YEAR, 2099);
+
+			for (int j = 0; j < odj.size(); ++j) {
+				Calendar tmp = dateToCalendar(odj.get(j).getCzas());
+				if (tmp.after(startTime) && tmp.before(min)) {
+					index = i;
+					min = tmp;
+				}
+			}
+			log.info("Odjazd: " + min.getTime());
+		}
+		
+		return index == -1 ? null : tabs.get(index);
+	}
+	
+	/**
+	 * Ustawia date rozpoczecia trasy.
+	 */
+	@Override
+	public void setStartTime(Date startTime) {
+		this.startTime = dateToCalendar(startTime);
+	}
+	
+	/**
+	 * Konwertuje obiekt Date na Calendar. Przepisuje jedynie godziny, minuty i sekundy,
+	 * wiec oprócz godziny reszta daty pozostanie domyœlna czyli ustawiona na dzisiajszy dzieñ.
+	 * @param d Obiekt, ktory ma zosrac poddany konwersji.
+	 * @return Obiekt Calendar bedacy wynikiem konwersji.
+	 */
+	private Calendar dateToCalendar(Date d) {
+		Calendar c = Calendar.getInstance();
+		Calendar ctmp = Calendar.getInstance();
+		
+		ctmp.setTime(d);
+		c.set(Calendar.HOUR_OF_DAY, ctmp.get(Calendar.HOUR_OF_DAY));
+		c.set(Calendar.MINUTE, ctmp.get(Calendar.MINUTE));
+		c.set(Calendar.SECOND, ctmp.get(Calendar.SECOND));
+		
+		return c;
 	}
 }
