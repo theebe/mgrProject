@@ -1,5 +1,6 @@
 package pl.mgrProject.action.algorithm;
 
+import java.util.Date;
 import java.util.List;
 
 import javax.ejb.Local;
@@ -23,5 +24,6 @@ public interface Algorithm {
 	public Przystanek getClosestToStart();
 	
 	public Przystanek getClosestToStop();
-
+	
+	public void setStartTime(Date startTime);
 }
