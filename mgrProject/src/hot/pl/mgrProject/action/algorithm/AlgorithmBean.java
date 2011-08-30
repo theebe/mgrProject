@@ -126,12 +126,12 @@ public class AlgorithmBean implements Algorithm {
 					}
 				}
 
-				log.info("AlgorithmBean: [Dijkstra] Algorytm zakonczony popomyslnie.");
+				log.info("AlgorithmBean: [Dijkstra] Algorytm zakonczony pomyslnie.");
 				path = dijkstraBean.getPathTab(stop);
 				printTrasa();
 				return true;
 			} catch(Exception e) {
-				log.info("AlgorithmBean: [Dijkstra] Wystapil niepodziewany wyjatek");
+				log.info("AlgorithmBean: [Dijkstra] Wystapil niespodziewany wyjatek");
 				
 				e.printStackTrace();
 				return false;
@@ -223,6 +223,11 @@ public class AlgorithmBean implements Algorithm {
 
 			for (int j = 0; j < odj.size(); ++j) {
 				Calendar tmp = dateToCalendar(odj.get(j).getCzas());
+//				log.info("startTime: " + startTime.getTime());
+//				log.info("tmp: " + tmp.getTime());
+//				log.info("min: " + min.getTime());
+//				log.info("(tmp.after(startTime): " + tmp.after(startTime));
+//				log.info("tmp.before(min): " + tmp.before(min));
 				if (tmp.after(startTime) && tmp.before(min)) {
 					index = i;
 					min = tmp;
@@ -256,6 +261,9 @@ public class AlgorithmBean implements Algorithm {
 		c.set(Calendar.HOUR_OF_DAY, ctmp.get(Calendar.HOUR_OF_DAY));
 		c.set(Calendar.MINUTE, ctmp.get(Calendar.MINUTE));
 		c.set(Calendar.SECOND, ctmp.get(Calendar.SECOND));
+		/*c.set(Calendar.DAY_OF_MONTH, c.get(Calendar.DAY_OF_MONTH));
+		c.set(Calendar.MONTH, c.get(Calendar.MONTH));
+		c.set(Calendar.YEAR, c.get(Calendar.YEAR));*/
 		
 		return c;
 	}

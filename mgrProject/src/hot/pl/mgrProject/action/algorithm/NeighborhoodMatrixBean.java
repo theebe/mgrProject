@@ -1,5 +1,6 @@
 package pl.mgrProject.action.algorithm;
 
+import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.LinkedHashSet;
 import java.util.List;
@@ -51,71 +52,54 @@ public class NeighborhoodMatrixBean implements NeighborhoodMatrix {
 	}
 	
 	private void buildMatrix() {
-		//Algorytm budowania macierzy sasiedztwa. Na razie wagi krawedzi przypisane sa na sztywno.
-		//Po testach wyglada na to, ze dziala poprawnie. Nie uwzglednia przystankow ktore nie sa dodane do zadnej linii.
-		//TODO: Przemyslec dokladniej przypadki kiedy ostatni przystanek(tabliczka) linii nie ma nastepnego.
-		//      Algorytm wymaga aby istaniala mozliwosc dotarcia do kazdego wierzcholka.
-		//Propozycja: Ostatnia tabliczka linii bedzie wskazywac na dowolny, najblizszy przystanek nalezacy do innej linii.
-		List<Integer> tabSprawdzone = new ArrayList<Integer>();
-		List<Integer> tabTrace = new ArrayList<Integer>();
+		List<Linia> linie = mgrDatabase.createNamedQuery("wszystkieLinie").getResultList();
 		
-		int aktualny = start, nastepny = -1;
-		boolean backTrace = false;
-		
-		while (tabSprawdzone.size() <= tabliczki.size()) {
-			try {
-				nastepny = getIndex(tabliczki.get(aktualny).getNastepnyPrzystanek().getId());
-				if (tabSprawdzone.contains(nastepny)) {
-					E[aktualny][nastepny] = getEdgeWeight(tabliczki.get(aktualny));
-					log.info("[A]Laczenie: " + tabliczki.get(aktualny).getId() + ":" + tabliczki.get(nastepny).getId());
-					tabTrace.add(aktualny);
-					aktualny = nastepny;
-					backTrace = true;
-				} else {
-					log.info("Nastepny: " + tabliczki.get(nastepny).getId());
-					E[aktualny][nastepny] = getEdgeWeight(tabliczki.get(aktualny));
-					log.info("[B]Laczenie: " + tabliczki.get(aktualny).getId() + ":" + tabliczki.get(nastepny).getId());
-
-					tabSprawdzone.add(nastepny);
-					tabTrace.add(aktualny);
-					aktualny = nastepny;
-					
-					log.info("TabTrace add " + tabliczki.get(aktualny).getId());
-					log.info("Koniec petli: " + (tabSprawdzone.size() <= tabliczki.size()));
+		for (Linia l : linie) {
+			//jesli linia nie posiada rozkladu to ja ignorujemy
+			if (!scheduleExists(l)) continue;
+			//w przeciwnym razie pobieramy wszystkie tabliczki z danej linii
+			List<PrzystanekTabliczka> tabs = l.getPrzystanekTabliczka();
+			
+			//i laczymy je az do przedostatniej, gdyz ostatnia musi byc laczona w inny sposob
+			int aktualna = -1, nastepna = -1;
+			for (int i = 0; i < tabs.size()-1; ++i) {
+				aktualna = getIndex(tabs.get(i).getId());
+				nastepna = getIndex(tabs.get(i+1).getId());
+				E[aktualna][nastepna] = getEdgeWeight(tabliczki.get(aktualna));
+			}
+			
+			//ostatnia tabliczka jest laczona z tabliczkami nalezacymi do innych linii
+			//znajdujacych sie na najblizszych przystankach
+			PrzystanekTabliczka last = tabs.get(tabs.size()-1);
+			Set<PrzystanekTabliczka> tabsForLast = getNearest(last.getPrzystanek(), 200); //200 metrow
+			log.info("tabsForLast: " + tabsForLast.size());
+			aktualna = getIndex(last.getId());
+			log.info("Przystanek last: " + last.getPrzystanek().getNazwa());
+			for (PrzystanekTabliczka t : tabsForLast) {
+				if (last.getLinia().getNumer() == t.getLinia().getNumer()) {
+					log.info("Ta sama linia");
+					continue;
 				}
-			} catch(Exception e) {
-				log.info("Nie ma nastepnego");
-				backTrace = true;
-			} finally {
-				if (backTrace) {
-					for (int i = tabTrace.size()-1; i >= 0; --i) {
-						nastepny = getIndex(tabliczki.get(tabTrace.get(i)).getId());
-						log.info("Nastepny: " + tabliczki.get(nastepny).getId());
-						E[aktualny][nastepny] = getEdgeWeight(tabliczki.get(aktualny));
-						log.info("[D]Laczenie: " + tabliczki.get(aktualny).getId() + ":" + tabliczki.get(nastepny).getId());
-						aktualny = nastepny;
-					}
-					tabTrace.clear();
-					log.info("TabTrace clear");
-					backTrace = false;
-					//==============
-					for (int i = 0; i < tabliczki.size(); ++i) {
-						if (!tabSprawdzone.contains(i)) {
-							aktualny = i;
-							tabSprawdzone.add(aktualny);
-							break;
-						} else {
-							aktualny = -1;
-						}
-					}
-					//dzieki temu petla while sie zakonczy
-					if (aktualny == -1) {
-						tabSprawdzone.add(-1);
-					}
-				}
+				log.info("Laczenie z: " + t.getPrzystanek().getNazwa());
+				nastepna = getIndex(t.getId());
+				E[aktualna][nastepna] = 0;
+				//E[aktualna][getIndex(tabs.get(0).getId())] = 0; //zapetlenie linii na potrzeby testu
 			}
 		}
 		printE();
+	}
+	
+	/**
+	 * Sprawdza czy istenieje rozklad jazdy dla danej linii.
+	 * @param l Linia do sprawdzenia.
+	 * @return True - rozklad istnieje, False - brak rozkladu.
+	 */
+	private boolean scheduleExists(Linia l) {
+		List<PrzystanekTabliczka> pt = l.getPrzystanekTabliczka();
+		
+		if (pt.size() == 0 || pt.get(0).getOdjazdy().size() == 0)
+			return false;
+		return true;
 	}
 	
 	private void joinTabs() {
@@ -124,7 +108,6 @@ public class NeighborhoodMatrixBean implements NeighborhoodMatrix {
 		
 		//pobranie tylko istniejacych linii aby nie laczyc przystankow, ktore nie sa w zadnej linii
 		linie = mgrDatabase.createNamedQuery("wszystkieLinie").getResultList();
-		log.info("Liczba linii: " + linie.size());
 		
 		//pobranie przystankow dla istniejacych linii
 		for (Linia l : linie) {
@@ -198,12 +181,41 @@ public class NeighborhoodMatrixBean implements NeighborhoodMatrix {
 		this.tabliczki = tabliczki;
 	}
 	
+	/**
+	 * Zwraca wage krawedzi (czas) od tabliczki pt do jej nastepnika.
+	 * @param pt Tabliczka, dla ktorej ma zostac zwrocana waga do jej nastepnika/
+	 * @return Waga krawedzi.
+	 */
 	private int getEdgeWeight(PrzystanekTabliczka pt) {
-		int weight = -1;
-		
-		weight = pt.getCzasDoNastepnego();
-		
-		return weight;
+		return pt.getCzasDoNastepnego();
 	}
-
+	
+	/**
+	 * Dla podanego przystanku zwraca najblizsze tabliczki z przystankow znajdujacych sie
+	 * w zadanym dystansie.
+	 * @param p Przystanek, dla ktorego maja zostac zwrocone najblizsze tabliczki.
+	 * @param distance Dystans w metrach, do ktorego maja byc poszukiwane przystanki.
+	 * @return Lista tabliczek ze znalezionych najblizszych przystankow.
+	 */
+	private Set<PrzystanekTabliczka> getNearest(Przystanek p, int distance) {
+		//pobranie id najblizszych przystankow
+		List<BigInteger> nearest = mgrDatabase.createNativeQuery("select foo.id from (select p.id, st_distance_sphere(p.location, ST_GeomFromText('POINT(" + p.getLocation().x + " " + p.getLocation().y + ")', 4326)) as odleglosc from przystanki p order by odleglosc) as foo where foo.odleglosc < " + distance).getResultList();
+		List<Przystanek> przyst = new ArrayList<Przystanek>();
+		
+		//wyciagniecie obiektow przystankow
+		for (BigInteger id : nearest) {
+			przyst.add(mgrDatabase.getReference(Przystanek.class, id.longValue()));
+		}
+		
+		//dodanie do jednej kolekcji tabliczek ze wszystkich znalezionych przystankow
+		List<PrzystanekTabliczka> tabliczki = new ArrayList<PrzystanekTabliczka>();
+		for (Przystanek pr : przyst) {
+			tabliczki.addAll(pr.getPrzystanekTabliczki());
+		}
+		
+		//bez powtorzen
+		Set<PrzystanekTabliczka> result = new LinkedHashSet<PrzystanekTabliczka>(tabliczki);
+		
+		return result;
+	}
 }
