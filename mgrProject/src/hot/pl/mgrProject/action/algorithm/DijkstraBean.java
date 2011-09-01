@@ -104,8 +104,6 @@ public class DijkstraBean implements Dijkstra {
 		}
 		
 		d[s] = 0; //d[s-1] = 0;
-		int minD = 1000;
-		int minDIndex = -1;
 		
 		while(S.size() < n) {
 			ExecutorService exec = Executors.newFixedThreadPool(nThreads);
@@ -118,6 +116,8 @@ public class DijkstraBean implements Dijkstra {
 			}
 			result.add(exec.submit(new FindMinD(Q, (nThreads-1)*(n/nThreads), n))); //ostatni watek bierze wektor do konca
 			
+			int minD = 1001;
+			int minDIndex = -1;
 			for (Future<Integer> f : result) {
 				Integer i;
 				try {
@@ -140,6 +140,8 @@ public class DijkstraBean implements Dijkstra {
 			try {
 				u = Q.get(minDIndex);
 			} catch(ArrayIndexOutOfBoundsException e) {
+//				log.info("Q.size(): " + Q.size());
+//				log.info("minDIndex: " + minDIndex);
 				throw e;
 			}
 			Q.set(minDIndex, 1000);
@@ -175,7 +177,7 @@ public class DijkstraBean implements Dijkstra {
 			i = p[i];
 		}
 		
-		result += s;
+		result += " <- " + s;
 		
 		return result;
 	}
@@ -224,7 +226,7 @@ public class DijkstraBean implements Dijkstra {
 					minDIndex = i;
 				}
 			}
-			//log.info("========== start: " + start + ", stop: " + stop + ", index: " + minDIndex);
+			//log.info("========== start: " + start + ", stop: " + stop + ", index: " + minDIndex + ", d[i]: " + d[minDIndex]);
 			return minDIndex;
 		}
 	}
