@@ -28,5 +28,5 @@ public interface Algorithm {
 	
 	public void setStartTime(Date startTime);
 	
-	public List<Calendar> getHours();
+	public List<Date> getHours();
 }

@@ -216,10 +216,7 @@ public class AlgorithmBean implements Algorithm {
 		PrzystanekTabliczka poprzednia, aktualna;
 		
 		for (Integer i : path) {
-			aktualna = tabliczki.get(i);
-			//if (poprzednia.getId() == aktualna.getId())
-			trasa.add(aktualna);
-			poprzednia = aktualna;
+			trasa.add(tabliczki.get(i));
 		}
 		
 		Collections.reverse(trasa);
@@ -263,16 +260,16 @@ public class AlgorithmBean implements Algorithm {
 	}
 	
 	@Override
-	public List<Calendar> getHours() {
+	public List<Date> getHours() {
 		if (path == null) {
-			new ArrayList<Calendar>();
+			new ArrayList<Date>();
 		}
 		
-		List<Calendar> result = new ArrayList<Calendar>();
+		List<Date> result = new ArrayList<Date>();
 		List<Calendar> hours = neighborhoodMatrixBean.getHours();
 		
 		for (Integer i : path) {
-			result.add(hours.get(i));
+			result.add(hours.get(i).getTime());
 		}
 		
 		Collections.reverse(result);
