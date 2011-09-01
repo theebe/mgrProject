@@ -61,6 +61,10 @@ public class AlgorithmBean implements Algorithm {
 	 * Czas rozpoczecia.
 	 */
 	private Calendar startTime;
+	/**
+	 * Czas odjazdu z pierwszego przystanku
+	 */
+	private Calendar odjazd;
 	
 	/**
 	 * Metoda inicjujaca wszystkie wymagane zmienne, tworzaca macierz sasiedztwa i uruchamiajaca algorytm wyszukiwania trasy.
@@ -101,7 +105,7 @@ public class AlgorithmBean implements Algorithm {
 		start = neighborhoodMatrixBean.getIndex(startID);
 		stop  = neighborhoodMatrixBean.getIndex(stopID);
 		
-		neighborhoodMatrixBean.create(start);
+		neighborhoodMatrixBean.create(start, odjazd);
 		int[][] E = neighborhoodMatrixBean.getE();
 		Integer[] V = neighborhoodMatrixBean.getV();
 		
@@ -126,12 +130,12 @@ public class AlgorithmBean implements Algorithm {
 					}
 				}
 
-				log.info("AlgorithmBean: [Dijkstra] Algorytm zakonczony popomyslnie.");
+				log.info("AlgorithmBean: [Dijkstra] Algorytm zakonczony pomyslnie.");
 				path = dijkstraBean.getPathTab(stop);
 				printTrasa();
 				return true;
 			} catch(Exception e) {
-				log.info("AlgorithmBean: [Dijkstra] Wystapil niepodziewany wyjatek");
+				log.info("AlgorithmBean: [Dijkstra] Wystapil niespodziewany wyjatek");
 				
 				e.printStackTrace();
 				return false;
@@ -182,10 +186,19 @@ public class AlgorithmBean implements Algorithm {
 		
 		log.info("Route: " + dijkstraBean.getPath(stop));
 		String info = "";
+		String hours = "";
 		for (int i : path) {
 			info += tabliczki.get(i).getPrzystanek().getNazwa() + " <- ";
 		}
 		log.info(info);
+		
+		List<Calendar> hourstmp = neighborhoodMatrixBean.getHours();
+		
+		for (Integer i : path) {
+			hours += hourstmp.get(i).getTime() + " <- ";
+		}
+		getHours();
+		log.info(hours);
 	}
 	
 	/**
@@ -200,11 +213,17 @@ public class AlgorithmBean implements Algorithm {
 		
 		List<PrzystanekTabliczka> trasa = new ArrayList<PrzystanekTabliczka>();
 		
+		PrzystanekTabliczka poprzednia, aktualna;
+		
 		for (Integer i : path) {
-			trasa.add(tabliczki.get(i));
+			aktualna = tabliczki.get(i);
+			//if (poprzednia.getId() == aktualna.getId())
+			trasa.add(aktualna);
+			poprzednia = aktualna;
 		}
 		
 		Collections.reverse(trasa);
+		
 		return trasa;
 	}
 	
@@ -222,13 +241,14 @@ public class AlgorithmBean implements Algorithm {
 			min.set(Calendar.YEAR, 2099);
 
 			for (int j = 0; j < odj.size(); ++j) {
-				Calendar tmp = dateToCalendar(odj.get(j).getCzas());
+				Calendar tmp = neighborhoodMatrixBean.dateToCalendar(odj.get(j).getCzas());
 				if (tmp.after(startTime) && tmp.before(min)) {
 					index = i;
 					min = tmp;
 				}
 			}
 			log.info("Odjazd: " + min.getTime());
+			odjazd = (Calendar)min.clone();
 		}
 		
 		return index == -1 ? null : tabs.get(index);
@@ -239,24 +259,23 @@ public class AlgorithmBean implements Algorithm {
 	 */
 	@Override
 	public void setStartTime(Date startTime) {
-		this.startTime = dateToCalendar(startTime);
+		this.startTime = neighborhoodMatrixBean.dateToCalendar(startTime);
 	}
 	
-	/**
-	 * Konwertuje obiekt Date na Calendar. Przepisuje jedynie godziny, minuty i sekundy,
-	 * wiec oprócz godziny reszta daty pozostanie domyœlna czyli ustawiona na dzisiajszy dzieñ.
-	 * @param d Obiekt, ktory ma zosrac poddany konwersji.
-	 * @return Obiekt Calendar bedacy wynikiem konwersji.
-	 */
-	private Calendar dateToCalendar(Date d) {
-		Calendar c = Calendar.getInstance();
-		Calendar ctmp = Calendar.getInstance();
+	@Override
+	public List<Calendar> getHours() {
+		if (path == null) {
+			new ArrayList<Calendar>();
+		}
 		
-		ctmp.setTime(d);
-		c.set(Calendar.HOUR_OF_DAY, ctmp.get(Calendar.HOUR_OF_DAY));
-		c.set(Calendar.MINUTE, ctmp.get(Calendar.MINUTE));
-		c.set(Calendar.SECOND, ctmp.get(Calendar.SECOND));
+		List<Calendar> result = new ArrayList<Calendar>();
+		List<Calendar> hours = neighborhoodMatrixBean.getHours();
 		
-		return c;
+		for (Integer i : path) {
+			result.add(hours.get(i));
+		}
+		
+		Collections.reverse(result);
+		return result;
 	}
 }

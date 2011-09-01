@@ -1,5 +1,6 @@
 package pl.mgrProject.action.algorithm;
 
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
@@ -26,4 +27,6 @@ public interface Algorithm {
 	public Przystanek getClosestToStop();
 	
 	public void setStartTime(Date startTime);
+	
+	public List<Calendar> getHours();
 }
