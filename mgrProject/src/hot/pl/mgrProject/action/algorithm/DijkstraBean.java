@@ -177,7 +177,7 @@ public class DijkstraBean implements Dijkstra {
 			i = p[i];
 		}
 		
-		result += s;
+		result += " <- " + s;
 		
 		return result;
 	}
