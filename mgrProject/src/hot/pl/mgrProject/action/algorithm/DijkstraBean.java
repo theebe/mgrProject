@@ -108,7 +108,7 @@ public class DijkstraBean implements Dijkstra {
 		int minDIndex = -1;
 		
 		while(S.size() < n) {
-			ExecutorService exec = Executors.newFixedThreadPool(nThreads);
+			ExecutorService exec = Executors.newFixedThreadPool(nThreads); 
 			ArrayList<Future<Integer>> result = new ArrayList<Future<Integer>>();
 			log.info("d[]: " + Arrays.toString(d));
 			

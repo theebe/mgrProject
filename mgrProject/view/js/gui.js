@@ -70,7 +70,6 @@ function searchButtonClick(e) {
 	
 	var findRouteCallback = function(result) {
 	
-		
 		if (result == null) {
 			alert("Obliczanie trasy nie powiodlo sie!");
 			Seam.Remoting.cancelBatch();
