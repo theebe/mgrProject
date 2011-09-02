@@ -9,18 +9,21 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
-
 import javax.ejb.Stateless;
-
+import javax.persistence.EntityManager;
+import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Logger;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.log.Log;
+import pl.mgrProject.model.Konfiguracja;
 
 @Stateless
 @Name("dijkstraBean")
 public class DijkstraBean implements Dijkstra {
 	@Logger
 	private Log log;
+	@In
+	private EntityManager mgrDatabase;
 	/**
 	 * Wierzcholek startowy.
 	 */
@@ -44,7 +47,7 @@ public class DijkstraBean implements Dijkstra {
 	/**
 	 * Wartosc nieskonczonosci.
 	 */
-	private int inf = 1000;
+	private int inf;
 	
 	/**
 	 * Przechowuje sciezki tras.
@@ -82,10 +85,15 @@ public class DijkstraBean implements Dijkstra {
 		this.E = E.clone();
 		this.V = V.clone();
 		this.s = startID;
-		int cores = getCores();
+		//pobranie liczby watkow na jakich ma dzialac algorytm
+		Konfiguracja konf = (Konfiguracja)mgrDatabase.createNamedQuery("konfiguracjaPoNazwie").setParameter("nazwa", "default").getSingleResult();
+		int threads = konf.getLiczbaWatkow();
+		//0 == automatyczne obliczenie liczby watkow
+		int cores = threads == 0 ? getCores() : threads;
 		nThreads = cores > n ? n : cores;
 		p = new int[n]; 
 		d = new int[n];
+		inf = konf.getNieskonczonosc();
 	}
 	
 	/**

@@ -17,6 +17,7 @@ import org.jboss.seam.annotations.Name;
 import org.jboss.seam.log.Log;
 import org.postgis.Point;
 
+import pl.mgrProject.model.Konfiguracja;
 import pl.mgrProject.model.Linia;
 import pl.mgrProject.model.Odjazd;
 import pl.mgrProject.model.Przystanek;
@@ -34,15 +35,22 @@ public class NeighborhoodMatrixBean implements NeighborhoodMatrix {
 	private int[][] E;  //macierz sasiedztwa
 	private Integer[] V; //wektor wierzcholkow
 	private int n;
-	private int inf = 1000; //nieskonczonosc. Oznacza brak krawedzi miedzy wierzcholkami.
+	private int inf; //nieskonczonosc. Oznacza brak krawedzi miedzy wierzcholkami.
 	/**
 	 * Wektor z czasami odjazdow z kazdej tabliczki
 	 */
 	private List<Calendar> hours;
 	private Calendar startTime;
+	/**
+	 * Konfiguracja
+	 */
+	private Konfiguracja konf;
 	
 	@Override
 	public void create(int start, Calendar startTime) {
+		//pobranie konfiguracji
+		konf = (Konfiguracja)mgrDatabase.createNamedQuery("konfiguracjaPoNazwie").setParameter("nazwa", "default").getSingleResult();
+		inf = konf.getNieskonczonosc();
 		this.start = start;
 		this.startTime = startTime;
 		this.n = tabliczki.size();
@@ -89,14 +97,12 @@ public class NeighborhoodMatrixBean implements NeighborhoodMatrix {
 						continue;
 					}
 					hours.set(aktualna, (Calendar)tmp.clone());
-					log.info("[1]hours.set(): tab: " + aktualna + ", time: " + tmp.getTime());
 					tmp.add(Calendar.MINUTE, tabs.get(i).getCzasDoNastepnego());
 					ok = true;
 				}
 				
 				E[aktualna][nastepna] = getEdgeWeight(tabliczki.get(aktualna));
 				hours.set(nastepna, (Calendar)tmp.clone());
-				log.info("[2]hours.set(): tab: " + nastepna + ", time: " + tmp.getTime());
 				tmp.add(Calendar.MINUTE, tabs.get(i+1).getCzasDoNastepnego());
 			}			
 			
@@ -104,7 +110,7 @@ public class NeighborhoodMatrixBean implements NeighborhoodMatrix {
 			//znajdujacych sie na najblizszych przystankach
 			if (tmp == null) continue; //jesli null to oznacza, ze nie istnieje trasa
 			PrzystanekTabliczka last = tabs.get(tabs.size()-1);
-			Set<PrzystanekTabliczka> tabsForLast = getNearest(last.getPrzystanek(), 200); //200 metrow
+			Set<PrzystanekTabliczka> tabsForLast = getNearest(last.getPrzystanek(), konf.getOdlegloscPrzystankow());
 			log.info("tabsForLast: " + tabsForLast.size());
 			aktualna = getIndex(last.getId());
 			log.info("Przystanek last: " + last.getPrzystanek().getNazwa());
@@ -225,7 +231,7 @@ public class NeighborhoodMatrixBean implements NeighborhoodMatrix {
 	
 	private int getEdgeWeight(PrzystanekTabliczka start, PrzystanekTabliczka stop, Calendar time) {
 		int weight = -1;
-		double v = 6.0; //predkosc pasazera w km/h
+		double v = konf.getPredkoscPasazera(); //predkosc pasazera w km/h
 		Point st = start.getPrzystanek().getLocation();
 		Point sp = stop.getPrzystanek().getLocation();
 		
@@ -335,9 +341,6 @@ public class NeighborhoodMatrixBean implements NeighborhoodMatrix {
 		c.set(Calendar.HOUR_OF_DAY, ctmp.get(Calendar.HOUR_OF_DAY));
 		c.set(Calendar.MINUTE, ctmp.get(Calendar.MINUTE));
 		c.set(Calendar.SECOND, ctmp.get(Calendar.SECOND));
-		/*c.set(Calendar.DAY_OF_MONTH, c.get(Calendar.DAY_OF_MONTH));
-		c.set(Calendar.MONTH, c.get(Calendar.MONTH));
-		c.set(Calendar.YEAR, c.get(Calendar.YEAR));*/
 		
 		return c;
 	}
