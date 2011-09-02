@@ -116,7 +116,7 @@ public class DijkstraBean implements Dijkstra {
 			}
 			result.add(exec.submit(new FindMinD(Q, (nThreads-1)*(n/nThreads), n))); //ostatni watek bierze wektor do konca
 			
-			int minD = 1001;
+			int minD = inf + 1;
 			int minDIndex = -1;
 			for (Future<Integer> f : result) {
 				Integer i;
@@ -144,7 +144,7 @@ public class DijkstraBean implements Dijkstra {
 //				log.info("minDIndex: " + minDIndex);
 				throw e;
 			}
-			Q.set(minDIndex, 1000);
+			Q.set(minDIndex, inf);
 			S.add(u);
 			
 			//sprawdzanie sasiadow analizowanego wierzcholka.			
@@ -155,7 +155,7 @@ public class DijkstraBean implements Dijkstra {
 			}
 			exec.execute(new CheckNeighbors(u, E, (nThreads-1)*(n/nThreads), n));
 			
-			minD = 1000;
+			minD = inf + 1;
 			minDIndex = -1;
 		}
 	}
@@ -217,7 +217,7 @@ public class DijkstraBean implements Dijkstra {
 
 		@Override
 		public Integer call() throws Exception {
-			int minD = 1001; //zeby bylo troche wieksze od zdefiniowanej nieskonczonosci
+			int minD = inf + 1; //zeby bylo troche wieksze od zdefiniowanej nieskonczonosci
 			int minDIndex = -1;
 			
 			for (int i = start; i < stop; ++i) {
