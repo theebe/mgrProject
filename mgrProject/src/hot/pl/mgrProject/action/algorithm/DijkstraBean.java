@@ -9,18 +9,21 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
-
 import javax.ejb.Stateless;
-
+import javax.persistence.EntityManager;
+import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Logger;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.log.Log;
+import pl.mgrProject.model.Konfiguracja;
 
 @Stateless
 @Name("dijkstraBean")
 public class DijkstraBean implements Dijkstra {
 	@Logger
 	private Log log;
+	@In
+	private EntityManager mgrDatabase;
 	/**
 	 * Wierzcholek startowy.
 	 */
@@ -44,7 +47,7 @@ public class DijkstraBean implements Dijkstra {
 	/**
 	 * Wartosc nieskonczonosci.
 	 */
-	private int inf = 1000;
+	private int inf;
 	
 	/**
 	 * Przechowuje sciezki tras.
@@ -82,10 +85,15 @@ public class DijkstraBean implements Dijkstra {
 		this.E = E.clone();
 		this.V = V.clone();
 		this.s = startID;
-		int cores = getCores();
+		//pobranie liczby watkow na jakich ma dzialac algorytm
+		Konfiguracja konf = (Konfiguracja)mgrDatabase.createNamedQuery("konfiguracjaPoNazwie").setParameter("nazwa", "default").getSingleResult();
+		int threads = konf.getLiczbaWatkow();
+		//0 == automatyczne obliczenie liczby watkow
+		int cores = threads == 0 ? getCores() : threads;
 		nThreads = cores > n ? n : cores;
 		p = new int[n]; 
 		d = new int[n];
+		inf = konf.getNieskonczonosc();
 	}
 	
 	/**
@@ -116,7 +124,7 @@ public class DijkstraBean implements Dijkstra {
 			}
 			result.add(exec.submit(new FindMinD(Q, (nThreads-1)*(n/nThreads), n))); //ostatni watek bierze wektor do konca
 			
-			int minD = 1001;
+			int minD = inf + 1;
 			int minDIndex = -1;
 			for (Future<Integer> f : result) {
 				Integer i;
@@ -144,7 +152,7 @@ public class DijkstraBean implements Dijkstra {
 //				log.info("minDIndex: " + minDIndex);
 				throw e;
 			}
-			Q.set(minDIndex, 1000);
+			Q.set(minDIndex, inf);
 			S.add(u);
 			
 			//sprawdzanie sasiadow analizowanego wierzcholka.			
@@ -155,7 +163,7 @@ public class DijkstraBean implements Dijkstra {
 			}
 			exec.execute(new CheckNeighbors(u, E, (nThreads-1)*(n/nThreads), n));
 			
-			minD = 1000;
+			minD = inf + 1;
 			minDIndex = -1;
 		}
 	}
@@ -217,7 +225,7 @@ public class DijkstraBean implements Dijkstra {
 
 		@Override
 		public Integer call() throws Exception {
-			int minD = 1001; //zeby bylo troche wieksze od zdefiniowanej nieskonczonosci
+			int minD = inf + 1; //zeby bylo troche wieksze od zdefiniowanej nieskonczonosci
 			int minDIndex = -1;
 			
 			for (int i = start; i < stop; ++i) {

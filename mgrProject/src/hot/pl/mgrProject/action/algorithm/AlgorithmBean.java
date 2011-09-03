@@ -9,7 +9,6 @@ import java.util.Date;
 import java.util.List;
 
 import javax.ejb.Stateless;
-import javax.management.timer.Timer;
 import javax.persistence.EntityManager;
 
 import org.jboss.seam.annotations.In;
@@ -65,6 +64,7 @@ public class AlgorithmBean implements Algorithm {
 	 * Czas odjazdu z pierwszego przystanku
 	 */
 	private Calendar odjazd;
+	
 	
 	/**
 	 * Metoda inicjujaca wszystkie wymagane zmienne, tworzaca macierz sasiedztwa i uruchamiajaca algorytm wyszukiwania trasy.

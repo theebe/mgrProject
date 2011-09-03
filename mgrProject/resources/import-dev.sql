@@ -61,4 +61,5 @@ UPDATE przystanek_tabliczki SET nastepnyprzystanek_id = 33, version=version+1 WH
 INSERT INTO przystanek_tabliczki(id, version, linia_id , przystanek_id, poprzedniprzystanek_id, przystanektabliczka_order, czasdonastepnego) VALUES (nextval('public.hibernate_sequence'), 0, 26, 16,33, 7, 1);
 UPDATE przystanek_tabliczki SET nastepnyprzystanek_id = 34, version=version+1 WHERE id = 33;
 
-
+-- KONFIGURACJA
+INSERT INTO konfiguracja(id, liczbawatkow, name, nieskonczonosc, odlegloscprzystankow, predkoscpasazera, version) VALUES (nextval('public.hibernate_sequence'), 0, 'default', 2000, 200, 6.0, 0)
