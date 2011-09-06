@@ -612,7 +612,7 @@ function drawRoute(odpowiedz) {
 	var liniaStartVect = new OpenLayers.Feature.Vector(
 					liniaDoStart, 
 					{},
-					{strokeColor : "#AAAABB",
+					{strokeColor : "#AAAAFF",
 						strokeWidth: 4,
 						strokeLinecap: "square",
 						strokeDashstyle: "solid"});
@@ -666,7 +666,7 @@ function drawRoute(odpowiedz) {
 				var liniaPrzesiadkaVect = new OpenLayers.Feature.Vector(
 						liniaPrzesiadka, 
 								{},
-								{strokeColor : "#AAAA99",
+								{strokeColor : "#AAAAFF",
 									strokeWidth: 4,
 									strokeLinecap: "square",
 									strokeDashstyle: "solid"});
@@ -689,7 +689,7 @@ function drawRoute(odpowiedz) {
 		
 		}
 		
-		$("#liniaList-" + idLinii + " ol").append("<li>" + hoursMinutesToString(tabelaGodzin[i]) +  "  " + trasa[i].przystanek.nazwa + "</li>");
+		$("#liniaList-" + idLinii + " ol").append("<li>" + trasa[i].przystanek.nazwa + ": \t " + hoursMinutesToString(tabelaGodzin[i]) + "</li>");
 		points.push(przystanki[getIPrzystnekFromId(trasa[i].przystanek.id)].geometry );		
 		
 	}
@@ -712,7 +712,7 @@ function drawRoute(odpowiedz) {
 	var liniaStopVect = new OpenLayers.Feature.Vector(
 			liniaDoStop, 
 			{},
-			{strokeColor : "#AAAABB",
+			{strokeColor : "#AAAAFF",
 				strokeWidth: 4,
 				strokeLinecap: "square",
 				strokeDashstyle: "solid"});
