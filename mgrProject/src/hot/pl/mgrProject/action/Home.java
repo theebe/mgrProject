@@ -35,7 +35,7 @@ public interface Home {
 	public Boolean setStartTime(Date startTime);
 	
 	@WebRemote
-	public List<PrzystanekTabliczka> findRoute();
+	public Odpowiedz findRoute();
 	
 
 	@Destroy

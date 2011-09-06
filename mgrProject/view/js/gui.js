@@ -581,8 +581,11 @@ function deleteDialogOpen() {
 
 };
 
-function drawRoute(trasa) {
+function drawRoute(odpowiedz) {
 	
+	alert(odpowiedz);
+	trasa = odpowiedz.ptList;
+	tabelaGodzin = odpowiedz.dateList;
 	
 	if (trasa == null || trasa.length == 0) {
 		if ($("#tabs"))
@@ -624,12 +627,12 @@ function drawRoute(trasa) {
 	
 	var i = 0;
 	var idLinii = null;
+	
 	//trasa wyznaczona przez alg dijkstry
 	for (i; i < trasa.length; ++i) {
 		
+		//wykryto przesiadke
 		if(idLinii != trasa[i].linia.id){
-			////////////////////////////////////////////////////////////////////////////////////////////
-			// TODO: wyswietlanie przesiadki na mapie
 			
 			idLinii = trasa[i].linia.id;
 			$("#tabs-1 ol").append("<li id=\"liniaList-" + idLinii + "\">Linia nr "+ trasa[i].linia.numer + ":</li>");
@@ -665,3 +668,5 @@ function drawRoute(trasa) {
 	przystankiLayer.addFeatures(path);
 	
 }
+
+

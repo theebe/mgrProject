@@ -54,7 +54,7 @@ public class LiniaEditerBean implements LiniaEditer, Serializable {
 	}  
 
 	@TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
-	@End(beforeRedirect=true)
+	@End(beforeRedirect=true, root=true)
 	public void merge() {
 		if (editedLinia == null)
 			return ;
@@ -74,13 +74,13 @@ public class LiniaEditerBean implements LiniaEditer, Serializable {
 		log.info("Uaktualniono linie nr " + editedLinia.getNumer());
 		mgrDatabase.flush();
 		editedLinia = null;
-		destory();
+		//destory();
 	}
 
-	@End(beforeRedirect=true)
+	@End(beforeRedirect=true, root=true)
 	public void cancel() {
 		this.editedLinia = null;
-		destory();
+		//destory();
 	}
 
 	@Begin(nested = true)
