@@ -461,11 +461,13 @@ function homeFormButtonInit() {
  * zamienia czas w stringa o aktualnej godzinie ( 16:54 )
  */
 function hoursMinutesToString(time) {
+	
 	var dataGodzinaText = (time.getHours() < 10 ? ("0" + time.getHours())
-			: startTime.getHours())
+			: time.getHours())
 			+ ":";
 	dataGodzinaText += (time.getMinutes() < 10 ? ("0" + time.getMinutes())
-			: startTime.getMinutes());
+			: time.getMinutes());
+	
 	return dataGodzinaText;
 
 }
@@ -583,7 +585,6 @@ function deleteDialogOpen() {
 
 function drawRoute(odpowiedz) {
 	
-	alert(odpowiedz);
 	trasa = odpowiedz.ptList;
 	tabelaGodzin = odpowiedz.dateList;
 	
@@ -611,7 +612,7 @@ function drawRoute(odpowiedz) {
 	var liniaStartVect = new OpenLayers.Feature.Vector(
 					liniaDoStart, 
 					{},
-					{strokeColor : "#BBBBFF",
+					{strokeColor : "#AAAABB",
 						strokeWidth: 4,
 						strokeLinecap: "square",
 						strokeDashstyle: "solid"});
@@ -619,15 +620,21 @@ function drawRoute(odpowiedz) {
 	//dodaje wektor do tablicy w ktorej jest cala wyznaczona trasa
 	path.push(liniaStartVect);
 	points = [];
+	
 	// obliczam odleglosc z buta do najblizszego przystanku  (float w metrach)
 	var odlPieszoDoStart = liniaDoStart.getGeodesicLength(map.getProjectionObject());
+	//z zalozenia predkosc = 4km/h
+	var czasDoStart = parseInt( ((odlPieszoDoStart / 1000.0)*60)/4.0 );
+	//czas wyruszyc
+	var timeStart_ = tabelaGodzin[0].getTime();
+	timeStart_ -= 1000 * 60 * czasDoStart ;
+	timeStart_ = new Date(timeStart_);
 	
-	$("#tabs-1").append("<ol></ol>")
-	$("#tabs-1 ol").append("<li>Pieszo ok "+ parseInt(odlPieszoDoStart) +" m w linii prostej </li>" );
+	$("#tabs-1").append("<ol class=\"glownaListaOl\"></ol>");
+	$("#tabs-1 ol.glownaListaOl").append("<li>Start: "+ hoursMinutesToString(timeStart_) +"<br />Pieszo ok. "  + czasDoStart + " min  w linii prostej ("+ parseInt(odlPieszoDoStart) +" m) </li>" );
 	
 	var i = 0;
-	var idLinii = null;
-	
+	var idLinii = null; 
 	//trasa wyznaczona przez alg dijkstry
 	for (i; i < trasa.length; ++i) {
 		
@@ -635,16 +642,65 @@ function drawRoute(odpowiedz) {
 		if(idLinii != trasa[i].linia.id){
 			
 			idLinii = trasa[i].linia.id;
-			$("#tabs-1 ol").append("<li id=\"liniaList-" + idLinii + "\">Linia nr "+ trasa[i].linia.numer + ":</li>");
-			$("#liniaList-" + idLinii).append("<ul></ul>");
+			
+			// malowanie przesiadki na mapie
+			if(i!=0){ 			 	
+				var colorHex = "#" + (Math.floor(Math.random()* 8388607)+4194303).toString(16);
+				
+				
+				var liniaVect = new OpenLayers.Feature.Vector(
+						new OpenLayers.Geometry.LineString(points), 
+						{},
+						{strokeColor : colorHex,
+							strokeWidth: 4,
+							strokeLinecap: "square",
+							strokeDashstyle: "solid"});
+				path.push(liniaVect);
+				points = [];
+				
+				points.push(przystanki[getIPrzystnekFromId(trasa[i-1].przystanek.id)].geometry);
+				points.push(przystanki[getIPrzystnekFromId(trasa[i].przystanek.id)].geometry);
+				
+				var liniaPrzesiadka = new OpenLayers.Geometry.LineString(points);
+				//tworze obiekt wektorowy linii wraz z stylem
+				var liniaPrzesiadkaVect = new OpenLayers.Feature.Vector(
+						liniaPrzesiadka, 
+								{},
+								{strokeColor : "#AAAA99",
+									strokeWidth: 4,
+									strokeLinecap: "square",
+									strokeDashstyle: "solid"});
+				
+				//dodaje wektor do tablicy w ktorej jest cala wyznaczona trasa
+				path.push(liniaPrzesiadkaVect);
+				points = [];
+				
+				
+				var odlPrzesiadka = liniaPrzesiadka.getGeodesicLength(map.getProjectionObject());
+				var czasPrzesiadka = parseInt( ((odlPrzesiadka / 1000.0)*60)/4.0 );
+				
+				$("#tabs-1 ol.glownaListaOl").append("<li>Pieszo ok. " + czasPrzesiadka + " min w linii prostej (" + parseInt(odlPrzesiadka) + " m)</li>" );
+				points.push(przystanki[getIPrzystnekFromId(trasa[i].przystanek.id)].geometry);
+				
+			}
+			
+			$("#tabs-1 ol.glownaListaOl").append("<li id=\"liniaList-" + idLinii + "\">Linia nr "+ trasa[i].linia.numer + ":</li>");
+			$("#liniaList-" + idLinii).append("<ol></ol>");	
+		
 		}
 		
-		$("#liniaList-" + idLinii + " ul").append("<li>" + trasa[i].przystanek.nazwa + "</li>");
-		points.push(przystanki[getIPrzystnekFromId(trasa[i].przystanek.id)].geometry );
+		$("#liniaList-" + idLinii + " ol").append("<li>" + hoursMinutesToString(tabelaGodzin[i]) +  "  " + trasa[i].przystanek.nazwa + "</li>");
+		points.push(przystanki[getIPrzystnekFromId(trasa[i].przystanek.id)].geometry );		
+		
 	}
 	
 	var liniaVect = new OpenLayers.Feature.Vector(
-			new OpenLayers.Geometry.LineString(points));
+			new OpenLayers.Geometry.LineString(points), 
+			{},
+			{strokeColor : "#00CC00",
+				strokeWidth: 4,
+				strokeLinecap: "square",
+				strokeDashstyle: "solid"});
 	path.push(liniaVect);
 	points = [];
 	
@@ -656,7 +712,7 @@ function drawRoute(odpowiedz) {
 	var liniaStopVect = new OpenLayers.Feature.Vector(
 			liniaDoStop, 
 			{},
-			{strokeColor : "#AAAAFF",
+			{strokeColor : "#AAAABB",
 				strokeWidth: 4,
 				strokeLinecap: "square",
 				strokeDashstyle: "solid"});
@@ -664,7 +720,12 @@ function drawRoute(odpowiedz) {
 	path.push(liniaStopVect);
 	points = [];
 	var odlPieszoDoStop = liniaDoStop.getGeodesicLength(map.getProjectionObject());
-	$("#tabs-1 ol").append( "<li>Pieszo ok " + parseInt(odlPieszoDoStop) + " m w linii prostej </li>" );
+	//z zalozenia predkosc = 4km/h	
+	var czasDoStop =  parseInt( ((odlPieszoDoStop/1000.0)*60)/4);
+	var timeStop_ = tabelaGodzin[tabelaGodzin.length-1].getTime();
+	timeStop_ += 1000 * 60 * czasDoStop ;
+	timeStop_ = new Date(timeStop_);
+	$("#tabs-1 ol.glownaListaOl").append( "<li>Pieszo ok. " + czasDoStop +" min  w linii prostej (" + parseInt(odlPieszoDoStop) + " m) <br /> Stop: "+ hoursMinutesToString(timeStop_) +" </li>" );
 	przystankiLayer.addFeatures(path);
 	
 }

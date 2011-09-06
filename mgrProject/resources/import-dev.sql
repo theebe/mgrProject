@@ -266,4 +266,90 @@ UPDATE przystanek_tabliczki SET nastepnyprzystanek_id = 231, version=version+1 W
 INSERT INTO przystanek_tabliczki(id, version, linia_id , przystanek_id, poprzedniprzystanek_id, przystanektabliczka_order, czasdonastepnego) VALUES (nextval('public.hibernate_sequence'), 0, 224, 16,231, 7, 1);
 UPDATE przystanek_tabliczki SET nastepnyprzystanek_id = 232, version=version+1 WHERE id = 231;
 
+INSERT INTO linie (id, numer, typ, version) VALUES (nextval('public.hibernate_sequence'), 3, 'T', 0); --id 233
+INSERT INTO linie (id, numer, typ, version) VALUES (nextval('public.hibernate_sequence'), 501, 'A', 0); --id 234
+INSERT INTO linie (id, numer, typ, version) VALUES (nextval('public.hibernate_sequence'), 899, 'A', 0); --id 235
+
+INSERT INTO przystanek_tabliczki (id, czasdonastepnego, version, linia_id, poprzedniprzystanek_id, przystanek_id, przystanektabliczka_order) VALUES (nextval('public.hibernate_sequence'), 1, 2, 233, NULL, 121, 0);
+INSERT INTO przystanek_tabliczki (id, czasdonastepnego, version, linia_id, poprzedniprzystanek_id, przystanek_id, przystanektabliczka_order) VALUES (nextval('public.hibernate_sequence'), 1, 2, 233, 236, 172, 1);
+UPDATE przystanek_tabliczki SET nastepnyprzystanek_id = 237, version=version+1 WHERE id = 236;
+INSERT INTO przystanek_tabliczki (id, czasdonastepnego, version, linia_id, poprzedniprzystanek_id, przystanek_id, przystanektabliczka_order) VALUES (nextval('public.hibernate_sequence'), 1, 2, 233, 237, 173, 2);
+UPDATE przystanek_tabliczki SET nastepnyprzystanek_id = 238, version=version+1 WHERE id = 237;
+INSERT INTO przystanek_tabliczki (id, czasdonastepnego, version, linia_id, poprzedniprzystanek_id, przystanek_id, przystanektabliczka_order) VALUES (nextval('public.hibernate_sequence'), 1, 1, 233, 238, 174, 3);
+UPDATE przystanek_tabliczki SET nastepnyprzystanek_id = 239, version=version+1 WHERE id = 238;
+
+INSERT INTO przystanek_tabliczki (id, czasdonastepnego, version, linia_id, poprzedniprzystanek_id, przystanek_id, przystanektabliczka_order) VALUES (nextval('public.hibernate_sequence'), 1, 2, 234, NULL, 45, 0);
+INSERT INTO przystanek_tabliczki (id, czasdonastepnego, version, linia_id, poprzedniprzystanek_id, przystanek_id, przystanektabliczka_order) VALUES (nextval('public.hibernate_sequence'), 1, 2, 234, 240, 50, 1);
+UPDATE przystanek_tabliczki SET nastepnyprzystanek_id = 241, version=version+1 WHERE id = 240;
+INSERT INTO przystanek_tabliczki (id, czasdonastepnego, version, linia_id, poprzedniprzystanek_id, przystanek_id, przystanektabliczka_order) VALUES (nextval('public.hibernate_sequence'), 1, 2, 234, 241, 47, 2);
+UPDATE przystanek_tabliczki SET nastepnyprzystanek_id = 242, version=version+1 WHERE id = 241;
+INSERT INTO przystanek_tabliczki (id, czasdonastepnego, version, linia_id, poprzedniprzystanek_id, przystanek_id, przystanektabliczka_order) VALUES (nextval('public.hibernate_sequence'), 1, 2, 234, 242, 51, 3);
+UPDATE przystanek_tabliczki SET nastepnyprzystanek_id = 243, version=version+1 WHERE id = 242;
+INSERT INTO przystanek_tabliczki (id, czasdonastepnego, version, linia_id, poprzedniprzystanek_id, przystanek_id, przystanektabliczka_order) VALUES (nextval('public.hibernate_sequence'), 1, 1, 234, 243, 43, 4);
+UPDATE przystanek_tabliczki SET nastepnyprzystanek_id = 244, version=version+1 WHERE id = 243;
+
+INSERT INTO przystanek_tabliczki (id, czasdonastepnego, version, linia_id, poprzedniprzystanek_id, przystanek_id, przystanektabliczka_order) VALUES (nextval('public.hibernate_sequence'), 2, 2, 235, NULL, 91, 0);
+INSERT INTO przystanek_tabliczki (id, czasdonastepnego, version, linia_id, poprzedniprzystanek_id, przystanek_id, przystanektabliczka_order) VALUES (nextval('public.hibernate_sequence'), 2, 2, 235, 245, 96, 1);
+UPDATE przystanek_tabliczki SET nastepnyprzystanek_id = 246, version=version+1 WHERE id = 245;
+INSERT INTO przystanek_tabliczki (id, czasdonastepnego, version, linia_id, poprzedniprzystanek_id, przystanek_id, przystanektabliczka_order) VALUES (nextval('public.hibernate_sequence'), 1, 2, 235, 246, 47, 2);
+UPDATE przystanek_tabliczki SET nastepnyprzystanek_id = 247, version=version+1 WHERE id = 246;
+INSERT INTO przystanek_tabliczki (id, czasdonastepnego, version, linia_id, poprzedniprzystanek_id, przystanek_id, przystanektabliczka_order) VALUES (nextval('public.hibernate_sequence'), 1, 2, 235, 247, 22, 3);
+UPDATE przystanek_tabliczki SET nastepnyprzystanek_id = 248, version=version+1 WHERE id = 247;
+INSERT INTO przystanek_tabliczki (id, czasdonastepnego, version, linia_id, poprzedniprzystanek_id, przystanek_id, przystanektabliczka_order) VALUES (nextval('public.hibernate_sequence'), 1, 2, 235, 248, 60, 4);
+UPDATE przystanek_tabliczki SET nastepnyprzystanek_id = 249, version=version+1 WHERE id = 248;
+INSERT INTO przystanek_tabliczki (id, czasdonastepnego, version, linia_id, poprzedniprzystanek_id, przystanek_id, przystanektabliczka_order) VALUES (nextval('public.hibernate_sequence'), 1, 1, 235, 249, 58, 5);
+UPDATE przystanek_tabliczki SET nastepnyprzystanek_id = 250, version=version+1 WHERE id = 249;
+
+
+
+-- ODJAZDY
+
+
+
+INSERT INTO odjazdy (id, czas, typdnia, version, przystanektabliczka_id) VALUES (nextval('public.hibernate_sequence'), '19:36:00', 'DZIEN_POWSZEDNI', 0, 225);
+INSERT INTO odjazdy (id, czas, typdnia, version, przystanektabliczka_id) VALUES (nextval('public.hibernate_sequence'), '19:37:00', 'DZIEN_POWSZEDNI', 0, 226);
+INSERT INTO odjazdy (id, czas, typdnia, version, przystanektabliczka_id) VALUES (nextval('public.hibernate_sequence'), '19:38:00', 'DZIEN_POWSZEDNI', 0, 227);
+INSERT INTO odjazdy (id, czas, typdnia, version, przystanektabliczka_id) VALUES (nextval('public.hibernate_sequence'), '19:39:00', 'DZIEN_POWSZEDNI', 0, 228);
+INSERT INTO odjazdy (id, czas, typdnia, version, przystanektabliczka_id) VALUES (nextval('public.hibernate_sequence'), '19:40:00', 'DZIEN_POWSZEDNI', 0, 229);
+INSERT INTO odjazdy (id, czas, typdnia, version, przystanektabliczka_id) VALUES (nextval('public.hibernate_sequence'), '19:41:00', 'DZIEN_POWSZEDNI', 0, 230);
+INSERT INTO odjazdy (id, czas, typdnia, version, przystanektabliczka_id) VALUES (nextval('public.hibernate_sequence'), '19:42:00', 'DZIEN_POWSZEDNI', 0, 231);
+INSERT INTO odjazdy (id, czas, typdnia, version, przystanektabliczka_id) VALUES (nextval('public.hibernate_sequence'), '19:43:00', 'DZIEN_POWSZEDNI', 0, 232);
+INSERT INTO odjazdy (id, czas, typdnia, version, przystanektabliczka_id) VALUES (nextval('public.hibernate_sequence'), '19:22:00', 'SWIETA', 1, 225);
+INSERT INTO odjazdy (id, czas, typdnia, version, przystanektabliczka_id) VALUES (nextval('public.hibernate_sequence'), '19:23:00', 'SWIETA', 1, 226);
+INSERT INTO odjazdy (id, czas, typdnia, version, przystanektabliczka_id) VALUES (nextval('public.hibernate_sequence'), '19:24:00', 'SWIETA', 1, 227);
+INSERT INTO odjazdy (id, czas, typdnia, version, przystanektabliczka_id) VALUES (nextval('public.hibernate_sequence'), '19:25:00', 'SWIETA', 1, 228);
+INSERT INTO odjazdy (id, czas, typdnia, version, przystanektabliczka_id) VALUES (nextval('public.hibernate_sequence'), '19:26:00', 'SWIETA', 1, 229);
+INSERT INTO odjazdy (id, czas, typdnia, version, przystanektabliczka_id) VALUES (nextval('public.hibernate_sequence'), '19:27:00', 'SWIETA', 1, 230);
+INSERT INTO odjazdy (id, czas, typdnia, version, przystanektabliczka_id) VALUES (nextval('public.hibernate_sequence'), '19:28:00', 'SWIETA', 1, 231);
+INSERT INTO odjazdy (id, czas, typdnia, version, przystanektabliczka_id) VALUES (nextval('public.hibernate_sequence'), '19:29:00', 'SWIETA', 1, 232);
+INSERT INTO odjazdy (id, czas, typdnia, version, przystanektabliczka_id) VALUES (nextval('public.hibernate_sequence'), '19:31:00', 'DZIEN_POWSZEDNI', 0, 236);
+INSERT INTO odjazdy (id, czas, typdnia, version, przystanektabliczka_id) VALUES (nextval('public.hibernate_sequence'), '19:30:00', 'SWIETA', 0, 236);
+INSERT INTO odjazdy (id, czas, typdnia, version, przystanektabliczka_id) VALUES (nextval('public.hibernate_sequence'), '19:32:00', 'DZIEN_POWSZEDNI', 0, 237);
+INSERT INTO odjazdy (id, czas, typdnia, version, przystanektabliczka_id) VALUES (nextval('public.hibernate_sequence'), '19:31:00', 'SWIETA', 0, 237);
+INSERT INTO odjazdy (id, czas, typdnia, version, przystanektabliczka_id) VALUES (nextval('public.hibernate_sequence'), '19:33:00', 'DZIEN_POWSZEDNI', 0, 238);
+INSERT INTO odjazdy (id, czas, typdnia, version, przystanektabliczka_id) VALUES (nextval('public.hibernate_sequence'), '19:32:00', 'SWIETA', 0, 238);
+INSERT INTO odjazdy (id, czas, typdnia, version, przystanektabliczka_id) VALUES (nextval('public.hibernate_sequence'), '19:34:00', 'DZIEN_POWSZEDNI', 0, 239);
+INSERT INTO odjazdy (id, czas, typdnia, version, przystanektabliczka_id) VALUES (nextval('public.hibernate_sequence'), '19:33:00', 'SWIETA', 0, 239);
+INSERT INTO odjazdy (id, czas, typdnia, version, przystanektabliczka_id) VALUES (nextval('public.hibernate_sequence'), '21:03:16.112', 'DZIEN_POWSZEDNI', 0, 240);
+INSERT INTO odjazdy (id, czas, typdnia, version, przystanektabliczka_id) VALUES (nextval('public.hibernate_sequence'), '21:03:17.647', 'SWIETA', 0, 240);
+INSERT INTO odjazdy (id, czas, typdnia, version, przystanektabliczka_id) VALUES (nextval('public.hibernate_sequence'), '21:04:16.112', 'DZIEN_POWSZEDNI', 0, 241);
+INSERT INTO odjazdy (id, czas, typdnia, version, przystanektabliczka_id) VALUES (nextval('public.hibernate_sequence'), '21:04:17.647', 'SWIETA', 0, 241);
+INSERT INTO odjazdy (id, czas, typdnia, version, przystanektabliczka_id) VALUES (nextval('public.hibernate_sequence'), '21:05:16.112', 'DZIEN_POWSZEDNI', 0, 242);
+INSERT INTO odjazdy (id, czas, typdnia, version, przystanektabliczka_id) VALUES (nextval('public.hibernate_sequence'), '21:05:17.647', 'SWIETA', 0, 242);
+INSERT INTO odjazdy (id, czas, typdnia, version, przystanektabliczka_id) VALUES (nextval('public.hibernate_sequence'), '21:06:16.112', 'DZIEN_POWSZEDNI', 0, 243);
+INSERT INTO odjazdy (id, czas, typdnia, version, przystanektabliczka_id) VALUES (nextval('public.hibernate_sequence'), '21:06:17.647', 'SWIETA', 0, 243);
+INSERT INTO odjazdy (id, czas, typdnia, version, przystanektabliczka_id) VALUES (nextval('public.hibernate_sequence'), '21:07:16.112', 'DZIEN_POWSZEDNI', 0, 244);
+INSERT INTO odjazdy (id, czas, typdnia, version, przystanektabliczka_id) VALUES (nextval('public.hibernate_sequence'), '21:07:17.647', 'SWIETA', 0, 244);
+INSERT INTO odjazdy (id, czas, typdnia, version, przystanektabliczka_id) VALUES (nextval('public.hibernate_sequence'), '21:03:00', 'DZIEN_POWSZEDNI', 0, 245);
+INSERT INTO odjazdy (id, czas, typdnia, version, przystanektabliczka_id) VALUES (nextval('public.hibernate_sequence'), '21:03:00', 'SWIETA', 0, 245);
+INSERT INTO odjazdy (id, czas, typdnia, version, przystanektabliczka_id) VALUES (nextval('public.hibernate_sequence'), '21:05:00', 'DZIEN_POWSZEDNI', 0, 246);
+INSERT INTO odjazdy (id, czas, typdnia, version, przystanektabliczka_id) VALUES (nextval('public.hibernate_sequence'), '21:05:00', 'SWIETA', 0, 246);
+INSERT INTO odjazdy (id, czas, typdnia, version, przystanektabliczka_id) VALUES (nextval('public.hibernate_sequence'), '21:07:00', 'DZIEN_POWSZEDNI', 0, 247);
+INSERT INTO odjazdy (id, czas, typdnia, version, przystanektabliczka_id) VALUES (nextval('public.hibernate_sequence'), '21:07:00', 'SWIETA', 0, 247);
+INSERT INTO odjazdy (id, czas, typdnia, version, przystanektabliczka_id) VALUES (nextval('public.hibernate_sequence'), '21:08:00', 'DZIEN_POWSZEDNI', 0, 248);
+INSERT INTO odjazdy (id, czas, typdnia, version, przystanektabliczka_id) VALUES (nextval('public.hibernate_sequence'), '21:08:00', 'SWIETA', 0, 248);
+INSERT INTO odjazdy (id, czas, typdnia, version, przystanektabliczka_id) VALUES (nextval('public.hibernate_sequence'), '21:09:00', 'DZIEN_POWSZEDNI', 0, 249);
+INSERT INTO odjazdy (id, czas, typdnia, version, przystanektabliczka_id) VALUES (nextval('public.hibernate_sequence'), '21:09:00', 'SWIETA', 0, 249);
+INSERT INTO odjazdy (id, czas, typdnia, version, przystanektabliczka_id) VALUES (nextval('public.hibernate_sequence'), '21:10:00', 'DZIEN_POWSZEDNI', 0, 250);
+INSERT INTO odjazdy (id, czas, typdnia, version, przystanektabliczka_id) VALUES (nextval('public.hibernate_sequence'), '21:10:00', 'SWIETA', 0, 250);
 
