@@ -306,6 +306,7 @@ UPDATE przystanek_tabliczki SET nastepnyprzystanek_id = 250, version=version+1 W
 
 
 
+<<<<<<< HEAD
 INSERT INTO odjazdy (id, czas, typdnia, version, przystanektabliczka_id) VALUES (nextval('public.hibernate_sequence'), '19:36:00', 'DZIEN_POWSZEDNI', 0, 225);
 INSERT INTO odjazdy (id, czas, typdnia, version, przystanektabliczka_id) VALUES (nextval('public.hibernate_sequence'), '19:37:00', 'DZIEN_POWSZEDNI', 0, 226);
 INSERT INTO odjazdy (id, czas, typdnia, version, przystanektabliczka_id) VALUES (nextval('public.hibernate_sequence'), '19:38:00', 'DZIEN_POWSZEDNI', 0, 227);
@@ -353,3 +354,7 @@ INSERT INTO odjazdy (id, czas, typdnia, version, przystanektabliczka_id) VALUES 
 INSERT INTO odjazdy (id, czas, typdnia, version, przystanektabliczka_id) VALUES (nextval('public.hibernate_sequence'), '21:10:00', 'DZIEN_POWSZEDNI', 0, 250);
 INSERT INTO odjazdy (id, czas, typdnia, version, przystanektabliczka_id) VALUES (nextval('public.hibernate_sequence'), '21:10:00', 'SWIETA', 0, 250);
 
+=======
+-- KONFIGURACJA
+INSERT INTO konfiguracja(id, liczbawatkow, name, nieskonczonosc, odlegloscprzystankow, predkoscpasazera, version) VALUES (nextval('public.hibernate_sequence'), 0, 'default', 2000, 200, 6.0, 0)
+>>>>>>> ca5fc7d372e64b09d16af1deff332be24e4521c7
