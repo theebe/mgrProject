@@ -112,9 +112,9 @@ public class DijkstraBean implements Dijkstra {
 		}
 		
 		d[s] = 0; //d[s-1] = 0;
+		ExecutorService exec = Executors.newFixedThreadPool(nThreads);
 		
 		while(S.size() < n) {
-			ExecutorService exec = Executors.newFixedThreadPool(nThreads); 
 			ArrayList<Future<Integer>> result = new ArrayList<Future<Integer>>();
 			log.info("d[]: " + Arrays.toString(d));
 			
