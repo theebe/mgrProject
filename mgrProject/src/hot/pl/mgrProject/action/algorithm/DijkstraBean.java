@@ -52,12 +52,12 @@ public class DijkstraBean implements Dijkstra {
 	/**
 	 * Przechowuje sciezki tras.
 	 */
-	private static int[] p;
+	private int[] p;
 	
 	/**
 	 * Przechowuje odleglosci do wierzcholka startowego.
 	 */
-	private static int[] d;
+	private int[] d;
 	
 	/**
 	 * Liczba dostepnych procesorow. Algorytm bedzie staral sie dzialac na takiej liczbie watkow.
@@ -111,11 +111,12 @@ public class DijkstraBean implements Dijkstra {
 			d[i] = inf;
 		}
 		
-		d[s] = 0; //d[s-1] = 0;
+		d[s] = 0;
 		ExecutorService exec = Executors.newFixedThreadPool(nThreads);
+		ArrayList<Future<Integer>> result  = new ArrayList<Future<Integer>>();
+		ArrayList<Future<Boolean>> result2 = new ArrayList<Future<Boolean>>();
 		
 		while(S.size() < n) {
-			ArrayList<Future<Integer>> result = new ArrayList<Future<Integer>>();
 			log.info("d[]: " + Arrays.toString(d));
 			
 			//szukanie wierzcholka o najmniejszym d.
@@ -126,30 +127,29 @@ public class DijkstraBean implements Dijkstra {
 			
 			int minD = inf + 1;
 			int minDIndex = -1;
+
 			for (Future<Integer> f : result) {
-				Integer i;
 				try {
-					i = f.get();
-					if (i == -1) continue;
+					Integer i = f.get();
+					if (i == -2) continue;
 					if (d[i] < minD) {
 						minD = d[i];
 						minDIndex = i;
 					}
 				} catch (InterruptedException e) {
-					log.info(e);
+					log.info("[InterruptedException] " + e);
 				} catch (ExecutionException e) {
-					log.info(e);
-				} finally {
-					exec.shutdown();
+					log.info("[ExecutionException] " + e);
 				}
 			}
+			result.clear();
 
+			if (minDIndex == -1) break;
+			
 			//czasami wychodzi tu poza tablice. Prawdopodobnie wtedy, gdy graf jest niepoprawny.
 			try {
 				u = Q.get(minDIndex);
 			} catch(ArrayIndexOutOfBoundsException e) {
-//				log.info("Q.size(): " + Q.size());
-//				log.info("minDIndex: " + minDIndex);
 				throw e;
 			}
 			Q.set(minDIndex, inf);
@@ -159,13 +159,28 @@ public class DijkstraBean implements Dijkstra {
 			exec = Executors.newFixedThreadPool(nThreads);
 			
 			for (int i = 0; i < nThreads-1; ++i) {
-				exec.execute(new CheckNeighbors(u, E, i*(n/nThreads), (i+1)*(n/nThreads)));
+				result2.add(exec.submit(new CheckNeighbors(u, i*(n/nThreads), (i+1)*(n/nThreads))));
 			}
-			exec.execute(new CheckNeighbors(u, E, (nThreads-1)*(n/nThreads), n));
+			result2.add(exec.submit(new CheckNeighbors(u, (nThreads-1)*(n/nThreads), n)));
+			
+			//po zakonczeniu wykonywania watkow mozna kontynuowac prace
+			try {
+				for (Future<Boolean> f : result2) {
+					f.get();
+				}
+			} catch (InterruptedException e) {
+				log.info(e);
+			} catch (ExecutionException e) {
+				log.info(e);
+			} 
+
+			result2.clear();
 			
 			minD = inf + 1;
 			minDIndex = -1;
 		}
+		
+		exec.shutdown();
 	}
 	
 	/**
@@ -176,8 +191,6 @@ public class DijkstraBean implements Dijkstra {
 	 */
 	public String getPath(int stopID) throws Exception {
 		int i = p[stopID];
-		//log.info("p[]: " + Arrays.toString(p));
-		//log.info("d[]: " + Arrays.toString(d));
 		String result = "" + stopID;
 		
 		while (i != 0) {
@@ -224,47 +237,46 @@ public class DijkstraBean implements Dijkstra {
 		}
 
 		@Override
-		public Integer call() throws Exception {
-			int minD = inf + 1; //zeby bylo troche wieksze od zdefiniowanej nieskonczonosci
-			int minDIndex = -1;
+		public synchronized Integer call() throws Exception {
+			int minD = inf;
+			int minDIndex = -2;
 			
 			for (int i = start; i < stop; ++i) {
-				if (d[i] < minD && Q.contains(i)) { //Q.contains(i+1)
+				if (d[i] < minD && Q.contains(i)) {
 					minD = d[i];
 					minDIndex = i;
 				}
 			}
-			//log.info("========== start: " + start + ", stop: " + stop + ", index: " + minDIndex + ", d[i]: " + d[minDIndex]);
+			
 			return minDIndex;
 		}
 	}
 	
-	private class CheckNeighbors implements Runnable {
-		private int[][] E;
+	private class CheckNeighbors implements Callable<Boolean> {
 		private int start;
 		private int stop;
 		private int u;
 		
-		public CheckNeighbors(int u, int[][] E, int start, int stop) {
-			this.E = E;
+		public CheckNeighbors(int u, int start, int stop) {
 			this.start = start;
 			this.stop = stop;
 			this.u = u;
 		}
-
+		
 		@Override
-		public void run() {
+		public synchronized Boolean call() { //zwraca true kiedy zakonczy wykonywanie zadania
 			int neighbor = -1;
-			
+
 			for (int i = start; i < stop; ++i) {
-				neighbor = E[u][i]; //E[u-1][i]
+				neighbor = E[u][i];
 				if (neighbor != inf) {
-					if (d[u] + neighbor < d[i]) { //d[u-1]
+					if (d[u] + neighbor < d[i]) {
 						p[i] = u;
-						d[i] = d[u] + neighbor; //d[u-1]
+						d[i] = d[u] + neighbor;
 					}
 				}
 			}
+			return true;
 		}	
 	}
 }

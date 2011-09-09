@@ -30,7 +30,6 @@ public class NeighborhoodMatrixBean implements NeighborhoodMatrix {
 	private Log log;
 	@In
 	private EntityManager mgrDatabase;
-	private int start;
 	private List<PrzystanekTabliczka> tabliczki;
 	private int[][] E;  //macierz sasiedztwa
 	private Integer[] V; //wektor wierzcholkow
@@ -47,11 +46,10 @@ public class NeighborhoodMatrixBean implements NeighborhoodMatrix {
 	private Konfiguracja konf;
 	
 	@Override
-	public void create(int start, Calendar startTime) {
+	public void create(Calendar startTime) {
 		//pobranie konfiguracji
 		konf = (Konfiguracja)mgrDatabase.createNamedQuery("konfiguracjaPoNazwie").setParameter("nazwa", "default").getSingleResult();
 		inf = konf.getNieskonczonosc();
-		this.start = start;
 		this.startTime = startTime;
 		this.n = tabliczki.size();
 		hours = new ArrayList<Calendar>();

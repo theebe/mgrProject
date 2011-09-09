@@ -10,7 +10,7 @@ import pl.mgrProject.model.PrzystanekTabliczka;
 
 @Local
 public interface NeighborhoodMatrix {
-	public void create(int start, Calendar startTime);
+	public void create(Calendar startTime);
 	public int[][] getE();
 	public Integer[] getV();
 	public int getIndex(Long id);

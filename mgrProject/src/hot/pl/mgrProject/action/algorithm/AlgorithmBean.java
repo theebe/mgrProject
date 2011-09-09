@@ -105,7 +105,7 @@ public class AlgorithmBean implements Algorithm {
 		start = neighborhoodMatrixBean.getIndex(startID);
 		stop  = neighborhoodMatrixBean.getIndex(stopID);
 		
-		neighborhoodMatrixBean.create(start, odjazd);
+		neighborhoodMatrixBean.create(odjazd);
 		int[][] E = neighborhoodMatrixBean.getE();
 		Integer[] V = neighborhoodMatrixBean.getV();
 		
