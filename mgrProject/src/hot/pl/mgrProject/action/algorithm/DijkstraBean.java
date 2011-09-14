@@ -131,7 +131,7 @@ public class DijkstraBean implements Dijkstra {
 			for (Future<Integer> f : result) {
 				try {
 					Integer i = f.get();
-					if (i == -2) continue;
+					if (i == -1) continue;
 					if (d[i] < minD) {
 						minD = d[i];
 						minDIndex = i;
@@ -175,9 +175,6 @@ public class DijkstraBean implements Dijkstra {
 			} 
 
 			result2.clear();
-			
-			minD = inf + 1;
-			minDIndex = -1;
 		}
 		
 		exec.shutdown();
@@ -239,7 +236,7 @@ public class DijkstraBean implements Dijkstra {
 		@Override
 		public synchronized Integer call() throws Exception {
 			int minD = inf;
-			int minDIndex = -2;
+			int minDIndex = -1;
 			
 			for (int i = start; i < stop; ++i) {
 				if (d[i] < minD && Q.contains(i)) {

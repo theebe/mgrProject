@@ -6,6 +6,7 @@ import java.util.List;
 
 import javax.ejb.Local;
 
+import pl.mgrProject.model.Linia;
 import pl.mgrProject.model.PrzystanekTabliczka;
 
 @Local
@@ -19,4 +20,5 @@ public interface NeighborhoodMatrix {
 	public List<Calendar> getHours();
 	public void setStartTime(Calendar startTime);
 	public Calendar dateToCalendar(Date d);
+	public boolean scheduleExists(Linia l);
 }

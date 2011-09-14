@@ -17,6 +17,7 @@ import org.jboss.seam.annotations.Name;
 import org.jboss.seam.log.Log;
 import org.postgis.Point;
 
+import pl.mgrProject.model.Konfiguracja;
 import pl.mgrProject.model.Odjazd;
 import pl.mgrProject.model.Przystanek;
 import pl.mgrProject.model.PrzystanekTabliczka;
@@ -71,8 +72,13 @@ public class AlgorithmBean implements Algorithm {
 	 */
 	@Override
 	public Boolean run() {
-		Przystanek pstart = getClosestToStart();
-		Przystanek pstop  = getClosestToStop();
+		Przystanek pstart = getClosestTo(startPoint);
+		Przystanek pstop  = getClosestTo(stopPoint);
+		
+		if (pstart == null || pstop == null) {
+			log.info("Nie mozna znalezc trasy.");
+			return false;
+		}
 
 		List<PrzystanekTabliczka> tabForStart = mgrDatabase.createNamedQuery("tabliczkiPoPrzystanku").setParameter("przystanek", pstart).getResultList();
 		List<PrzystanekTabliczka> tabForStop = mgrDatabase.createNamedQuery("tabliczkiPoPrzystanku").setParameter("przystanek", pstop).getResultList();
@@ -160,8 +166,8 @@ public class AlgorithmBean implements Algorithm {
 		return true;
 	}
 	
-	@Override
-	public Przystanek getClosestToStart() {
+	
+	public Przystanek getClosestToStart2() {
 		BigInteger id = (BigInteger)mgrDatabase.createNativeQuery("select foo.id from (select p.id, st_distance_sphere(p.location, ST_GeomFromText('POINT(" + startPoint.x + " " + startPoint.y + ")', 4326)) as odleglosc from przystanki p order by odleglosc limit 1) as foo").getResultList().get(0);
 		Przystanek p = mgrDatabase.getReference(Przystanek.class, id.longValue());
 		log.info("[AlgorithmBean] Znaleziono najblizszy przystanek: " + p.getNazwa());
@@ -169,11 +175,19 @@ public class AlgorithmBean implements Algorithm {
 	}
 	
 	@Override
-	public Przystanek getClosestToStop() {
-		BigInteger id = (BigInteger)mgrDatabase.createNativeQuery("select foo.id from (select p.id, st_distance_sphere(p.location, ST_GeomFromText('POINT(" + stopPoint.x + " " + stopPoint.y + ")', 4326)) as odleglosc from przystanki p order by odleglosc limit 1) as foo").getResultList().get(0);
-		Przystanek p = mgrDatabase.getReference(Przystanek.class, id.longValue());
-		log.info("[AlgorithmBean] Znaleziono najblizszy przystanek: " + p.getNazwa());
-		return p;
+	public Przystanek getClosestTo(Point point) {
+		Konfiguracja konf = (Konfiguracja)mgrDatabase.createNamedQuery("konfiguracjaPoNazwie").setParameter("nazwa", "default").getSingleResult();
+		List<BigInteger> nearest = mgrDatabase.createNativeQuery("select foo.id from (select p.id, st_distance_sphere(p.location, ST_GeomFromText('POINT(" + point.x + " " + point.y + ")', 4326)) as odleglosc from przystanki p order by odleglosc) as foo where foo.odleglosc < " + konf.getOdlegloscPrzystankow()).getResultList();
+		
+		for (BigInteger i : nearest) {
+			Przystanek p = mgrDatabase.getReference(Przystanek.class, i.longValue());
+			//sprawdzenie czy istnieje rozklad jazdy dla danego przystanku
+			if (p.getPrzystanekTabliczki().size() > 0 && p.getPrzystanekTabliczki().get(0).getOdjazdy().size() > 0) {
+				return p;
+			}
+		}
+
+		return null;
 	}
 	
 	/**
