@@ -80,8 +80,8 @@ public class AlgorithmBean implements Algorithm {
 			return false;
 		}
 
-		List<PrzystanekTabliczka> tabForStart = mgrDatabase.createNamedQuery("tabliczkiPoPrzystanku").setParameter("przystanek", pstart).getResultList();
-		List<PrzystanekTabliczka> tabForStop = mgrDatabase.createNamedQuery("tabliczkiPoPrzystanku").setParameter("przystanek", pstop).getResultList();
+		List<PrzystanekTabliczka> tabForStart = pstart.getPrzystanekTabliczki();
+		List<PrzystanekTabliczka> tabForStop = pstop.getPrzystanekTabliczki();
 		
 		log.info("Liczba tabliczek dla start: " + tabForStart.size());
 		log.info("Liczba tabliczek dla stop: " + tabForStop.size());
