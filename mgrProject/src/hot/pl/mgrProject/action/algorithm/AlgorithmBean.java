@@ -86,12 +86,6 @@ public class AlgorithmBean implements Algorithm {
 		log.info("Liczba tabliczek dla start: " + tabForStart.size());
 		log.info("Liczba tabliczek dla stop: " + tabForStop.size());
 		
-		if (tabForStart.size() == 0 || tabForStop.size() == 0) {
-			log.info("Nie mozna znalezc trasy.");
-			return false;
-		}
-		
-		//PrzystanekTabliczka tabStart = tabForStart.get(0);
 		//pobieramy tabliczke dla start, dla ktorej jest dostepny najwczesniejszy odjazd
 		PrzystanekTabliczka tabStart = checkTime(tabForStart);
 		if (tabStart == null) {
@@ -166,14 +160,6 @@ public class AlgorithmBean implements Algorithm {
 		return true;
 	}
 	
-	
-	public Przystanek getClosestToStart2() {
-		BigInteger id = (BigInteger)mgrDatabase.createNativeQuery("select foo.id from (select p.id, st_distance_sphere(p.location, ST_GeomFromText('POINT(" + startPoint.x + " " + startPoint.y + ")', 4326)) as odleglosc from przystanki p order by odleglosc limit 1) as foo").getResultList().get(0);
-		Przystanek p = mgrDatabase.getReference(Przystanek.class, id.longValue());
-		log.info("[AlgorithmBean] Znaleziono najblizszy przystanek: " + p.getNazwa());
-		return p;
-	}
-	
 	@Override
 	public Przystanek getClosestTo(Point point) {
 		Konfiguracja konf = (Konfiguracja)mgrDatabase.createNamedQuery("konfiguracjaPoNazwie").setParameter("nazwa", "default").getSingleResult();
@@ -229,6 +215,20 @@ public class AlgorithmBean implements Algorithm {
 		
 		for (Integer i : path) {
 			trasa.add(tabliczki.get(i));
+		}
+		
+		//zapobieganie przesiadkom na przystanku startowym
+		for (int i = trasa.size()-1; i > 0; --i) {
+			if (trasa.get(i).getPrzystanek().getId() == trasa.get(i-1).getPrzystanek().getId())
+				trasa.remove(i);
+			else break;
+		}
+		
+		//zapobieganie przesiadkom na przystanku koncowym
+		for (int i = 0; i < trasa.size(); ++i) {
+			if (trasa.get(i).getPrzystanek().getId() == trasa.get(i+1).getPrzystanek().getId())
+				trasa.remove(i);
+			else break;
 		}
 		
 		Collections.reverse(trasa);
