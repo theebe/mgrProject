@@ -227,8 +227,6 @@ public class AlgorithmBean implements Algorithm {
 		
 		List<PrzystanekTabliczka> trasa = new ArrayList<PrzystanekTabliczka>();
 		
-		PrzystanekTabliczka poprzednia, aktualna;
-		
 		for (Integer i : path) {
 			trasa.add(tabliczki.get(i));
 		}

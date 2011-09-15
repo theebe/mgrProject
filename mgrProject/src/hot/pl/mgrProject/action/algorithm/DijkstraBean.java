@@ -217,7 +217,8 @@ public class DijkstraBean implements Dijkstra {
 			i = p[i];
 		}
 		
-		tab.add(s);
+		if (tab.get(tab.size()-1) != s)
+			tab.add(s);
 		
 		return tab;
 	}
