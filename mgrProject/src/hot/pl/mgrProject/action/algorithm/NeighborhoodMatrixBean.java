@@ -22,6 +22,7 @@ import pl.mgrProject.model.Linia;
 import pl.mgrProject.model.Odjazd;
 import pl.mgrProject.model.Przystanek;
 import pl.mgrProject.model.PrzystanekTabliczka;
+import pl.mgrProject.model.TypDnia;
 
 @Stateless
 @Name("neighborhoodMatrixBean")
@@ -333,6 +334,11 @@ public class NeighborhoodMatrixBean implements NeighborhoodMatrix {
 		c.set(Calendar.SECOND, ctmp.get(Calendar.SECOND));
 		
 		return c;
+	}
+	
+	@Override
+	public boolean isHoliday(Calendar date) {
+		return date.get(Calendar.DAY_OF_WEEK) == Calendar.SATURDAY || date.get(Calendar.DAY_OF_WEEK) == Calendar.SUNDAY ? true : false;
 	}
 
 }

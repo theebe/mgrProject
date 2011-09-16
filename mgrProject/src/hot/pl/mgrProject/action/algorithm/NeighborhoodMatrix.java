@@ -21,4 +21,5 @@ public interface NeighborhoodMatrix {
 	public void setStartTime(Calendar startTime);
 	public Calendar dateToCalendar(Date d);
 	public boolean scheduleExists(Linia l);
+	public boolean isHoliday(Calendar date);
 }

@@ -21,6 +21,7 @@ import pl.mgrProject.model.Konfiguracja;
 import pl.mgrProject.model.Odjazd;
 import pl.mgrProject.model.Przystanek;
 import pl.mgrProject.model.PrzystanekTabliczka;
+import pl.mgrProject.model.TypDnia;
 
 @Stateless
 @Name("algorithmBean")
@@ -65,6 +66,10 @@ public class AlgorithmBean implements Algorithm {
 	 * Czas odjazdu z pierwszego przystanku
 	 */
 	private Calendar odjazd;
+	/**
+	 * Okresla czy dzien startu jest swietem czy tez nie
+	 */
+	private boolean holiday;
 	
 	
 	/**
@@ -250,6 +255,11 @@ public class AlgorithmBean implements Algorithm {
 			min.set(Calendar.YEAR, 2099);
 
 			for (int j = 0; j < odj.size(); ++j) {
+				if (holiday) {
+					if (odj.get(j).getTypDnia() != TypDnia.SWIETA) continue;
+				} else {
+					if (odj.get(j).getTypDnia() != TypDnia.DZIEN_POWSZEDNI) continue;
+				}
 				Calendar tmp = neighborhoodMatrixBean.dateToCalendar(odj.get(j).getCzas());
 				if (tmp.after(startTime) && tmp.before(min)) {
 					index = i;
@@ -269,6 +279,10 @@ public class AlgorithmBean implements Algorithm {
 	@Override
 	public void setStartTime(Date startTime) {
 		this.startTime = neighborhoodMatrixBean.dateToCalendar(startTime);
+		Calendar tmp = Calendar.getInstance();
+		tmp.setTime(startTime);
+		holiday = neighborhoodMatrixBean.isHoliday(tmp);
+		log.info("SetStartTime: " + startTime);
 	}
 	
 	@Override
