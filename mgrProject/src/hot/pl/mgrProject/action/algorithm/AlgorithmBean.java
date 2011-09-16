@@ -168,7 +168,7 @@ public class AlgorithmBean implements Algorithm {
 	@Override
 	public Przystanek getClosestTo(Point point) {
 		Konfiguracja konf = (Konfiguracja)mgrDatabase.createNamedQuery("konfiguracjaPoNazwie").setParameter("nazwa", "default").getSingleResult();
-		List<BigInteger> nearest = mgrDatabase.createNativeQuery("select foo.id from (select p.id, st_distance_sphere(p.location, ST_GeomFromText('POINT(" + point.x + " " + point.y + ")', 4326)) as odleglosc from przystanki p order by odleglosc) as foo where foo.odleglosc < " + konf.getOdlegloscPrzystankow()).getResultList();
+		List<BigInteger> nearest = mgrDatabase.createNativeQuery("select foo.id from (select p.id, st_distance_sphere(p.location, ST_GeomFromText('POINT(" + point.x + " " + point.y + ")', 4326)) as odleglosc from przystanki p order by odleglosc) as foo where foo.odleglosc < " + konf.getOdlegloscDoStartStop()).getResultList();
 		
 		for (BigInteger i : nearest) {
 			Przystanek p = mgrDatabase.getReference(Przystanek.class, i.longValue());
@@ -282,7 +282,6 @@ public class AlgorithmBean implements Algorithm {
 		Calendar tmp = Calendar.getInstance();
 		tmp.setTime(startTime);
 		holiday = neighborhoodMatrixBean.isHoliday(tmp);
-		log.info("SetStartTime: " + startTime);
 	}
 	
 	@Override
