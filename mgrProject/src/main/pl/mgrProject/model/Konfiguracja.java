@@ -25,6 +25,7 @@ public class Konfiguracja {
 	private Double predkoscPasazera;
 	private Integer liczbaWatkow;
 	private Integer odlegloscPrzystankow;
+	private Integer odlegloscDoStartStop;
 	private Integer nieskonczonosc;
 	
 	
@@ -94,6 +95,16 @@ public class Konfiguracja {
 
 	public void setNieskonczonosc(Integer nieskonczonosc) {
 		this.nieskonczonosc = nieskonczonosc;
+	}
+	
+	@NotNull
+	@Min(value=0, message="Odeglosc nie moze byc mniejsza od 0")
+	public Integer getOdlegloscDoStartStop() {
+		return odlegloscDoStartStop;
+	}
+
+	public void setOdlegloscDoStartStop(Integer odlegloscDoStartStop) {
+		this.odlegloscDoStartStop = odlegloscDoStartStop;
 	}
 
 }

@@ -22,6 +22,7 @@ import pl.mgrProject.model.Linia;
 import pl.mgrProject.model.Odjazd;
 import pl.mgrProject.model.Przystanek;
 import pl.mgrProject.model.PrzystanekTabliczka;
+import pl.mgrProject.model.TypDnia;
 
 @Stateless
 @Name("neighborhoodMatrixBean")
@@ -30,7 +31,6 @@ public class NeighborhoodMatrixBean implements NeighborhoodMatrix {
 	private Log log;
 	@In
 	private EntityManager mgrDatabase;
-	private int start;
 	private List<PrzystanekTabliczka> tabliczki;
 	private int[][] E;  //macierz sasiedztwa
 	private Integer[] V; //wektor wierzcholkow
@@ -47,11 +47,10 @@ public class NeighborhoodMatrixBean implements NeighborhoodMatrix {
 	private Konfiguracja konf;
 	
 	@Override
-	public void create(int start, Calendar startTime) {
+	public void create(Calendar startTime) {
 		//pobranie konfiguracji
 		konf = (Konfiguracja)mgrDatabase.createNamedQuery("konfiguracjaPoNazwie").setParameter("nazwa", "default").getSingleResult();
 		inf = konf.getNieskonczonosc();
-		this.start = start;
 		this.startTime = startTime;
 		this.n = tabliczki.size();
 		hours = new ArrayList<Calendar>();
@@ -93,15 +92,13 @@ public class NeighborhoodMatrixBean implements NeighborhoodMatrix {
 				
 				if (!ok) {
 					tmp = checkTime(tabs.get(i));
-					if (tmp == null) {
-						continue;
-					}
+					if (tmp == null) continue;
 					hours.set(aktualna, (Calendar)tmp.clone());
 					tmp.add(Calendar.MINUTE, tabs.get(i).getCzasDoNastepnego());
 					ok = true;
 				}
-				
 				E[aktualna][nastepna] = getEdgeWeight(tabliczki.get(aktualna));
+				joinToNearest(tabs.get(i), tmp);
 				hours.set(nastepna, (Calendar)tmp.clone());
 				tmp.add(Calendar.MINUTE, tabs.get(i+1).getCzasDoNastepnego());
 			}			
@@ -109,23 +106,21 @@ public class NeighborhoodMatrixBean implements NeighborhoodMatrix {
 			//ostatnia tabliczka jest laczona z tabliczkami nalezacymi do innych linii
 			//znajdujacych sie na najblizszych przystankach
 			if (tmp == null) continue; //jesli null to oznacza, ze nie istnieje trasa
-			PrzystanekTabliczka last = tabs.get(tabs.size()-1);
-			Set<PrzystanekTabliczka> tabsForLast = getNearest(last.getPrzystanek(), konf.getOdlegloscPrzystankow());
-			log.info("tabsForLast: " + tabsForLast.size());
-			aktualna = getIndex(last.getId());
-			log.info("Przystanek last: " + last.getPrzystanek().getNazwa());
-			for (PrzystanekTabliczka t : tabsForLast) {
-				if (last.getLinia().getNumer() == t.getLinia().getNumer()) {
-					log.info("Ta sama linia");
-					continue;
-				}
-
-				log.info("Laczenie z: " + t.getPrzystanek().getNazwa());
-				nastepna = getIndex(t.getId());
-				E[aktualna][nastepna] = getEdgeWeight(tabliczki.get(aktualna), tabliczki.get(nastepna), tmp);
-			}
+			joinToNearest(tabs.get(tabs.size()-1), tmp);
 		}
 		printE();
+	}
+	
+	private void joinToNearest(PrzystanekTabliczka tab, Calendar time) {
+		int aktualna = -1, nastepna = -1;
+		Set<PrzystanekTabliczka> nearestTabs = getNearest(tab.getPrzystanek(), konf.getOdlegloscPrzystankow());
+		
+		aktualna = getIndex(tab.getId());
+
+		for (PrzystanekTabliczka t : nearestTabs) {
+			nastepna = getIndex(t.getId());
+			E[aktualna][nastepna] = getEdgeWeight(tabliczki.get(aktualna), tabliczki.get(nastepna), time);
+		}
 	}
 	
 	/**
@@ -133,7 +128,8 @@ public class NeighborhoodMatrixBean implements NeighborhoodMatrix {
 	 * @param l Linia do sprawdzenia.
 	 * @return True - rozklad istnieje, False - brak rozkladu.
 	 */
-	private boolean scheduleExists(Linia l) {
+	@Override
+	public boolean scheduleExists(Linia l) {
 		List<PrzystanekTabliczka> pt = l.getPrzystanekTabliczka();
 		
 		if (pt.size() == 0 || pt.get(0).getOdjazdy().size() == 0)
@@ -158,7 +154,6 @@ public class NeighborhoodMatrixBean implements NeighborhoodMatrix {
 		log.info("Liczba przystankow: " + przystanki.size());
 		
 		//laczenie tabliczek na tych samych przystankach. Przesiadki piesze bez przemieszczania sie.
-		//TODO: Mozliwosc zrownoleglenia
 		int aktualny = -1, nastepny = -1;
 		for (Przystanek p : przystanki) {
 			//pobranie wszystkich tabliczek z aktualnego przystanku
@@ -238,8 +233,6 @@ public class NeighborhoodMatrixBean implements NeighborhoodMatrix {
 		//pobranie odleglosci miedzy przystankami
 		Double s = (Double)mgrDatabase.createNativeQuery("select st_distance_sphere(ST_GeomFromText('POINT(" + st.x + " " + st.y + ")', 4326), ST_GeomFromText('POINT(" + sp.x + " " + sp.y + ")', 4326)) as odleglosc").getSingleResult();
 		Double t = (s/(1000*v))*60; //czas podrozy pasazera miedzy przystankami w minutach
-		log.info("s: " + s);
-		log.info("t: " + t);
 		time.add(Calendar.MINUTE, t.intValue());
 		
 		Calendar min = Calendar.getInstance();
@@ -258,10 +251,7 @@ public class NeighborhoodMatrixBean implements NeighborhoodMatrix {
 		
 		//ró¿nica miêdzy min i tmp
 		long a = Math.abs(min.getTimeInMillis() - time.getTimeInMillis());
-		log.info("min: " + min.getTime());
-		log.info("difference: " + (a/60000));
 		weight = (int)(a/60000) + t.intValue();
-		log.info("weight (int distance): " + weight);
 		
 		return weight;
 	}
@@ -277,6 +267,7 @@ public class NeighborhoodMatrixBean implements NeighborhoodMatrix {
 		//pobranie id najblizszych przystankow
 		List<BigInteger> nearest = mgrDatabase.createNativeQuery("select foo.id from (select p.id, st_distance_sphere(p.location, ST_GeomFromText('POINT(" + p.getLocation().x + " " + p.getLocation().y + ")', 4326)) as odleglosc from przystanki p order by odleglosc) as foo where foo.odleglosc < " + distance).getResultList();
 		List<Przystanek> przyst = new ArrayList<Przystanek>();
+		
 		
 		//wyciagniecie obiektow przystankow
 		for (BigInteger id : nearest) {
@@ -343,6 +334,11 @@ public class NeighborhoodMatrixBean implements NeighborhoodMatrix {
 		c.set(Calendar.SECOND, ctmp.get(Calendar.SECOND));
 		
 		return c;
+	}
+	
+	@Override
+	public boolean isHoliday(Calendar date) {
+		return date.get(Calendar.DAY_OF_WEEK) == Calendar.SATURDAY || date.get(Calendar.DAY_OF_WEEK) == Calendar.SUNDAY ? true : false;
 	}
 
 }

@@ -22,9 +22,7 @@ public interface Algorithm {
 	
 	public List<PrzystanekTabliczka> getPath();
 	
-	public Przystanek getClosestToStart();
-	
-	public Przystanek getClosestToStop();
+	public Przystanek getClosestTo(Point point);
 	
 	public void setStartTime(Date startTime);
 	
