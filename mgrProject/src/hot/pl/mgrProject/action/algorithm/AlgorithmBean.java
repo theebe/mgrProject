@@ -17,9 +17,11 @@ import org.jboss.seam.annotations.Name;
 import org.jboss.seam.log.Log;
 import org.postgis.Point;
 
+import pl.mgrProject.model.Konfiguracja;
 import pl.mgrProject.model.Odjazd;
 import pl.mgrProject.model.Przystanek;
 import pl.mgrProject.model.PrzystanekTabliczka;
+import pl.mgrProject.model.TypDnia;
 
 /**
  * Bezstanowy komponent Seam o nazwie 'algorithmBean' <br />
@@ -70,6 +72,10 @@ public class AlgorithmBean implements Algorithm {
 	 * Czas odjazdu z pierwszego przystanku
 	 */
 	private Calendar odjazd;
+	/**
+	 * Okresla czy dzien startu jest swietem czy tez nie
+	 */
+	private boolean holiday;
 	
 	
 	/**
@@ -77,21 +83,20 @@ public class AlgorithmBean implements Algorithm {
 	 */
 	@Override
 	public Boolean run() {
-		Przystanek pstart = getClosestToStart();
-		Przystanek pstop  = getClosestToStop();
+		Przystanek pstart = getClosestTo(startPoint);
+		Przystanek pstop  = getClosestTo(stopPoint);
+		
+		if (pstart == null || pstop == null) {
+			log.info("Nie mozna znalezc trasy.");
+			return false;
+		}
 
-		List<PrzystanekTabliczka> tabForStart = mgrDatabase.createNamedQuery("tabliczkiPoPrzystanku").setParameter("przystanek", pstart).getResultList();
-		List<PrzystanekTabliczka> tabForStop = mgrDatabase.createNamedQuery("tabliczkiPoPrzystanku").setParameter("przystanek", pstop).getResultList();
+		List<PrzystanekTabliczka> tabForStart = pstart.getPrzystanekTabliczki();
+		List<PrzystanekTabliczka> tabForStop = pstop.getPrzystanekTabliczki();
 		
 		log.info("Liczba tabliczek dla start: " + tabForStart.size());
 		log.info("Liczba tabliczek dla stop: " + tabForStop.size());
 		
-		if (tabForStart.size() == 0 || tabForStop.size() == 0) {
-			log.info("Nie mozna znalezc trasy.");
-			return false;
-		}
-		
-		//PrzystanekTabliczka tabStart = tabForStart.get(0);
 		//pobieramy tabliczke dla start, dla ktorej jest dostepny najwczesniejszy odjazd
 		PrzystanekTabliczka tabStart = checkTime(tabForStart);
 		if (tabStart == null) {
@@ -111,7 +116,7 @@ public class AlgorithmBean implements Algorithm {
 		start = neighborhoodMatrixBean.getIndex(startID);
 		stop  = neighborhoodMatrixBean.getIndex(stopID);
 		
-		neighborhoodMatrixBean.create(start, odjazd);
+		neighborhoodMatrixBean.create(odjazd);
 		int[][] E = neighborhoodMatrixBean.getE();
 		Integer[] V = neighborhoodMatrixBean.getV();
 		
@@ -167,19 +172,19 @@ public class AlgorithmBean implements Algorithm {
 	}
 	
 	@Override
-	public Przystanek getClosestToStart() {
-		BigInteger id = (BigInteger)mgrDatabase.createNativeQuery("select foo.id from (select p.id, st_distance_sphere(p.location, ST_GeomFromText('POINT(" + startPoint.x + " " + startPoint.y + ")', 4326)) as odleglosc from przystanki p order by odleglosc limit 1) as foo").getResultList().get(0);
-		Przystanek p = mgrDatabase.getReference(Przystanek.class, id.longValue());
-		log.info("[AlgorithmBean] Znaleziono najblizszy przystanek: " + p.getNazwa());
-		return p;
-	}
-	
-	@Override
-	public Przystanek getClosestToStop() {
-		BigInteger id = (BigInteger)mgrDatabase.createNativeQuery("select foo.id from (select p.id, st_distance_sphere(p.location, ST_GeomFromText('POINT(" + stopPoint.x + " " + stopPoint.y + ")', 4326)) as odleglosc from przystanki p order by odleglosc limit 1) as foo").getResultList().get(0);
-		Przystanek p = mgrDatabase.getReference(Przystanek.class, id.longValue());
-		log.info("[AlgorithmBean] Znaleziono najblizszy przystanek: " + p.getNazwa());
-		return p;
+	public Przystanek getClosestTo(Point point) {
+		Konfiguracja konf = (Konfiguracja)mgrDatabase.createNamedQuery("konfiguracjaPoNazwie").setParameter("nazwa", "default").getSingleResult();
+		List<BigInteger> nearest = mgrDatabase.createNativeQuery("select foo.id from (select p.id, st_distance_sphere(p.location, ST_GeomFromText('POINT(" + point.x + " " + point.y + ")', 4326)) as odleglosc from przystanki p order by odleglosc) as foo where foo.odleglosc < " + konf.getOdlegloscDoStartStop()).getResultList();
+		
+		for (BigInteger i : nearest) {
+			Przystanek p = mgrDatabase.getReference(Przystanek.class, i.longValue());
+			//sprawdzenie czy istnieje rozklad jazdy dla danego przystanku
+			if (p.getPrzystanekTabliczki().size() > 0 && p.getPrzystanekTabliczki().get(0).getOdjazdy().size() > 0) {
+				return p;
+			}
+		}
+
+		return null;
 	}
 	
 	/**
@@ -219,10 +224,22 @@ public class AlgorithmBean implements Algorithm {
 		
 		List<PrzystanekTabliczka> trasa = new ArrayList<PrzystanekTabliczka>();
 		
-		PrzystanekTabliczka poprzednia, aktualna;
-		
 		for (Integer i : path) {
 			trasa.add(tabliczki.get(i));
+		}
+		
+		//zapobieganie przesiadkom na przystanku startowym
+		for (int i = trasa.size()-1; i > 0; --i) {
+			if (trasa.get(i).getPrzystanek().getId() == trasa.get(i-1).getPrzystanek().getId())
+				trasa.remove(i);
+			else break;
+		}
+		
+		//zapobieganie przesiadkom na przystanku koncowym
+		for (int i = 0; i < trasa.size(); ++i) {
+			if (trasa.get(i).getPrzystanek().getId() == trasa.get(i+1).getPrzystanek().getId())
+				trasa.remove(i);
+			else break;
 		}
 		
 		Collections.reverse(trasa);
@@ -244,6 +261,11 @@ public class AlgorithmBean implements Algorithm {
 			min.set(Calendar.YEAR, 2099);
 
 			for (int j = 0; j < odj.size(); ++j) {
+				if (holiday) {
+					if (odj.get(j).getTypDnia() != TypDnia.SWIETA) continue;
+				} else {
+					if (odj.get(j).getTypDnia() != TypDnia.DZIEN_POWSZEDNI) continue;
+				}
 				Calendar tmp = neighborhoodMatrixBean.dateToCalendar(odj.get(j).getCzas());
 				if (tmp.after(startTime) && tmp.before(min)) {
 					index = i;
@@ -263,6 +285,9 @@ public class AlgorithmBean implements Algorithm {
 	@Override
 	public void setStartTime(Date startTime) {
 		this.startTime = neighborhoodMatrixBean.dateToCalendar(startTime);
+		Calendar tmp = Calendar.getInstance();
+		tmp.setTime(startTime);
+		holiday = neighborhoodMatrixBean.isHoliday(tmp);
 	}
 	
 	@Override

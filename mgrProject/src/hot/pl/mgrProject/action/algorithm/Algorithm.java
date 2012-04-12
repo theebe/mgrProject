@@ -46,16 +46,12 @@ public interface Algorithm {
 	public List<PrzystanekTabliczka> getPath();
 	
 	/**
-	 * Wyszukuje najblizszy przystanek do punktu startowego
-	 * @return przystanek
-	 */
-	public Przystanek getClosestToStart();
-	
-	/**
-	 * Wyszukuje najblizszy przystanek do punktu koncowego
+	 * Wyszukuje najblizszy przystanek do punktu 
+	 * @param Punkt
 	 * @return Przystanek
 	 */ 
-	public Przystanek getClosestToStop();
+
+	public Przystanek getClosestTo(Point point);
 	
 	/**
 	 * Ustawia czas startu
