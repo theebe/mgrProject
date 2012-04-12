@@ -11,7 +11,13 @@ import javax.persistence.Version;
 import org.hibernate.validator.Length;
 import org.hibernate.validator.Min;
 import org.hibernate.validator.NotNull;
+import org.jboss.seam.annotations.security.Restrict;
 
+
+/**
+ * Klasa przechowuj¹ca bierz¹c¹ konfiguracjê aplikacji. Dostêpna tylko dla administratora
+ *
+ */
 @Entity
 @Table(name="KONFIGURACJA")
 @NamedQueries({
@@ -19,15 +25,31 @@ import org.hibernate.validator.NotNull;
 	})
 
 public class Konfiguracja {
+	
+	
 	private Long id;
+	
+	
 	private Integer version;
+	
+	
 	private String name;
+	
+	
 	private Double predkoscPasazera;
+	
+	
 	private Integer liczbaWatkow;
-	private Integer odlegloscPrzystankow;
+	
+ Integer odlegloscPrzystankow;
+	
+	
 	private Integer nieskonczonosc;
 	
 	
+	/**
+	 * id
+	 */
 	@Id
 	@GeneratedValue
 	public Long getId() {
@@ -38,6 +60,9 @@ public class Konfiguracja {
 		this.id = id;
 	}
 
+	/**
+	 * version
+	 */
 	@Version
 	public Integer getVersion() {
 		return version;
@@ -47,6 +72,9 @@ public class Konfiguracja {
 		this.version = version;
 	}
 
+	/**
+	 * nazwa
+	 */
 	@Length(max = 20)
 	public String getName() {
 		return name;
@@ -56,6 +84,9 @@ public class Konfiguracja {
 		this.name = name;
 	}
 	
+	/**
+	 * prêdkoœæ pasa¿era wyrazona w km/h
+	 */
 	@NotNull
 	@Min(value=0, message="Predkosc nie moze byc mniejsza od 0")
 	public Double getPredkoscPasazera() {
@@ -66,6 +97,9 @@ public class Konfiguracja {
 		this.predkoscPasazera = predkoscPasazera;
 	}
 	
+	/**
+	 * ilosc watkow uzywanych przez alogyrtm
+	 */
 	@NotNull
 	@Min(value=0, message="Liczba watkow nie moze byc mniejsza od 0")
 	public Integer getLiczbaWatkow() {
@@ -76,6 +110,10 @@ public class Konfiguracja {
 		this.liczbaWatkow = liczbaWatkow;
 	}
 
+	/**
+	 * odleglosc od pasazera w jakiej szukac przystankow
+	 * @return
+	 */
 	@NotNull
 	@Min(value=0, message="Odeglosc miedzy prystankami nie moze byc mniejsza od 0")
 	public Integer getOdlegloscPrzystankow() {
@@ -86,6 +124,9 @@ public class Konfiguracja {
 		this.odlegloscPrzystankow = odlegloscPrzystankow;
 	}
 	
+	/**
+	 * wartosc dla nieskonczonosci (wymagane przez alogrytm)
+	 */
 	@NotNull
 	@Min(value=0, message="Algorytm nie obsluguje wartosci ujemnych")
 	public Integer getNieskonczonosc() {

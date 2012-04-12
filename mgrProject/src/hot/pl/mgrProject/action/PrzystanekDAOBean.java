@@ -92,6 +92,9 @@ public class PrzystanekDAOBean implements Serializable, PrzystanekDAO {
 		return p;
 	}
 
+	/**
+	 * Pobiera liste przystankow z bazy danych
+	 */
 	@Factory
 	public List<Przystanek> getPrzystanekList() {
 		// Liczba przystankow w bazie
@@ -116,6 +119,9 @@ public class PrzystanekDAOBean implements Serializable, PrzystanekDAO {
 		}  
 	}
 
+	/**
+	 * uaktualnia przystanek w bazie 
+	 */
 	@TransactionAttribute(TransactionAttributeType.REQUIRED)
 	@End
 	public void merge(Przystanek p) {
@@ -124,7 +130,10 @@ public class PrzystanekDAOBean implements Serializable, PrzystanekDAO {
 		log.info("Uaktualniono przystanek " + p.getNazwa());
 		
 	}
-
+	
+	/**
+	 * Kasuje przystanek wraz z wszystkimi podrzednymi tabliczkamii\\
+	 */
 	@TransactionAttribute(TransactionAttributeType.REQUIRED)
 	@End
 	public void delete(Przystanek p) {

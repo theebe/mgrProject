@@ -26,7 +26,8 @@ import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Name;
 
 /**
- * Klasa encja mapuj¹ca tabelê LINIE
+ * Klasa encyjna mapujaca tabelê LINIE
+ * Klasa przedstawia linie autobusowe i tramwajowe.
  * @author bat
  *
  */
@@ -51,6 +52,10 @@ public class Linia {
 	@In EntityManager mgrDatabase;
 	
 	
+	/**
+	 * id
+	 * @return Id 
+	 */
 	@Id @GeneratedValue
 	public Long getId() {
 		return id;
@@ -59,6 +64,10 @@ public class Linia {
 		this.id = id;
 	}
 	
+	/**
+	 * version
+	 * @return
+	 */
 	@Version
 	public Integer getVersion() {
 		return version;
@@ -68,6 +77,10 @@ public class Linia {
 		this.version = version;
 	}
 	
+	/**
+	 * Numer linii
+	 * @return
+	 */
 	@NotNull
 	@Range(min=0, max=999, message="Wartoœæ musi byæ z przedzia³u od 0 do 999")
 	public Integer getNumer() {
@@ -77,6 +90,10 @@ public class Linia {
 		this.numer = numer;
 	}
 	
+	/**
+	 * Lista przystankow (kolejnoœæ zachowana)
+	 * @return
+	 */
 	@OneToMany(cascade={CascadeType.REMOVE,CascadeType.PERSIST,CascadeType.REFRESH})
 	@OrderColumn(name="przystanektabliczka_order")
 	@JoinColumn(name="linia_id", nullable=false)
@@ -91,6 +108,10 @@ public class Linia {
 		this.przystanekTabliczka = przystanekTabliczka;
 	}
 	
+	/**
+	 * Dodaje nowy przystanek na koniec linii
+	 * @param pt
+	 */
 	public void addPrzystanekTabliczka(PrzystanekTabliczka pt){
 		if(this.przystanekTabliczka == null){
 			this.przystanekTabliczka = new ArrayList<PrzystanekTabliczka>();
@@ -102,6 +123,10 @@ public class Linia {
 		this.typ = typ;
 	}
 
+	/**
+	 * linia tramwajowa czy linia autobusowa
+	 * @return
+	 */
 	@NotNull
 	@Enumerated(EnumType.STRING)
 	public TypKomunikacji getTyp() {

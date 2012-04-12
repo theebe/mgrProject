@@ -19,6 +19,11 @@ import org.jboss.seam.log.Log;
 import pl.mgrProject.model.Linia;
 import pl.mgrProject.model.PrzystanekTabliczka;
 
+/**
+ * Implementacja intrrfejsu do edycji tabliczek przystankowych
+ * @author bat
+ *
+ */
 @Stateful
 @Name("przystanekTabliczkaDAO")
 @Scope(ScopeType.CONVERSATION)
@@ -30,6 +35,9 @@ public class PrzystanekTabliczkaDAOBean implements PrzystanekTabliczkaDAO {
 	@Logger
 	private Log log;
 
+	/**
+	 * Kasuje tabliczne przystankowa z bayz danych
+	 */
 	@TransactionAttribute(TransactionAttributeType.REQUIRED)
 	public void delete(PrzystanekTabliczka pt) {
 		deleteFromLiniaList(pt);

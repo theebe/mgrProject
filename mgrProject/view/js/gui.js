@@ -31,7 +31,7 @@ function searchButtonClick(e) {
 	Seam.Remoting.startBatch();
 	Seam.Remoting.getContext().setConversationId(seamConversationId);
 	var homeBean = Seam.Component.getInstance("homeBean");
-	var algorithmBean = Seam.Component.getInstance("algorithmBean");
+	
 
 	var setStartPointCallback = function(result) {
 		if (!result) {

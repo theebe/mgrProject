@@ -29,6 +29,11 @@ import pl.mgrProject.model.Odjazd;
 import pl.mgrProject.model.PrzystanekTabliczka;
 import pl.mgrProject.model.TypDnia;
 
+/**
+ * Implementacja interfejsu do edycji Linii
+ * @author bat
+ *
+ */
 @Stateful
 @Name("liniaEditer")
 @Scope(ScopeType.CONVERSATION)
@@ -115,6 +120,10 @@ public class LiniaEditerBean implements LiniaEditer, Serializable {
 		addOdjazd(TypDnia.DZIEN_POWSZEDNI);
 	}
 
+	/**
+	 * Funkcja oblicza nastepne godziny na przystankach, po zmianie godziny pierwszej lub po zmianie
+	 * odleglosci pomedzy przystankami
+	 */
 	public void change() {
 
 		Calendar calendar = new GregorianCalendar();

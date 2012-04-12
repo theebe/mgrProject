@@ -21,6 +21,12 @@ import pl.mgrProject.model.Odjazd;
 import pl.mgrProject.model.Przystanek;
 import pl.mgrProject.model.PrzystanekTabliczka;
 
+/**
+ * Bezstanowy komponent Seam o nazwie 'algorithmBean' <br />
+ * Implenetuje metody interfejsu Algorithm
+ * @author bat
+ *
+ */
 @Stateless
 @Name("algorithmBean")
 public class AlgorithmBean implements Algorithm {
