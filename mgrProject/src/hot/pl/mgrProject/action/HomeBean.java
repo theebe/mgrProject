@@ -21,8 +21,9 @@ import pl.mgrProject.action.algorithm.Algorithm;
 import pl.mgrProject.model.PrzystanekTabliczka;
 
 /**
- * Klasa obs³uguj¹ca zdarzenia ze strony g³ownej poprzez ajax
- * 
+ * Klasa obs³uguj¹ca zdarzenia ze strony g³ownej poprzez Seam Remote
+ * Komponent Seam o nazwie 'homeBean' oraz komponent EJB stanowy o zasiegu konwersacji
+ * Implementuje interfejs Home
  * @author bat
  *
  */
@@ -42,10 +43,13 @@ public class HomeBean implements Serializable, Home {
 	private Date startTime;
 	@In
 	private EntityManager mgrDatabase;
+	
 	@In(create=true)
 	private Algorithm algorithmBean;
 	
-
+	/**
+	 * Pobiera punkt startowy
+	 */
 	public Point getStartPoint() {
 		//startPoint.(arg0)
 		return startPoint; 
@@ -59,10 +63,12 @@ public class HomeBean implements Serializable, Home {
 		return true;
 	}
 
+	/**
+	 * Pobiera punkt koncowy
+	 */
 	public Point getStopPoint() {
 		return stopPoint;
 	}
-	
 	
 	public Boolean setStopPoint(double x, double y){
 		if(x==0 || y==0) return false;
@@ -73,6 +79,9 @@ public class HomeBean implements Serializable, Home {
 	}
 
 	
+	/**
+	 * Pobiera godzine startu
+	 */
 	public Date getStartTime() {
 		return startTime;
 	}
@@ -84,6 +93,10 @@ public class HomeBean implements Serializable, Home {
 		return true;
 	}
 	
+	/**
+	 * Uruchamia alogyrtm 
+	 * @return Odpowiedz  
+	 */
 	public Odpowiedz findRoute() {
 		Odpowiedz odpowiedz;
 		

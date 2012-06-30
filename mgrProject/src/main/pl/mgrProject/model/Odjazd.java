@@ -18,6 +18,12 @@ import javax.persistence.Version;
 import org.hibernate.annotations.Index;
 import org.hibernate.validator.NotNull;
 
+/**
+ * Klasa przedstawia odjazd danej linii na danym przystanku. 
+ * Zawiera godzine odjazdu oraz typ dnia (swieto lub dzien powszedni)
+ * @author bat
+ *
+ */
 @Entity
 @Table(name="ODJAZDY")
 @NamedQueries({
@@ -37,6 +43,10 @@ public class Odjazd {
 	private PrzystanekTabliczka przystanekTabliczka;
 	
 	
+	/**
+	 * Id
+	 * @return
+	 */
 	@Id @GeneratedValue
 	public Long getId() {
 		return id;
@@ -45,6 +55,11 @@ public class Odjazd {
 		this.id = id;
 	}
 	 
+	
+	/**
+	 * Version
+	 * @return
+	 */
 	@Version
 	public Integer getVersion() {
 		return version;
@@ -53,6 +68,10 @@ public class Odjazd {
 		this.version = version;
 	}
 	
+	/**
+	 * Typ dnia: swieto lub dzien powszedni
+	 * @return
+	 */
 	@Enumerated(EnumType.STRING)
 	public TypDnia getTypDnia() {
 		return typDnia;
@@ -63,6 +82,10 @@ public class Odjazd {
 	} 
 	
 	
+	/**
+	 * Tabliczna przystankowa do ktorego odjazd jest podporzadkowany
+	 * @return
+	 */
 	@ManyToOne 
 	@NotNull(message="Odjazd musi byæ przypisany do przystanku i lini")
 	@Index(name = "przystanekTabliczkaIndex")
@@ -79,6 +102,10 @@ public class Odjazd {
 		this.czas = czas;
 	}
 	
+	/**
+	 * Godzina odjazdu
+	 * @return
+	 */
 	@NotNull
 	@Temporal(TemporalType.TIME)
 	public Date getCzas() {

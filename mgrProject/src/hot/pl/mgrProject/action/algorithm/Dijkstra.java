@@ -3,6 +3,11 @@ package pl.mgrProject.action.algorithm;
 import java.util.ArrayList;
 import javax.ejb.Local;
 
+/**
+ * interfejs dla algorytmu dijkstry
+ * @author bat
+ *
+ */
 @Local
 public interface Dijkstra {
 	public void init(int n, int[][] E, Integer[] V, int startID) throws Exception;

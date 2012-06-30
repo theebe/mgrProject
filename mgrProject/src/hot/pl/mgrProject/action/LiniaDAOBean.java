@@ -35,6 +35,12 @@ import pl.mgrProject.model.PrzystanekTabliczka;
 import pl.mgrProject.model.TypDnia;
 import pl.mgrProject.model.TypKomunikacji;
 
+/**
+ * Implementacja interfejsu LiniaDAO. 
+ * Komponent Seam o nazwie 'liniaDAO', komponent stanowy o zasiegu konwersacji
+ * @author bat
+ *
+ */
 @Stateful
 @Name("liniaDAO")
 @Scope(ScopeType.CONVERSATION)
@@ -54,7 +60,13 @@ public class LiniaDAOBean implements LiniaDAO, Serializable {
 	private Linia selectedLinia;
 	
 	
-
+	/**
+	 * Zapisuje linie
+	 * @param Integer numer linii
+	 * @param TypKomunikacji typ linii
+	 * @param List<Long> lista id przystankow
+	 * @param Boolean czy utworzyc linie powrotna
+	 */
 	public String saveLinia(Integer numer, TypKomunikacji typ,
 			List<Long> listaIdPrzystankow, Boolean liniaPowrotna) {
 
@@ -75,6 +87,9 @@ public class LiniaDAOBean implements LiniaDAO, Serializable {
 		return "success";
 	}
 
+	/**
+	 * Zapisuje linie do bazy danych
+	 */
 	public void saveLinia(Linia l) {
 
 		mgrDatabase.persist(l);
@@ -82,11 +97,17 @@ public class LiniaDAOBean implements LiniaDAO, Serializable {
 				+ ", TYP: " + l.getTyp());
 
 	}
-
+	
+	/**
+	 * Pobiera linie o zadanym id 
+	 */
 	public Linia getLinia(Long id){
 		return mgrDatabase.find(Linia.class, id);
 	}
 	
+	/**
+	 * Pobiera wszystkie linie
+	 */
 	@Factory("liniaList")
 	@Begin(join = true)
 	public List<Linia> getLiniaList() {
@@ -99,7 +120,11 @@ public class LiniaDAOBean implements LiniaDAO, Serializable {
 	}
 
 	
-
+	
+	/** 
+	 * Kasuje linie
+	 * @param linia do skasownania
+	 */
 	@TransactionAttribute(TransactionAttributeType.REQUIRED)
 	@End
 	public void delete(Linia l) {
@@ -113,11 +138,17 @@ public class LiniaDAOBean implements LiniaDAO, Serializable {
 		}
 	}
 
+	/**
+	 * przerywa edycje linii
+	 */
 	public void cancel() {
 		this.selectedLinia = null;
 		getLiniaList();
 	}
 
+	/**
+	 * Pobiera wybrana linie
+	 */
 	public Linia getSelectedLinia() {
 		return selectedLinia;
 	}
@@ -134,7 +165,10 @@ public class LiniaDAOBean implements LiniaDAO, Serializable {
 	@Remove
 	public void destory() {}
 
-	
+
+	/**
+	 * Pobiera okreg czasowy
+	 */
 	public TimeZone getTimeZone(){
 		TimeZone tz = new GregorianCalendar().getTimeZone();
 		return tz;
@@ -182,7 +216,7 @@ public class LiniaDAOBean implements LiniaDAO, Serializable {
 		Collections.reverse(przystTablList);
 		return przystTablList;
 	}
-
+ 
 	private boolean czyLiniaDostepna(Integer numer) {
 		Long liczba = (Long) mgrDatabase
 				.createQuery(

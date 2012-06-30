@@ -15,6 +15,11 @@ import org.jboss.seam.annotations.security.management.RoleConditional;
 import org.jboss.seam.annotations.security.management.RoleGroups;
 import org.jboss.seam.annotations.security.management.RoleName;
 
+/**
+ * Klasa zawiera role praw dostepu
+ * @author bat
+ *
+ */
 @Entity
 @Table(name="ROLE")
 public class Role implements Serializable {

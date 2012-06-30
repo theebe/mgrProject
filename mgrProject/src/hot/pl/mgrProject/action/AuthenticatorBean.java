@@ -20,6 +20,11 @@ import flexjson.JSONSerializer;
 import pl.mgrProject.model.user.Role;
 import pl.mgrProject.model.user.User;
 
+/**
+ * Bezstanowy komoponent entycjy implmenentujacy infterfejs do logowania
+ * @author bat
+ *
+ */
 @Stateless
 @Name("authenticator")
 public class AuthenticatorBean implements Authenticator {
@@ -37,6 +42,10 @@ public class AuthenticatorBean implements Authenticator {
 	@In
 	Credentials credentials;
 
+	/**
+	 * Implementacja metody logujacej,
+	 * sprawdza poprawnosc nazwy uzytkownika i jego hasla w bazie danych
+	 */
 	public boolean authenticate() {
 		 
 		log.info("authenticating {0}", credentials.getUsername());

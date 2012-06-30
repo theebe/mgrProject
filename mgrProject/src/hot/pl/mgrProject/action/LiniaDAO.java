@@ -12,6 +12,11 @@ import org.jboss.seam.annotations.remoting.WebRemote;
 import pl.mgrProject.model.Linia;
 import pl.mgrProject.model.TypKomunikacji;
 
+/**
+ * Lokalny interfejs dostepu do obiektow typu Linia.  Wybrane metody udostepnione sa przy pomocy Seam Remote
+ * @author bat
+ *
+ */
 @Local
 public interface LiniaDAO {
 
@@ -37,12 +42,25 @@ public interface LiniaDAO {
 	@WebRemote
 	public List<Linia> getLiniaList();
 
+	/**
+	 * Kasuje linie
+	 * @param l linia do skasowania
+	 */
 	public void delete(Linia l);
 
+	/**
+	 * Pobiera wybrana linie
+	 * @return Linia
+	 */
 	@WebRemote
 	public Linia getSelectedLinia();
 	public void setSelectedLinia(Linia l);
 	
+	/**
+	 * Pobiera linie o podanym id
+	 * @param id id linii
+	 * @return Linia
+	 */
 	@WebRemote
 	public Linia getLinia(Long id);
 

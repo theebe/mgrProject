@@ -13,9 +13,22 @@ import org.richfaces.model.selection.Selection;
 import pl.mgrProject.model.Przystanek;
 import pl.mgrProject.model.TypKomunikacji;
 
+/**
+ * Interfejs lokalny do edycji Przystanku, niektore metody dostepne sa przez Seam Remote
+ * @author bat
+ *
+ */
 @Local
 public interface PrzystanekDAO {
 
+	/**
+	 * Dodaje nowy przystanek do bazy
+	 * @param lon szerokosc geograficzna
+	 * @param lat dlugosc geograficzna
+	 * @param nazwa nazwa przystanku
+	 * @param typ typ przystanku
+	 * @return zwraca nowy przystanek
+	 */
 	@WebRemote
 	public Przystanek savePrzystanek(double lon, double lat, String nazwa, TypKomunikacji typ);
 	
@@ -27,10 +40,23 @@ public interface PrzystanekDAO {
 	public List<Przystanek> getPrzystanekList();
 	
 	
+	/**
+	 * Dodaje listener nowego rpzystanku
+	 * @param listener
+	 */
 	public void addListener(EventListener listener);
 	
 	
+	/**
+	 * Kasuje przystanek z bazy danych
+	 * @param p
+	 */
 	public void delete(Przystanek p);
+	
+	/**
+	 * Uaktualnia przystanek w bazie danych
+	 * @param p
+	 */
 	public void merge(Przystanek p);
 	
 	public Przystanek getSelectedPrzystanek();

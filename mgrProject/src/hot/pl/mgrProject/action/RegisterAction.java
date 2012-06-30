@@ -44,6 +44,9 @@ public class RegisterAction implements Register {
 
 	private boolean registered;
 
+	/**
+	 * Rejestruje nowego uzytkownika
+	 */
 	public void register() {
 		
 		if (user.getPassword().equals(verify)) {

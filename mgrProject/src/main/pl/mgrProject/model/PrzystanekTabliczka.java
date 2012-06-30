@@ -23,6 +23,12 @@ import org.hibernate.validator.Min;
 import org.hibernate.validator.NotNull;
 
 
+/**
+ * Tabliczna przystankowa przyporzadkowana jest dla jednego przystanku i jednej linii, posiada wiele godzin odjazdow.
+ * Oznacza, i¿ dana linia przez dany przystanek mo¿e przejezdzaæ wiele razy w ciagu dnia.
+ * @author bat
+ *
+ */
 @Entity
 @Table(name = "PRZYSTANEK_TABLICZKI")
 @NamedQueries({
@@ -46,6 +52,10 @@ public class PrzystanekTabliczka implements Serializable {
 	
 	private List<Odjazd> odjazdy;
 
+	/**
+	 * Id
+	 * @return
+	 */
 	@Id
 	@GeneratedValue
 	public Long getId() {
@@ -56,6 +66,10 @@ public class PrzystanekTabliczka implements Serializable {
 		this.id = id;
 	}
 
+	/**
+	 * Version
+	 * @return
+	 */
 	@Version
 	public Integer getVersion() {
 		return version;
@@ -65,6 +79,10 @@ public class PrzystanekTabliczka implements Serializable {
 		this.version = version;
 	}
 
+	/**
+	 * Linia jaka jest przyporzadkowana do tej tabliczki
+	 * @return
+	 */
 	@ManyToOne(fetch=FetchType.EAGER)
 	@NotNull
 	@JoinColumn(name = "linia_id", insertable = false, updatable = false, nullable = false)
@@ -77,6 +95,10 @@ public class PrzystanekTabliczka implements Serializable {
 		this.linia = linia;
 	}
 
+	/**
+	 * Przystanek przyporzadkowany do tej tabliczki
+	 * @return
+	 */
 	@ManyToOne
 	@NotNull
 	@Index(name="przystanekIndex")
@@ -88,6 +110,10 @@ public class PrzystanekTabliczka implements Serializable {
 		this.przystanek = przystanek;
 	}
 
+	/**
+	 * Lista godzin odjazdow linii z tego przystanku 
+	 * @return
+	 */
 	@OneToMany(mappedBy = "przystanekTabliczka", cascade= {CascadeType.ALL})
 	public List<Odjazd> getOdjazdy() {
 		if (odjazdy == null)
@@ -100,11 +126,19 @@ public class PrzystanekTabliczka implements Serializable {
 		this.odjazdy = odjazdy;
 	}
 
+	/**
+	 * Dodaje odjazd danej linii do danego przystanku
+	 * @param o
+	 */
 	public void addOdjazd(Odjazd o) {
 		getOdjazdy().add(o);
 
 	}
 
+	/**
+	 * Kolejny przystanek na linii
+	 * @return
+	 */
 	@OneToOne(fetch=FetchType.LAZY)
 	@JoinColumn(name="nastepnyPrzystanek_id")
 	public PrzystanekTabliczka getNastepnyPrzystanek() {
@@ -120,6 +154,10 @@ public class PrzystanekTabliczka implements Serializable {
 		this.poprzedniPrzystanek = poprzedniPrzystanek;
 	}
 
+	/**
+	 * Poprzedni przystanek tej linii
+	 * @return
+	 */
 	@OneToOne(fetch=FetchType.LAZY)
 	@JoinColumn(name="poprzedniPrzystanek_id")
 	public PrzystanekTabliczka getPoprzedniPrzystanek() {
@@ -130,6 +168,10 @@ public class PrzystanekTabliczka implements Serializable {
 		this.czasDoNastepnego = czasDoNastepnego;
 	}
 
+	/**
+	 * Odleglosc w minutach do nastepnego przystanku
+	 * @return
+	 */
 	@Min(message="Minimum: 0", value=0)
 	public int getCzasDoNastepnego() {
 		return czasDoNastepnego;

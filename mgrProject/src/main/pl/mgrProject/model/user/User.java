@@ -27,9 +27,7 @@ import org.jboss.seam.annotations.security.management.UserRoles;
 
 /**
  * Encja odpowiedzialna za u¿ytkownika Odwzorowanie na tabele "USERS"
- * 
  * @author bat
- * 
  */
 @Entity
 @Name("user")
@@ -47,6 +45,10 @@ public class User implements Serializable {
 	private boolean enabled;
 	private Set<Role> roles;
 
+	/**
+	 * Id
+	 * @return
+	 */
 	@Id
 	@GeneratedValue
 	public Long getId() {
@@ -57,6 +59,10 @@ public class User implements Serializable {
 		this.id = id;
 	}
 
+	/**
+	 * version
+	 * @return
+	 */
 	@Version
 	public Integer getVersion() {
 		return version;
@@ -66,6 +72,10 @@ public class User implements Serializable {
 		this.version = version;
 	}
 
+	/**
+	 * Haslo
+	 * @return
+	 */
 	@UserPassword(hash = "md5")
 	public String getPassword() {
 		return password;
@@ -75,6 +85,10 @@ public class User implements Serializable {
 		this.password = pass;
 	}
 
+	/**
+	 * Nazwa uzytkownika
+	 * @return
+	 */
 	@Length(max = 20)
 	@UserPrincipal
 	public String getUsername() {
@@ -85,6 +99,9 @@ public class User implements Serializable {
 		this.username = username;
 	}
 
+	/**
+	 * Imie
+	 */
 	@UserFirstName
 	public String getFirstname() {
 		return firstname;
@@ -94,6 +111,10 @@ public class User implements Serializable {
 		this.firstname = firstname;
 	}
 
+	/**
+	 * Nazwisko
+	 * @return
+	 */
 	@UserLastName
 	public String getLastname() {
 		return lastname;
@@ -103,6 +124,10 @@ public class User implements Serializable {
 		this.lastname = lastname;
 	}
 
+	/**
+	 * Konto aktywne lub nieaktywne
+	 * @return
+	 */
 	@UserEnabled
 	public boolean isEnabled() {
 		return enabled;
@@ -112,6 +137,10 @@ public class User implements Serializable {
 		this.enabled = enabled;
 	}
 
+	/**
+	 * Jakie prawa posiada uzytkownik
+	 * @return
+	 */
 	@UserRoles
 	@ManyToMany(targetEntity = Role.class)
 	@JoinTable(name = "UserRoles", joinColumns = @JoinColumn(name = "UserId"), inverseJoinColumns = @JoinColumn(name = "RoleId"))
