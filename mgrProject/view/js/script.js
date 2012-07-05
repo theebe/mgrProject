@@ -72,12 +72,12 @@ $(document).ready(function() {
 	startTime = new Date();
 
 	// dynamiczna zmiana rozmiaru strony
-	findSize();
+//	findSize();
 
 	// zdarzenie resizu okna
-	$(window).resize(function() {
-		findSize();
-	});
+//	$(window).resize(function() {
+//		findSize();
+//	});
 
 	// inicjalizuje ikonki i guziki i eventy
 	homeGuiInit();
@@ -133,14 +133,13 @@ function mapInit() {
 		Feature : 3,
 		Popup : 1000,
 		Control : 5
-	}, clickAction.activate();
+	};
+	clickAction.activate();
 
 	// Warstwy map:
 	var layerMapnik = new OpenLayers.Layer.OSM.Mapnik("Mapnik");
 	map.addLayer(layerMapnik);
 
-	var layerTilesAtHome = new OpenLayers.Layer.OSM.Osmarender("Osmarender");
-	map.addLayer(layerTilesAtHome);
 
 	var gmap = new OpenLayers.Layer.Google("Google Streets", {
 		visibility : false

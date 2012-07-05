@@ -1,5 +1,7 @@
 package pl.mgrProject.action;
 
+import java.io.IOException;
+
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
@@ -12,10 +14,6 @@ import org.jboss.seam.annotations.Out;
 import org.jboss.seam.log.Log;
 import org.jboss.seam.security.Credentials;
 import org.jboss.seam.security.Identity;
-import org.jboss.seam.security.RunAsOperation;
-import org.jboss.seam.security.management.IdentityManager;
-
-import flexjson.JSONSerializer;
 
 import pl.mgrProject.model.user.Role;
 import pl.mgrProject.model.user.User;
@@ -49,7 +47,7 @@ public class AuthenticatorBean implements Authenticator {
 	public boolean authenticate() {
 		 
 		log.info("authenticating {0}", credentials.getUsername());
-
+		 
 	
 		  try {
 			  
