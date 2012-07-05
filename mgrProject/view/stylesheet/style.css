@@ -3,9 +3,12 @@ body {
 }
 
 input.text {
-	margin-bottom: 12px;
-	width: 95%;
-	padding: .4em;
+	height: 18px;
+	padding: 2px;
+	border: 1px solid #4e5252;
+	box-shadow: inset 0 0 7px 0 #4E5252;
+	border-radius: 0px;
+	margin: 0px;
 }
 
 fieldset {
@@ -16,32 +19,38 @@ fieldset {
 
 .container {
 	width: 100%;
+	min-width: 840px;
 	margin: 0 auto;
 	position: relative;
+	overflow: hidden;
+	box-shadow: 0 0 10px;
+	border-radius: 5px;
 }
 
 .topPanelContainer {
-	width: 100%;
-	height: 140px;
-	border: 1px solid red;
+	background: url('../img2/topPanelContainer.png');
+	height: 108px;
+	border: 1px solid #89989d;
+	border-radius: 5px 5px 0 0;
 }
 
 .topPanel {
-	padding: 8px;
+	padding: 0px;
 }
 
 .mapa {
 	float: left;
-	width: 77%;
+	width: 70%;
 	height: 600px;
-	border: 1px solid;
-	border-color: lightgray;
+	/*border: 1px solid;
+	border-color: lightgray;*/
 }
 
 .infoPanelContainer {
-	border: 1px solid green;
+	width: 30% !important;
+	height: 600px;
 	float: left;
-	overflow: auto;
+	overflow: scroll;
 }
 
 #tabs-1-cont {
@@ -55,8 +64,27 @@ fieldset {
 .topSearchPanel {
 	float: left;
 	padding: 10px;
-	width: 500px;
 	border: 1px solid green;
+}
+
+.dataLeftButton, .godzinaLeftButton {
+	background: url('../img2/leftButton.png') !important;
+	width: 12px !important;
+	height: 24px !important;
+	border: none !important;
+	border-radius: 0px !important;
+	margin: 0px !important;	
+	float: left !important;
+}
+
+.dataRightButton, .godzinaRightButton {
+	background: url('../img2/rightButton.png') !important;
+	width: 13px !important;
+	height: 24px !important;
+	border: none !important;
+	border-radius: 0px !important;
+	float: right !important;
+	margin-top: -24px;
 }
 
 /*********************************************************8
@@ -100,15 +128,26 @@ fieldset {
 * Formularz strona glowna 
 */
 .topSearchPaneLeft {
-	border: 1px solid yellow;
-	width: 500px;
-	padding: 10px;
+	background: url('../img2/topSearchPanel.png');
+	width: 457px;
+	height: 108px;
 	float: left;
 }
 
+.topSearchPaneLeft td {
+	padding-left: 30px;
+	padding-top: 7px;
+}
+
 .searchButton {
-	margin-left: auto;
-	margin-right: 0px;
+	background: url('../img2/szukaj.png') !important;
+	float: right;
+	margin-right: -98px !important;
+	margin-top: -73px;
+	border-radius: 0px !important;
+	border: none !important;
+	width: 98px !important;
+	height: 48px !important;
 }
 
 /*****************************************************************************************
@@ -193,15 +232,27 @@ fieldset {
 /****************************************************************
 */
 .menuOperatoraCont {
+	background: url('../img2/menuOperatora.png');
 	float: right;
-	padding: 10px;
-	border: 1px dashed black;
-	margin: 5px;
+	width: 281px;
+	height: 108px;
 }
 
 .menuOperatoraCont ul {
 	list-style-type: none;
 	cursor: pointer;
+	font-family: 'Trebuchet MS', Arial, Helvetica, sans-serif;
+	font-size: 16px;
+	font-weight: bold;
+}
+
+.menuOperatoraCont a {
+	color: #000;
+	text-decoration: none;
+}
+
+.menuOperatoraCont a:hover {
+	text-decoration: underline;
 }
 
 /*******************************************************888
@@ -213,7 +264,6 @@ fieldset {
 
 .listaContainer {
 	float: left;
-	width: 400px;
 }
 
 .entityInfo {
@@ -243,6 +293,11 @@ fieldset {
 .edycjaLiniiButtons button{
 	margin-left: 10px;
 	}
+	
+#przystanekTypRadio, #liniaTypRadio {
+	display: inline;
+}
+
 .ui-spinner {position: relative}
 .ui-spinner-buttons {position: absolute}
 .ui-spinner-button {overflow: hidden}

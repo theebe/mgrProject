@@ -12,53 +12,48 @@
 	<s:div styleClass="topPanel">
 		<s:div styleClass="topSearchPaneLeft">
 
-			<h:panelGrid columns="4">
-				<h:outputLabel for="start">Start:</h:outputLabel>
-
-				<h:inputText styleClass="text ui-widget-content ui-corner-all"
-					id="start">
-				</h:inputText>
-
-
-				<h:outputLabel for="stop">Stop:</h:outputLabel>
-				<h:inputText styleClass="text ui-widget-content ui-corner-all"
-					id="stop" />
-
-				<h:outputLabel for="data">Data:</h:outputLabel>
+			<h:panelGrid columns="2">
 				<h:panelGroup>
-					<button class="dataLeftButton" />
-					<h:inputText
-						styleClass="dataInput  ui-widget-content ui-corner-all" id="data">
-
-					</h:inputText>
-
-					<button class="dataRightButton" />
+					<center><img src="img2/data.png" alt="" /></center>
+					<div style="width: 174px;">
+						<button class="dataLeftButton" />
+						<h:inputText styleClass="dataInput  ui-widget-content ui-corner-all" id="data"></h:inputText>
+						<button class="dataRightButton" />
+					</div>
 				</h:panelGroup>
-
-				<h:outputLabel for="godzina">Godzina:</h:outputLabel>
+				
 				<h:panelGroup>
-					<button class="godzinaLeftButton" />
-					<h:inputText maxlength="5"
-						styleClass="godzinaInput  ui-widget-content ui-corner-all"
-						id="godzina">
-
-					</h:inputText>
-					<button class="godzinaRightButton" />
+					<center><img src="img2/start.png" alt="" /></center>
+					<h:inputText styleClass="text ui-widget-content ui-corner-all" id="start"></h:inputText>
+				</h:panelGroup>
+				
+				<h:panelGroup>
+					<center><img src="img2/godzina.png" alt="" /></center>
+					<div style="width: 174px;">
+						<button class="godzinaLeftButton" />
+						<h:inputText maxlength="5" styleClass="dataInput  ui-widget-content ui-corner-all" id="godzina"></h:inputText>
+						<button class="godzinaRightButton" />
+					</div>
+				</h:panelGroup>
+			
+				<h:panelGroup>
+					<center><img src="img2/stop.png" alt="" /></center>
+					<h:inputText styleClass="text ui-widget-content ui-corner-all" id="stop"></h:inputText>
 				</h:panelGroup>
 			</h:panelGrid>
-			<button class="searchButton">Szukaj</button>
+			<button class="searchButton"></button>
 		</s:div>
 
 
 		<s:div styleClass="loadingMessage">
-			<img src="./img/loading.gif" class="loadingMessageGif" /> Prosze czekać...
-						</s:div>
+			<img src="./img/loading.gif" class="loadingMessageGif" /> Proszę czekać...
+		</s:div>
 		
 		<s:div id="menuOperatora" styleClass="menuOperatoraCont">
-			<ul><li><a href="start.seam">Start</a></li>
+			<ul>
+				<li><a href="start.seam">Start</a></li>
 				<li><a href="listaPrzystankow.seam">Lista przystanków</a></li>
 				<li><a href="listaLinii.seam">Lista Linii</a></li>
-
 			</ul>
 
 		</s:div>

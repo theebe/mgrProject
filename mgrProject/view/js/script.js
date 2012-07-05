@@ -141,6 +141,10 @@ function mapInit() {
 	map.addLayer(layerMapnik);
 
 
+	/*var layerTilesAtHome = new OpenLayers.Layer.OSM.Osmarender("Osmarender");
+	map.addLayer(layerTilesAtHome);
+
+
 	var gmap = new OpenLayers.Layer.Google("Google Streets", {
 		visibility : false
 	});
@@ -151,7 +155,7 @@ function mapInit() {
 		numZoomLevels : 22
 	});
 	map.addLayer(gsat);
-
+*/
 	///////////////////
 	// Warsty robocze
 

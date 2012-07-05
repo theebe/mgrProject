@@ -23,8 +23,13 @@ input[type=submit], input[type=button] {
 }
 
 input[type=text], input[type=password], textarea {
-	font-size: 12px;
-	padding-left: 1px;
+	width: 142px;
+	height: 18px;
+	padding: 2px;
+	border: 1px solid #4e5252;
+	box-shadow: inset 0 0 7px 0 #4E5252;
+	border-radius: 0px;
+	margin: 0px;
 }
 
 select {
