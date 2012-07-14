@@ -99,10 +99,12 @@ public class AlgorithmBean implements Algorithm {
 		
 		//pobieramy tabliczke dla start, dla ktorej jest dostepny najwczesniejszy odjazd
 		PrzystanekTabliczka tabStart = checkTime(tabForStart);
+		
 		if (tabStart == null) {
 			log.info("Brak rozkladu jazdy dla przystanku startowego.");
 			return false;
 		}
+		
 		PrzystanekTabliczka tabStop  = tabForStop.get(0);
 
 		Long startID = tabStart.getId();
@@ -274,6 +276,7 @@ public class AlgorithmBean implements Algorithm {
 			}
 			log.info("Odjazd: " + min.getTime());
 			odjazd = (Calendar)min.clone();
+			log.info("===========\nodjazd: " + odjazd.getTime());
 		}
 		
 		return index == -1 ? null : tabs.get(index);
