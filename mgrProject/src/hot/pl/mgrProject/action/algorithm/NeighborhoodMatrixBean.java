@@ -32,20 +32,39 @@ public class NeighborhoodMatrixBean implements NeighborhoodMatrix {
 	@In
 	private EntityManager mgrDatabase;
 	private List<PrzystanekTabliczka> tabliczki;
-	private int[][] E;  //macierz sasiedztwa
-	private Integer[] V; //wektor wierzcholkow
-	private int n;
-	private int inf; //nieskonczonosc. Oznacza brak krawedzi miedzy wierzcholkami.
 	/**
-	 * Wektor z czasami odjazdow z kazdej tabliczki
+	 * Macierz sasiedztwa.
+	 */
+	private int[][] E;
+	/**
+	 * Wektor z identyfikatorami wierzcholkow.
+	 */
+	private Integer[] V;
+	/**
+	 * Liczba wierzcholkow w grafie.
+	 */
+	private int n;
+	/**
+	 * Wartosc nieskonczonosci. Oznacza brak krawedzi miedzy wierzcholkami.
+	 */
+	private int inf;
+	/**
+	 * Wektor z czasami odjazdow z kazdej tabliczki.
 	 */
 	private List<Calendar> hours;
+	/**
+	 * Godzina rozpoczecia podrozy.
+	 */
 	private Calendar startTime;
 	/**
 	 * Konfiguracja
 	 */
 	private Konfiguracja konf;
 	
+	/**
+	 * Inicjalizuje wszystkie zmienne i uruchamia proces budowania macierzy sasiedztwa.
+	 * @param startTime Godzina rozpoczecia podrozy.
+	 */
 	@Override
 	public void create(Calendar startTime) {
 		//pobranie konfiguracji
@@ -68,11 +87,15 @@ public class NeighborhoodMatrixBean implements NeighborhoodMatrix {
 			tmp.set(Calendar.YEAR, 2000); //rok 2000 niech oznacza null
 			hours.add(tmp);
 		}
-
+		
 		buildMatrix();
 		joinTabs();
+		printE();
 	}
 	
+	/**
+	 * Algorytm budowania macierzy sasiedztwa.
+	 */
 	private void buildMatrix() {
 		List<Linia> linie = mgrDatabase.createNamedQuery("wszystkieLinie").getResultList();
 
@@ -108,9 +131,13 @@ public class NeighborhoodMatrixBean implements NeighborhoodMatrix {
 			if (tmp == null) continue; //jesli null to oznacza, ze nie istnieje trasa
 			joinToNearest(tabs.get(tabs.size()-1), tmp);
 		}
-		printE();
 	}
 	
+	/**
+	 * Algorytm laczenia tabliczek z sasiednimi przystankami.
+	 * @param tab Tabliczka, ktora ma byc polaczona z sasiadami.
+	 * @param time Godzina przybycia pasazera na tabliczke 'tab'. Wzgledem tej godziny beda wyszukiwane odjazdy pozniejsze na sasiednich tabliczkach.
+	 */
 	private void joinToNearest(PrzystanekTabliczka tab, Calendar time) {
 		int aktualna = -1, nastepna = -1;
 		Set<PrzystanekTabliczka> nearestTabs = getNearest(tab.getPrzystanek(), konf.getOdlegloscPrzystankow());
@@ -137,6 +164,9 @@ public class NeighborhoodMatrixBean implements NeighborhoodMatrix {
 		return true;
 	}
 	
+	/**
+	 * Algorytm laczenia tabliczek w obrebie przystanku.
+	 */
 	private void joinTabs() {
 		List<Linia> linie;
 		List<Przystanek> przystankiTmp = new ArrayList<Przystanek>();
@@ -168,9 +198,11 @@ public class NeighborhoodMatrixBean implements NeighborhoodMatrix {
 				}
 			}
 		}
-		printE();
 	}
 	
+	/**
+	 * Wyswietla macierz sasiedztwa.
+	 */
 	@Override
 	public void printE() {
 		String info = "";
@@ -185,11 +217,18 @@ public class NeighborhoodMatrixBean implements NeighborhoodMatrix {
 		log.info(info);
 	}
 	
+	/**
+	 * Zwraca macierz sasiedztwa.
+	 * @return Macierz sasiedztwa.
+	 */
 	@Override
 	public int[][] getE() {
 		return E;
 	}
 	
+	/**
+	 * Zwraca wektor z identyfikatorami wierzcholkow grafu.
+	 */
 	@Override
 	public Integer[] getV() {
 		return V;
@@ -224,6 +263,13 @@ public class NeighborhoodMatrixBean implements NeighborhoodMatrix {
 		return pt.getCzasDoNastepnego();
 	}
 	
+	/**
+	 * Oblicza wagê krawedzi pomiedzy tabliczkami 'start' i 'stop.
+	 * @param start Tablicka zrodlowa.
+	 * @param stop Tablicka docelowa.
+	 * @param time Godzina wyruszenia z tabliczki 'start'.
+	 * @return Waga krawedzi.
+	 */
 	private int getEdgeWeight(PrzystanekTabliczka start, PrzystanekTabliczka stop, Calendar time) {
 		int weight = -1;
 		double v = konf.getPredkoscPasazera(); //predkosc pasazera w km/h
@@ -286,11 +332,19 @@ public class NeighborhoodMatrixBean implements NeighborhoodMatrix {
 		return result;
 	}
 	
+	/**
+	 * Zwraca liste obliczonych godzin odjazdow ze wszystkich tabliczek.
+	 * @return Lista obliczonych godzin odjazdow.
+	 */
 	@Override
 	public List<Calendar> getHours() {
 		return hours;
 	}
 	
+	/**
+	 * Ustawia godzine rozpoczecia podrozy.
+	 * @param startTime Godzina rozpoczecia podrozy.
+	 */
 	@Override
 	public void setStartTime(Calendar startTime) {
 		this.startTime = startTime;
@@ -305,11 +359,12 @@ public class NeighborhoodMatrixBean implements NeighborhoodMatrix {
 	private Calendar checkTime(PrzystanekTabliczka pt) {
 		Calendar min = Calendar.getInstance();
 		min.set(Calendar.YEAR, 2099);
+		min.clear(Calendar.MILLISECOND);
 		List<Odjazd> odj = pt.getOdjazdy();
 		
 		for (Odjazd o : odj) {
 			Calendar tmp = dateToCalendar(o.getCzas());
-			if (tmp.after(startTime) && tmp.before(min)) {
+			if ((tmp.after(startTime) || tmp.compareTo(startTime) == 0) && tmp.before(min)) {
 				min = tmp;
 			}
 		}
@@ -332,10 +387,16 @@ public class NeighborhoodMatrixBean implements NeighborhoodMatrix {
 		c.set(Calendar.HOUR_OF_DAY, ctmp.get(Calendar.HOUR_OF_DAY));
 		c.set(Calendar.MINUTE, ctmp.get(Calendar.MINUTE));
 		c.set(Calendar.SECOND, ctmp.get(Calendar.SECOND));
+		c.clear(Calendar.MILLISECOND);
 		
 		return c;
 	}
 	
+	/**
+	 * Sprawdza czy podana data jest dniem swiatecznym czy tez nie.
+	 * @param date Data do sprawdzenia
+	 * @return 'true' jesli data jest dniem swiatecznym lub 'false' w przeciwnym wypadku.
+	 */
 	@Override
 	public boolean isHoliday(Calendar date) {
 		return date.get(Calendar.DAY_OF_WEEK) == Calendar.SATURDAY || date.get(Calendar.DAY_OF_WEEK) == Calendar.SUNDAY ? true : false;
