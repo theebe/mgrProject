@@ -1,5 +1,7 @@
 package pl.mgrProject.action;
 
+import java.io.FileNotFoundException;
+import java.io.PrintWriter;
 import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
@@ -98,18 +100,15 @@ public class HomeBean implements Serializable, Home {
 	 * @return Odpowiedz  
 	 */
 	public Odpowiedz findRoute() {
-		Odpowiedz odpowiedz;
+		Odpowiedz odpowiedz = null;
 		
 		algorithmBean.setStartPoint(startPoint);
 		algorithmBean.setStopPoint(stopPoint);
-		//TODO: czasami startTime nie zawiera godziny ustawionej w formularzu na stronie tylko ustawia aktualna godzine
 		algorithmBean.setStartTime(startTime);
 		Boolean result = algorithmBean.run();
 		if(result)
 			odpowiedz = new Odpowiedz(algorithmBean.getPath(), algorithmBean.getHours(), "OK");
-		else 
-			odpowiedz = null;
-		
+
 		return odpowiedz;
 	}
 	
