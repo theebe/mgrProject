@@ -1,31 +1,28 @@
 package pl.mgrProject.action.rest;
 
+import javax.ejb.Local;
+import javax.ejb.Remove;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.core.Response;
 
-@Path("/ws/rozklad")
+import org.jboss.seam.annotations.Destroy;
+
+@Local
 public interface RozkladService {
 
-	@GET
-	@Path("/all")
 	public Response all();
-	
-	@GET
-	@Path("/linie/")
-	public Response linie(); 
-	
-	@GET
-	@Path("/linie/{numer}")
-	public Response linia(Integer numer);
-	
-	@GET
-	@Path("/przystanki/")
+
+	public String linie();
+
+	public String linia(Integer numer);
+
 	public Response przystanki();
+
+	public Response przystanek(Integer id);
+
 	
-	@GET
-	@Path("/przystanki/{id}")
-	public Response przystanek(Integer id); 
-	
-	
+	@Destroy
+	@Remove
+	public void destory();
 }

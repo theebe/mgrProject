@@ -572,7 +572,7 @@ function deleteDialogOpen() {
 			"Usuñ" : function() {
 				// funkcja zdefiniowana w pliku listaLinii.xhtml,
 				// id="deletePrzystanekJSFunction"
-				deletePrzystanek();
+				deletee();
 				$(this).dialog("close");
 			},
 			"Anuluj" : function() {

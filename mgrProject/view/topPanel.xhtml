@@ -52,8 +52,12 @@
 		<s:div id="menuOperatora" styleClass="menuOperatoraCont">
 			<ul>
 				<li><a href="start.seam">Start</a></li>
-				<li><a href="listaPrzystankow.seam">Lista przystanków</a></li>
-				<li><a href="listaLinii.seam">Lista Linii</a></li>
+				<li>
+					<s:link value="Lista przystankow" view="/listaPrzystankow.xhtml" rendered="#{s:hasRole('Administrator') or s:hasRole('Operator')}"/>
+				</li>
+				<li><s:link value="Lista linii" view="/listaLinii.xhtml" rendered="#{s:hasRole('Administrator') or s:hasRole('Operator')}"/></li>
+				<li><s:link value="Lista użytkownikow" view="/listaUzytkownikow.xhtml" rendered="#{s:hasRole('Administrator') or s:hasRole('Moderator')}"/></li>
+				<li><s:link value="Konfiguracja" view="/konfiguracja.xhtml" rendered="#{s:hasRole('Administrator') or s:hasRole('Moderator')}"/></li>
 			</ul>
 
 		</s:div>

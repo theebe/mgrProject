@@ -10,6 +10,8 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
+import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
 import javax.persistence.Version;
@@ -33,6 +35,10 @@ import org.jboss.seam.annotations.security.management.UserRoles;
 @Name("user")
 @Scope(ScopeType.SESSION)
 @Table(name = "USERS", uniqueConstraints = @UniqueConstraint(columnNames = "username"))
+@NamedQueries({
+	//wyciaga z bazy wszystkie przystanki
+	@NamedQuery(name="wszyscyUzytkownicy", query="SELECT OBJECT(u) FROM User u ORDER BY u.username")
+	})
 public class User implements Serializable {
 
 	private Long id;

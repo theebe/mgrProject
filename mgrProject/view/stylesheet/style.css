@@ -29,7 +29,7 @@ fieldset {
 
 .topPanelContainer {
 	background: url('../img2/topPanelContainer.png');
-	height: 108px;
+	height: 110px;
 	border: 1px solid #89989d;
 	border-radius: 5px 5px 0 0;
 }
@@ -236,6 +236,7 @@ fieldset {
 	float: right;
 	width: 281px;
 	height: 108px;
+	margin-top: 2px;
 }
 
 .menuOperatoraCont ul {
@@ -308,3 +309,8 @@ fieldset {
 .ui-timepicker-div td { font-size: 90%; }
 .ui-tpicker-grid-label { background: none; border: none; margin: 0; padding: 0; }
 
+
+.menuBold{
+	color:white;
+	font-weight: bold;
+	}

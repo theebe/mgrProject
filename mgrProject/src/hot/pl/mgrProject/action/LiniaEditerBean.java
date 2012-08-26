@@ -31,8 +31,9 @@ import pl.mgrProject.model.TypDnia;
 
 /**
  * Implementacja interfejsu do edycji Linii
+ * 
  * @author bat
- *
+ * 
  */
 @Stateful
 @Name("liniaEditer")
@@ -48,27 +49,42 @@ public class LiniaEditerBean implements LiniaEditer, Serializable {
 	@In(required = false)
 	@Out(required = false)
 	private Linia editedLinia;
-	
+
 	@DataModel
 	List<PrzystanekTabliczka> ptList;
-	
-	
+
 	@Factory("ptList")
 	public List<PrzystanekTabliczka> getPtList() {
-		return ptList;
-	}  
+		if (editedLinia != null) {
+			// Liczba przystankow w bazie
+			Long liczba = (Long) mgrDatabase
+					.createQuery(
+							"SELECT COUNT(p) FROM PrzystanekTabliczka p WHERE p.linia = :linia")
+					.setParameter("linia", editedLinia).getSingleResult();
+			log.info("Liczba Tabliczek w bazie: " + liczba);
+
+			// jezeli jeszcze nie pobrano z bazy lub liczba przystankow sie
+			// rozni
+			if (ptList == null || liczba != ptList.size()) {
+				ptList = mgrDatabase.createNamedQuery("tabliczkiPoLinii")
+						.setParameter("linia", editedLinia).getResultList();
+				log.info("Pobrano z bazy " + ptList.size() + " tabliczek");
+			}
+			return ptList;
+		} else
+			return null;
+
+	}
 
 	@TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
-	@End(beforeRedirect=true, root=true)
 	public void merge() {
 		if (editedLinia == null)
-			return ;
-
+			return;
 
 		for (PrzystanekTabliczka pt : ptList) {
 			List<Odjazd> odjazdy = pt.getOdjazdy();
 			for (Odjazd odjazd : odjazdy) {
-				if(odjazd.getId() == null)
+				if (odjazd.getId() == null)
 					mgrDatabase.persist(odjazd);
 				else
 					mgrDatabase.merge(odjazd);
@@ -79,23 +95,22 @@ public class LiniaEditerBean implements LiniaEditer, Serializable {
 		log.info("Uaktualniono linie nr " + editedLinia.getNumer());
 		mgrDatabase.flush();
 		editedLinia = null;
-		//destory();
+		// destory();
 	}
 
-	@End(beforeRedirect=true, root=true)
 	public void cancel() {
 		this.editedLinia = null;
-		//destory();
+		// destory();
 	}
 
-	@Begin(nested = true)
-	public void setEditedLinia(Long id) {
-		editedLinia = mgrDatabase.find(Linia.class, id);
-		//lazy loading
+	@Begin(join = true)
+	public void setEditedLinia(Linia l) {
+		editedLinia = l;
+		// lazy loading
 		ptList = editedLinia.getPrzystanekTabliczka();
 		ptList.size();
-		for(PrzystanekTabliczka pt : ptList){
-			//lazy loading
+		for (PrzystanekTabliczka pt : ptList) {
+			// lazy loading
 			pt.getOdjazdy().size();
 		}
 		mgrDatabase.flush();
@@ -121,8 +136,8 @@ public class LiniaEditerBean implements LiniaEditer, Serializable {
 	}
 
 	/**
-	 * Funkcja oblicza nastepne godziny na przystankach, po zmianie godziny pierwszej lub po zmianie
-	 * odleglosci pomedzy przystankami
+	 * Funkcja oblicza nastepne godziny na przystankach, po zmianie godziny
+	 * pierwszej lub po zmianie odleglosci pomedzy przystankami
 	 */
 	public void change() {
 
@@ -174,5 +189,19 @@ public class LiniaEditerBean implements LiniaEditer, Serializable {
 			now.add(Calendar.MINUTE, pt.getCzasDoNastepnego());
 		}
 
+	}
+
+	@Begin(join=true)
+	public void setEditedLinia(Long id) {
+		editedLinia = (Linia)mgrDatabase.createQuery("SELECT l FROM Linia l where l.id = :id").setParameter("id", id).getSingleResult();
+		// lazy loading
+		ptList = editedLinia.getPrzystanekTabliczka();
+		ptList.size();
+		for (PrzystanekTabliczka pt : ptList) {
+			// lazy loading
+			pt.getOdjazdy().size();
+		}
+		mgrDatabase.flush();
+		mgrDatabase.clear();		
 	}
 }

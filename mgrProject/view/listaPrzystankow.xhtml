@@ -9,7 +9,7 @@
 	xmlns:rich="http://richfaces.org/rich"
 	xmlns:a="http://richfaces.org/a4j" template="home.xhtml">
 	<ui:define name="infoPanel">
-		<s:div styleClass="infoPanelContainer" id="infoPanelContId">
+		<s:div styleClass="infoPanelContainer" id="infoPanelContId" rendered="#{s:hasRole('Administrator') or s:hasRole('Operator')}">
 
 			<s:div styleClass="infoPanel">
 
@@ -92,7 +92,7 @@
 
 				<a:form ajaxSubmit="true" reRender="listaPrzystankowTableCont">
 					<a:jsFunction id="deletePrzystanekJSFunction"
-						name="deletePrzystanek"
+						name="deletee"
 						oncomplete="deletePrzystanekFromMap(#{przystanekDAO.selectedPrzystanek.id});"
 						reRender="listaPrzystankowTableCont, deleteDialog, przystanekInfo"
 						ajaxSingle="true"

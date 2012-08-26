@@ -64,12 +64,4 @@ public interface Algorithm {
 	 * @return lista godzin
 	 */
 	public List<Date> getHours();
-	
-	/**
-	 * Pobiera liste przystankow z istniejacymi rozkladami jazdy posortowanych wedlug odleglosci od punktu 'p'.
-	 * @param p Punkt wzgledem ktorego ma sie odbyc wyszukiwanie.
-	 * @param distance Odleglosc w jakiej maja byc szukane przystanki. Jesli wartosc wnosi 0 to odleglosc jest pobierana z bazy danych.
-	 * @return Lista przystankow.
-	 */
-	public List<Przystanek> getClosestList(Point p, int distance);
 }

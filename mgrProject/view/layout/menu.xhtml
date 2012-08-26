@@ -7,22 +7,13 @@
     xmlns:rich="http://richfaces.org/rich">
     <rich:toolBarGroup>
         <h:outputText value="#{projectName}:"/>
-        <s:link id="menuHomeId" view="/start.xhtml" value="Home" propagation="none"/>
+        <s:link id="menuHomeId" view="/start.xhtml" value="Home"  styleClass="menuBold" propagation="none"/>
     </rich:toolBarGroup>
-    <rich:dropDownMenu showDelay="250" hideDelay="0" submitMode="none">
-        <f:facet name="label">Browse data</f:facet>
-	<rich:menuItem>
-    	<s:link view="/UserList.xhtml"
-           	value="User List"
-           	id="UserId"
-			includePageParams="false"
-     		propagation="none"/>
-     </rich:menuItem>
-    </rich:dropDownMenu>
-    <!-- @newMenuItem@ -->
+   
     <rich:toolBarGroup location="right">
         <h:outputText id="menuWelcomeId" value="signed in as: #{credentials.username}" rendered="#{identity.loggedIn}"/>
-        <s:link id="menuLoginId" view="/login.xhtml" value="Login" rendered="#{not identity.loggedIn}" propagation="none"/>
-        <s:link id="menuLogoutId" view="/home.xhtml" action="#{identity.logout}" value="Logout" rendered="#{identity.loggedIn}" propagation="none"/>
+        <s:link id="menuLoginId" view="/login.xhtml" value="Login" styleClass="menuBold" rendered="#{not identity.loggedIn}" propagation="none"/>
+        <s:link id="menuRegisterId" view="/register.xhtml" value="Register"  styleClass="menuBold" rendered="#{not identity.loggedIn}" propagation="none"/>
+        <s:link id="menuLogoutId" view="/home.xhtml" action="#{identity.logout}" styleClass="menuBold" value="Logout" rendered="#{identity.loggedIn}" propagation="none"/>
     </rich:toolBarGroup>
 </rich:toolBar>

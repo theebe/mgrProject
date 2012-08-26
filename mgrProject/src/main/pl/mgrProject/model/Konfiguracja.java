@@ -21,6 +21,7 @@ import org.jboss.seam.annotations.security.Restrict;
 @Entity
 @Table(name="KONFIGURACJA")
 @NamedQueries({
+	@NamedQuery(name="wszystkieKonfiguracje", query = "SELECT konf FROM Konfiguracja konf"),
 	@NamedQuery(name="konfiguracjaPoNazwie", query="SELECT konf FROM Konfiguracja konf WHERE konf.name LIKE :nazwa")
 	})
 
@@ -47,6 +48,7 @@ public class Konfiguracja {
 	private Integer nieskonczonosc;
 	
 	
+
 	/**
 	 * id
 	 */

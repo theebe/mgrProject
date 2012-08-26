@@ -52,6 +52,7 @@ select {
 	text-align: center;
 	font-size: 11px;
 	margin-bottom: 10px;
+	clear: both;
 }
 
 .rich-table {
