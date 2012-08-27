@@ -2,19 +2,21 @@ package pl.mgrProject.action.algorithm;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
+
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
+
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Logger;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.log.Log;
+
 import pl.mgrProject.model.Konfiguracja;
 
 @Stateless
@@ -23,156 +25,142 @@ public class DijkstraBean implements Dijkstra {
 	@Logger
 	private Log log;
 	@In
-	private EntityManager mgrDatabase;
-	/**
-	 * Wierzcholek startowy.
-	 */
-	private int s;
-	
-	/**
-	 * Liczba wierzcholkow grafu.
-	 */
-	private int n;
-	
+	private EntityManager mgrDatabase;	
 	/**
 	 * Przechowuje wagi krawedzi.
 	 */
-	private int[][] E;
-	
-	/**
-	 * Przechowuje ID wierzcholkow
+	private int[][] E = new int[0][0];
+	 /**
+	 * Przechowuje ID wierzcholkow.
 	 */
 	private Integer[] V;
-	
+	/**
+	 * Lista wierzcholkow do przetworzenia przez algorytm.
+	 */
+	private List<Integer> Q;
+	/**
+	 * Wektor poprzednikow.
+	 */
+	private int[] p;
+	/**
+	 * Wektor odleglosci.
+	 */
+	private int[] d;
 	/**
 	 * Wartosc nieskonczonosci.
 	 */
 	private int inf;
-	
 	/**
-	 * Przechowuje sciezki tras.
+	 * ID wierzcholka zrodlowego.
 	 */
-	private int[] p;
-	
+	private int start;
 	/**
-	 * Przechowuje odleglosci do wierzcholka startowego.
-	 */
-	private int[] d;
-	
-	/**
-	 * Liczba dostepnych procesorow. Algorytm bedzie staral sie dzialac na takiej liczbie watkow.
+	 * Liczba watkow na jakich ma dzialac algorytm.
 	 */
 	private int nThreads;
-	
 	/**
-	 * Zwraca liczbe dostepnych procesorow (rdzeni).
-	 * @return Liczba dostepnych procesorow.
+	 * Liczba wierzcholkow w grafie.
 	 */
-	private int getCores() {
-		return Runtime.getRuntime().availableProcessors();
-	}
-	
-	
+	private int n;
 	/**
+	 * ID wierzcholka o najmniejszym koszcie.
+	 */
+	private Integer u;
+	
+	 /**
 	 * Konstruktor.
 	 * @param n Liczba wierzcholkow/przystankow
 	 * @param E Wagi krawedzi
 	 * @param V Wierzcholki
 	 * @param s ID przystanku poczatkowego
 	 */
-	public void init(int n, int[][] E, Integer[] V, int startID) throws Exception {	
-		this.n = n;
-		this.E = E.clone();
-		this.V = V.clone();
-		this.s = startID;
-		//pobranie liczby watkow na jakich ma dzialac algorytm
-		Konfiguracja konf = (Konfiguracja)mgrDatabase.createNamedQuery("konfiguracjaPoNazwie").setParameter("nazwa", "default").getSingleResult();
+	@Override
+	public void init(int nv, int[][] E, Integer[] V, int startID) throws Exception {
+		Konfiguracja konf = (Konfiguracja) mgrDatabase.createNamedQuery("konfiguracjaPoNazwie")
+				.setParameter("nazwa", "default").getSingleResult();
+		start = startID;
+		n = E.length;
+		Q = new ArrayList<Integer>(n);
+		p = new int[n];
+		d = new int[n];
+		u = -1;
+		inf = konf.getNieskonczonosc();
+		this.E = E;
+		this.V = V;
+		
 		int threads = konf.getLiczbaWatkow();
-		//0 == automatyczne obliczenie liczby watkow
+		// 0 == automatyczne obliczenie liczby watkow
 		int cores = threads == 0 ? getCores() : threads;
 		nThreads = cores > n ? n : cores;
-		p = new int[n]; 
-		d = new int[n];
-		inf = konf.getNieskonczonosc();
-	}
-	
-	/**
-	 * Uruchamia algorytm.
-	 */
-	public void run() {
-		log.info("Liczba watkow: " + nThreads);
-		List<Integer> S = new ArrayList<Integer>(); //wierzcholki dla ktorych zostaly policzone najkrotsze trasy
-		int u = -1;
-		List<Integer> Q = new ArrayList<Integer>(); //wierzcholki dla ktorych jeszcze nie zostaly obliczone najkrotsze trasy
-		Collections.addAll(Q, V);
 		
 		for (int i = 0; i < n; ++i) {
 			p[i] = 0;
 			d[i] = inf;
+			Q.add(i);
 		}
 		
-		d[s] = 0;
+		d[start] = 0;
+		p[start] = 0;
+		
+		
+	}
+	
+	 /**
+	 * Uruchamia algorytm.
+	 */
+	@Override
+	public void run() {
 		ExecutorService exec = Executors.newFixedThreadPool(nThreads);
-		ArrayList<Future<Integer>> result  = new ArrayList<Future<Integer>>();
+		ArrayList<Future<Integer>> result = new ArrayList<Future<Integer>>();
 		ArrayList<Future<Boolean>> result2 = new ArrayList<Future<Boolean>>();
 		
-		while(S.size() < n) {
-			log.info("d[]: " + Arrays.toString(d));
-			
-			//szukanie wierzcholka o najmniejszym d.
-			for (int i = 0; i < nThreads-1; ++i) {
-				result.add(exec.submit(new FindMinD(Q, i*(n/nThreads), (i+1)*(n/nThreads))));
+		while (!Q.isEmpty()) {
+			// szukanie wierzcholka o najmniejszym d.
+			for (int i = 0; i < nThreads - 1; ++i) {
+				result.add(exec.submit(new FindMinD(i * (V.length / nThreads), (i + 1) * (V.length / nThreads))));
 			}
-			result.add(exec.submit(new FindMinD(Q, (nThreads-1)*(n/nThreads), n))); //ostatni watek bierze wektor do konca
-			
-			int minD = inf + 1;
-			int minDIndex = -1;
-
+			//ostatni watek bierze reszte wektora
+		    result.add(exec.submit(new FindMinD((nThreads - 1) * (V.length / nThreads), V.length)));
+		    
+		    int minD = inf + 1;
+		    
 			for (Future<Integer> f : result) {
 				try {
 					Integer i = f.get();
-					if (i == -1) continue;
+					if (i == -1)
+						continue;
 					if (d[i] < minD) {
 						minD = d[i];
-						minDIndex = i;
+						u = i;
 					}
 				} catch (InterruptedException e) {
-					log.info("[InterruptedException] " + e);
+					System.out.println("[InterruptedException] " + e);
+					e.printStackTrace();
 				} catch (ExecutionException e) {
-					log.info("[ExecutionException] " + e);
+					System.out.println("[ExecutionException] " + e);
+					e.printStackTrace();
 				}
 			}
+			
 			result.clear();
+		    Q.remove(u);
 
-			if (minDIndex == -1) break;
-			
-			//czasami wychodzi tu poza tablice. Prawdopodobnie wtedy, gdy graf jest niepoprawny.
-			try {
-				u = Q.get(minDIndex);
-			} catch(ArrayIndexOutOfBoundsException e) {
-				throw e;
+			// sprawdzanie sasiadow analizowanego wierzcholka.
+			for (int i = 0; i < nThreads - 1; ++i) {
+				result2.add(exec.submit(new CheckNeighbors(u, i * (V.length / nThreads), (i + 1) * (V.length / nThreads))));
 			}
-			Q.set(minDIndex, inf);
-			S.add(u);
+			result2.add(exec.submit(new CheckNeighbors(u, (nThreads - 1) * (V.length / nThreads), V.length)));
 			
-			//sprawdzanie sasiadow analizowanego wierzcholka.			
-			exec = Executors.newFixedThreadPool(nThreads);
-			
-			for (int i = 0; i < nThreads-1; ++i) {
-				result2.add(exec.submit(new CheckNeighbors(u, i*(n/nThreads), (i+1)*(n/nThreads))));
-			}
-			result2.add(exec.submit(new CheckNeighbors(u, (nThreads-1)*(n/nThreads), n)));
-			
-			//po zakonczeniu wykonywania watkow mozna kontynuowac prace
+			// oczekiwanie na zakonczenie dzialania watkow
 			try {
 				for (Future<Boolean> f : result2) {
 					f.get();
 				}
 			} catch (InterruptedException e) {
-				log.info(e);
+				System.out.println(e);
 			} catch (ExecutionException e) {
-				log.info(e);
-			} 
+				System.out.println(e);
+			}
 
 			result2.clear();
 		}
@@ -180,101 +168,115 @@ public class DijkstraBean implements Dijkstra {
 		exec.shutdown();
 	}
 	
-	/**
+	 /**
 	 * Zwraca znaleziona najkrotsza sciezke pod postacia Stringa.
-	 * @param stopID ID wierzcholka/przystanku docelowego
+	 * @param stop ID wierzcholka/przystanku docelowego
 	 * @return String z reprezentacja najkrotszej sciezki
 	 * @throws Exception
 	 */
-	public String getPath(int stopID) throws Exception {
-		int i = p[stopID];
-		String result = "" + stopID;
-		
-		while (i != 0) {
-			result += " <- " + i;
-			i = p[i];
+	@Override
+	public String getPath(int stop) throws Exception {
+		String path = "" + stop;
+
+		int index = stop;
+		while (index != start && index != 0) {
+			path += " <- " + V[index];
+			index = p[index];
 		}
-		
-		result += " <- " + s;
-		
-		return result;
+		path += " <- " + V[start];
+
+		return path;
 	}
 	
-	/**
-	 * Zwraca liste ID tabliczek, ktorych kolejnosc definiuje znaleziona trase.
-	 * @param stopID ID przystanku koncowego
+	 /**
+	 * Zwraca liste ID tabliczek, ktorych kolejnosc definiuje znaleziona
+	 trase.
+	 * @param stop ID przystanku koncowego
 	 * @param log Logger
 	 * @return Lista kolejnych tabliczek definujaca trase przejazdu.
 	 * @throws Exception
 	 */
-	public ArrayList<Integer> getPathTab(int stopID) throws Exception {
-		ArrayList<Integer> tab = new ArrayList<Integer>();
-		tab.add(stopID);
-		int i = p[stopID];
+	@Override
+	public ArrayList<Integer> getPathTab(int stop) throws Exception {
+		log.info("[getPathTab] stop: " + stop);
+		log.info("[getPathTab] p: " + Arrays.toString(p));
+		log.info("[getPathTab] d: " + Arrays.toString(d));
+		ArrayList<Integer> path = new ArrayList<Integer>();
 		
-		while (i != 0) {
-			tab.add(i);
-			i = p[i];
+		int index = stop;
+		while (index != start && index != 0) {
+			path.add(V[index]);
+			index = p[index];
 		}
-		
-		if (tab.get(tab.size()-1) != s)
-			tab.add(s);
-		
-		return tab;
+		path.add(V[start]);
+
+		return path;
+	}
+	
+	/**
+	 * Zwraca liczbe dostepnych procesorow (rdzeni).
+	 * 
+	 * @return Liczba dostepnych procesorow.
+	 */
+	private int getCores() {
+		return Runtime.getRuntime().availableProcessors();
 	}
 	
 	private class FindMinD implements Callable<Integer> {
-		private int start;
-		private int stop;
-		private List<Integer> Q;
-		
-		public FindMinD(List<Integer> Q, int start, int stop) {
-			this.start = start;
-			this.stop = stop;
-			this.Q = Q;
+		private int begin;
+		private int end;
+
+		public FindMinD(int begin, int end) {
+			this.begin = begin;
+			this.end = end;
 		}
 
 		@Override
-		public synchronized Integer call() throws Exception {
-			int minD = inf;
-			int minDIndex = -1;
-			
-			for (int i = start; i < stop; ++i) {
-				if (d[i] < minD && Q.contains(i)) {
-					minD = d[i];
-					minDIndex = i;
+		public Integer call() {
+			int min = inf + 1;
+			int index = -1;
+			try {
+				for (int i = begin; i < end; ++i) {
+					if (d[i] < min && Q.contains(new Integer(i))) {
+						min = d[i];
+						index = i;
+					}
 				}
+			} catch (Exception e) {
+				e.printStackTrace();
 			}
-			
-			return minDIndex;
+			return index;
 		}
 	}
 	
 	private class CheckNeighbors implements Callable<Boolean> {
-		private int start;
-		private int stop;
+		private int begin;
+		private int end;
 		private int u;
-		
-		public CheckNeighbors(int u, int start, int stop) {
-			this.start = start;
-			this.stop = stop;
+
+		public CheckNeighbors(int u, int begin, int end) {
+			this.begin = begin;
+			this.end = end;
 			this.u = u;
 		}
-		
-		@Override
-		public synchronized Boolean call() { //zwraca true kiedy zakonczy wykonywanie zadania
-			int neighbor = -1;
 
-			for (int i = start; i < stop; ++i) {
-				neighbor = E[u][i];
-				if (neighbor != inf) {
-					if (d[u] + neighbor < d[i]) {
-						p[i] = u;
-						d[i] = d[u] + neighbor;
+		@Override
+		public Boolean call() {
+			try {
+				//Dijkstra
+				for (int v = begin; v < end; ++v) {
+					if (E[u][v] != inf) {
+						if (d[u] + E[u][v] < d[v]) {
+							d[v] = d[u] + E[u][v];
+							p[v] = u;
+						}
 					}
 				}
+				//***
+			} catch (Exception e) {
+				e.printStackTrace();
 			}
 			return true;
-		}	
+		}
 	}
 }
