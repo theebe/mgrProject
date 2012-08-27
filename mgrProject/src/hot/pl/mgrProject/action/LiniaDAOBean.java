@@ -158,6 +158,11 @@ public class LiniaDAOBean implements LiniaDAO, Serializable {
 		this.selectedLinia = l;
 	}
 	
+	public List<Linia> getAll(){
+		List resultList = mgrDatabase.createNamedQuery("wszystkieLinie").getResultList();
+		return resultList;
+	}
+	
 	
 	
 	

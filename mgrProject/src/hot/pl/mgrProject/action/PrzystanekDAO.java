@@ -63,6 +63,7 @@ public interface PrzystanekDAO {
 	
 	public void setSelectedPrzystanek(Przystanek p);
 
+	public List<Przystanek> getAll();
 	
 	@Destroy
 	@Remove

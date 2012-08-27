@@ -15,3 +15,7 @@ mvel2.jar
 richfaces-api.jar
 hibernate-postgis-support.jar
 flexjson-2.1.jar
+resteasy-jaxrs.jar
+jaxrs-api.jar
+jboss-seam-resteasy.jar
+json-java.jar

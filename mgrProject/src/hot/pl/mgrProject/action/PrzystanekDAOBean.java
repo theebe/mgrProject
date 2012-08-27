@@ -160,6 +160,11 @@ public class PrzystanekDAOBean implements Serializable, PrzystanekDAO {
 	public void setSelectedPrzystanek(Przystanek p) {
 		this.selectedPrzystanek = p;
 	}
+	
+	public List<Przystanek> getAll(){
+		List resultList = mgrDatabase.createNamedQuery("wszystkiePrzystanki").getResultList();
+		return resultList;
+	}
 
 	@Destroy
 	@Remove

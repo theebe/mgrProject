@@ -67,6 +67,8 @@ public interface LiniaDAO {
 	public TimeZone getTimeZone();
 	public void cancel();
 	
+	public List<Linia> getAll();
+	
 	@Destroy
 	@Remove
 	public void destory();

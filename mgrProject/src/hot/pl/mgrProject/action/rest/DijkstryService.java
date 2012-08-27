@@ -10,7 +10,6 @@ import javax.ws.rs.core.Response;
 import org.jboss.seam.annotations.Destroy;
 
 
-@Local
 public interface DijkstryService {
 
 	
@@ -19,8 +18,6 @@ public interface DijkstryService {
 	
 	public Response run();
 	
-	@Destroy
-	@Remove
-	public void destory();
+	
 	
 }

@@ -22,21 +22,22 @@ import org.hibernate.annotations.Index;
 import org.hibernate.validator.Min;
 import org.hibernate.validator.NotNull;
 
-
 /**
- * Tabliczna przystankowa przyporzadkowana jest dla jednego przystanku i jednej linii, posiada wiele godzin odjazdow.
- * Oznacza, i¿ dana linia przez dany przystanek mo¿e przejezdzaæ wiele razy w ciagu dnia.
+ * Tabliczna przystankowa przyporzadkowana jest dla jednego przystanku i jednej
+ * linii, posiada wiele godzin odjazdow. Oznacza, i¿ dana linia przez dany
+ * przystanek mo¿e przejezdzaæ wiele razy w ciagu dnia.
+ * 
  * @author bat
- *
+ * 
  */
 @Entity
 @Table(name = "PRZYSTANEK_TABLICZKI")
 @NamedQueries({
 		// wyciaga z bazy wszystkie Tabliczki
 		@NamedQuery(name = "wszystkieTabliczki", query = "SELECT OBJECT(przystTabl) FROM PrzystanekTabliczka przystTabl"),
-		@NamedQuery(name = "tabliczkiPoPrzystanku", query = "SELECT przystTabl FROM PrzystanekTabliczka przystTabl WHERE przystTabl.przystanek = :przystanek"), 
-		@NamedQuery(name = "tabliczkiPoLinii", query = "SELECT przystTabl FROM PrzystanekTabliczka przystTabl WHERE przystTabl.linia = :linia") 
-		})
+		@NamedQuery(name = "tabliczkiPoPrzystanku", query = "SELECT przystTabl FROM PrzystanekTabliczka przystTabl WHERE przystTabl.przystanek = :przystanek"),
+		@NamedQuery(name = "tabliczkiPoLinii", query = "SELECT przystTabl FROM PrzystanekTabliczka przystTabl WHERE przystTabl.linia = :linia") })
+
 public class PrzystanekTabliczka implements Serializable {
 
 	private Long id;
@@ -49,11 +50,12 @@ public class PrzystanekTabliczka implements Serializable {
 	private PrzystanekTabliczka poprzedniPrzystanek;
 
 	private int czasDoNastepnego;
-	
+
 	private List<Odjazd> odjazdy;
 
 	/**
 	 * Id
+	 * 
 	 * @return
 	 */
 	@Id
@@ -68,6 +70,7 @@ public class PrzystanekTabliczka implements Serializable {
 
 	/**
 	 * Version
+	 * 
 	 * @return
 	 */
 	@Version
@@ -81,12 +84,13 @@ public class PrzystanekTabliczka implements Serializable {
 
 	/**
 	 * Linia jaka jest przyporzadkowana do tej tabliczki
+	 * 
 	 * @return
 	 */
-	@ManyToOne(fetch=FetchType.EAGER)
+	@ManyToOne(fetch = FetchType.EAGER)
 	@NotNull
 	@JoinColumn(name = "linia_id", insertable = false, updatable = false, nullable = false)
-	@Index(name="liniaIndex")
+	@Index(name = "liniaIndex")
 	public Linia getLinia() {
 		return linia;
 	}
@@ -97,11 +101,12 @@ public class PrzystanekTabliczka implements Serializable {
 
 	/**
 	 * Przystanek przyporzadkowany do tej tabliczki
+	 * 
 	 * @return
 	 */
 	@ManyToOne
 	@NotNull
-	@Index(name="przystanekIndex")
+	@Index(name = "przystanekIndex")
 	public Przystanek getPrzystanek() {
 		return przystanek;
 	}
@@ -111,10 +116,11 @@ public class PrzystanekTabliczka implements Serializable {
 	}
 
 	/**
-	 * Lista godzin odjazdow linii z tego przystanku 
+	 * Lista godzin odjazdow linii z tego przystanku
+	 * 
 	 * @return
 	 */
-	@OneToMany(mappedBy = "przystanekTabliczka", cascade= {CascadeType.ALL})
+	@OneToMany(mappedBy = "przystanekTabliczka", cascade = { CascadeType.ALL })
 	public List<Odjazd> getOdjazdy() {
 		if (odjazdy == null)
 			odjazdy = new ArrayList<Odjazd>();
@@ -128,6 +134,7 @@ public class PrzystanekTabliczka implements Serializable {
 
 	/**
 	 * Dodaje odjazd danej linii do danego przystanku
+	 * 
 	 * @param o
 	 */
 	public void addOdjazd(Odjazd o) {
@@ -137,10 +144,11 @@ public class PrzystanekTabliczka implements Serializable {
 
 	/**
 	 * Kolejny przystanek na linii
+	 * 
 	 * @return
 	 */
-	@OneToOne(fetch=FetchType.LAZY)
-	@JoinColumn(name="nastepnyPrzystanek_id")
+	@OneToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "nastepnyPrzystanek_id")
 	public PrzystanekTabliczka getNastepnyPrzystanek() {
 		return nastepnyPrzystanek;
 	}
@@ -149,17 +157,17 @@ public class PrzystanekTabliczka implements Serializable {
 		this.nastepnyPrzystanek = nastepnyPrzystanek;
 	}
 
-	
 	public void setPoprzedniPrzystanek(PrzystanekTabliczka poprzedniPrzystanek) {
 		this.poprzedniPrzystanek = poprzedniPrzystanek;
 	}
 
 	/**
 	 * Poprzedni przystanek tej linii
+	 * 
 	 * @return
 	 */
-	@OneToOne(fetch=FetchType.LAZY)
-	@JoinColumn(name="poprzedniPrzystanek_id")
+	@OneToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "poprzedniPrzystanek_id")
 	public PrzystanekTabliczka getPoprzedniPrzystanek() {
 		return poprzedniPrzystanek;
 	}
@@ -170,9 +178,10 @@ public class PrzystanekTabliczka implements Serializable {
 
 	/**
 	 * Odleglosc w minutach do nastepnego przystanku
+	 * 
 	 * @return
 	 */
-	@Min(message="Minimum: 0", value=0)
+	@Min(message = "Minimum: 0", value = 0)
 	public int getCzasDoNastepnego() {
 		return czasDoNastepnego;
 	}

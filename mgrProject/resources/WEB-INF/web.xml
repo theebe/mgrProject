@@ -89,21 +89,30 @@
 	<!-- REST -->
 	<servlet>
 		<servlet-name>Resteasy</servlet-name>
-		<servlet-class>
-			org.jboss.resteasy.plugins.server.servlet.HttpServletDispatcher</servlet-class>
-		<init-param>
-			<param-name>javax.ws.rs.Application</param-name>
-			<param-value>pl.mgrProject.action.rest.RestServiceApplication</param-value>
-		</init-param>
+		<servlet-class>org.jboss.seam.servlet.SeamResourceServlet</servlet-class>
 	</servlet>
 
 	<servlet-mapping>
 		<servlet-name>Resteasy</servlet-name>
 		<url-pattern>/ws/*</url-pattern>
 	</servlet-mapping>
+	<!-- <servlet> -->
+	<!-- <servlet-name>Resteasy</servlet-name> -->
+	<!-- <servlet-class> -->
+	<!-- org.jboss.resteasy.plugins.server.servlet.HttpServletDispatcher</servlet-class> -->
+	<!-- <init-param> -->
+	<!-- <param-name>javax.ws.rs.Application</param-name> -->
+	<!-- <param-value>pl.mgrProject.action.rest.RestServiceApplication</param-value> -->
+	<!-- </init-param> -->
+	<!-- </servlet> -->
+
+	<!-- <servlet-mapping> -->
+	<!-- <servlet-name>Resteasy</servlet-name> -->
+	<!-- <url-pattern>/ws/*</url-pattern> -->
+	<!-- </servlet-mapping> -->
 
 	<!--END REST -->
-	
+
 	<security-constraint>
 		<display-name>Restrict raw XHTML Documents</display-name>
 		<web-resource-collection>
