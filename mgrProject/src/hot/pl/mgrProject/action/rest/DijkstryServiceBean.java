@@ -14,7 +14,9 @@ import java.util.Map;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
+import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
+import javax.ws.rs.core.MediaType;
 
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Logger;
@@ -32,8 +34,8 @@ public class DijkstryServiceBean implements DijkstryService {
 
 	@Logger
 	private Log log;
-	
-	@In(create =true )
+
+	@In(create = true)
 	private Algorithm algorithmBean;
 
 	public static final String START = "start";
@@ -41,15 +43,21 @@ public class DijkstryServiceBean implements DijkstryService {
 	public static final String DATA = "data";
 
 	private static final String INFO = "Algorytm wyszukiwania trasy zaimplementowany na bazie algorytmu DIJKSTRY";
+	
 
 	@GET
 	@Path("/info")
+	@Produces(MediaType.TEXT_PLAIN)
 	public String info(@QueryParam("format") String format) {
 		log.info("Wybrano format: " + (format == null ? "json" : format));
 		try {
 			String ret = new JSONSerializer().serialize(INFO);
 
-			return RozkladServiceBean.printOut(ret, format, null);
+			if (format != null && (format.equals("xml") || format.equals("XML"))) {
+				return "<info>" + INFO + "</info>";
+			} else {
+				return ret;
+			}
 		} catch (Exception e) {
 			
 			e.printStackTrace();
@@ -59,10 +67,15 @@ public class DijkstryServiceBean implements DijkstryService {
 
 	@GET
 	@Path("/run")
+	@Produces(MediaType.TEXT_PLAIN)
 	public String runEmpty(@QueryParam("format") String format) {
-		String ret = "Brak parametrów \nINFO: " + info(null);
+		String ret = "Brak parametrów \nINFO: \n" + INFO;
 		try {
-			return RozkladServiceBean.printOut(ret, format, null);
+			if (format != null && (format.equals("xml") || format.equals("XML"))) {
+				return "<info>" + ret + "</info>";
+			} else {
+				return new JSONSerializer().serialize(ret);
+			}
 		} catch (Exception e) {
 			e.printStackTrace();
 			return e.toString();
@@ -71,6 +84,7 @@ public class DijkstryServiceBean implements DijkstryService {
 
 	@GET
 	@Path("/run/{path:.*}")
+	@Produces(MediaType.TEXT_PLAIN)
 	public String run(@QueryParam("format") String format,
 			@PathParam("path") String path) {
 		try {
@@ -92,11 +106,11 @@ public class DijkstryServiceBean implements DijkstryService {
 					+ start.getY() + " " + stop.getX() + " " + stop.getY()
 					+ " " + dataStartu.toString());
 
-			
 			Odpowiedz odp = findRoute(start, stop, dataStartu);
-			
-			
-			return "ok";
+
+			log.info("Otrzymano odpowiedz: " + odp.toString());
+
+			return RozkladServiceBean.printOut(odp, format, "dateList");
 
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -277,21 +291,23 @@ public class DijkstryServiceBean implements DijkstryService {
 
 		return errs;
 	}
-	
-	
-	private Odpowiedz findRoute(Point startPoint, Point stopPoint, Date startTime) {
+
+	private Odpowiedz findRoute(Point startPoint, Point stopPoint,
+			Date startTime) {
 		Odpowiedz odpowiedz;
-		
+
 		algorithmBean.setStartPoint(startPoint);
 		algorithmBean.setStopPoint(stopPoint);
-		//TODO: czasami startTime nie zawiera godziny ustawionej w formularzu na stronie tylko ustawia aktualna godzine
+		// TODO: czasami startTime nie zawiera godziny ustawionej w formularzu
+		// na stronie tylko ustawia aktualna godzine
 		algorithmBean.setStartTime(startTime);
 		Boolean result = algorithmBean.run();
-		if(result)
-			odpowiedz = new Odpowiedz(algorithmBean.getPath(), algorithmBean.getHours(), "OK");
-		else 
-			odpowiedz = null;
-		
+		if (result)
+			odpowiedz = new Odpowiedz(algorithmBean.getPath(),
+					algorithmBean.getHours(), "OK");
+		else
+			odpowiedz = new Odpowiedz(null, null, "Nie znaleziono trasy.");
+
 		return odpowiedz;
 	}
 

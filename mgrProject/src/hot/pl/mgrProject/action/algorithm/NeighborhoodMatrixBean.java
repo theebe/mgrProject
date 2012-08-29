@@ -4,8 +4,10 @@ import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import javax.ejb.Stateless;
@@ -22,7 +24,6 @@ import pl.mgrProject.model.Linia;
 import pl.mgrProject.model.Odjazd;
 import pl.mgrProject.model.Przystanek;
 import pl.mgrProject.model.PrzystanekTabliczka;
-import pl.mgrProject.model.TypDnia;
 
 @Stateless
 @Name("neighborhoodMatrixBean")
@@ -60,6 +61,8 @@ public class NeighborhoodMatrixBean implements NeighborhoodMatrix {
 	 * Konfiguracja
 	 */
 	private Konfiguracja konf;
+	
+	private Map<Long, Integer> idPrzystankowMap = null;
 	
 	/**
 	 * Inicjalizuje wszystkie zmienne i uruchamia proces budowania macierzy sasiedztwa.
@@ -241,12 +244,16 @@ public class NeighborhoodMatrixBean implements NeighborhoodMatrix {
 	 */
 	@Override
 	public int getIndex(Long id) {
-		for (int i = 0; i < tabliczki.size(); ++i) {
-			if (tabliczki.get(i).getId() == id) {
-				return i;
+		
+		if(this.idPrzystankowMap == null){
+			log.info("Tworzenie mapy odwzoruajcej relacje id do i w tablicy  tabliczki neighborhoodmatrix");
+			idPrzystankowMap = new HashMap<Long, Integer>();
+			for  (int i = 0; i < tabliczki.size(); ++i) {
+				idPrzystankowMap.put(tabliczki.get(i).getId(), i);
 			}
 		}
-		return -1;
+		
+		return idPrzystankowMap.get(id);
 	}
 	
 	@Override

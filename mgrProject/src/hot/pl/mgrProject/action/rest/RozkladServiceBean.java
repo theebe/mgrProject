@@ -180,7 +180,7 @@ public class RozkladServiceBean implements RozkladService {
 	public static String toXml(Object obj) throws JAXBException {
 
 		JAXBContext jc = JAXBContext.newInstance(new Class[] {
-				Przystanek.class, Linia.class });
+				Przystanek.class, Linia.class, String.class});
 
 		Marshaller m = jc.createMarshaller();
 		m.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE);
