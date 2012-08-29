@@ -90,7 +90,7 @@ public class NeighborhoodMatrixBean implements NeighborhoodMatrix {
 		
 		buildMatrix();
 		joinTabs();
-		printE();
+		//printE();
 	}
 	
 	/**

@@ -88,7 +88,7 @@ public class AlgorithmBean implements Algorithm {
 	@Override
 	public Boolean run() {
 		konf = (Konfiguracja)mgrDatabase.createNamedQuery("konfiguracjaPoNazwie").setParameter("nazwa", "default").getSingleResult();
-		Przystanek pstart = getClosestTo(startPoint);
+		List<Przystanek> pstart = getClosestList(startPoint, 0);
 		//pobranie najblizszych przystankow w odleglosci 1000 metrow
 		List<Przystanek> pstop  = getClosestList(stopPoint, 1000);
 		
@@ -97,7 +97,7 @@ public class AlgorithmBean implements Algorithm {
 			return false;
 		}
 
-		List<PrzystanekTabliczka> tabForStart = pstart.getPrzystanekTabliczki();
+		List<PrzystanekTabliczka> tabForStart = getWszystkieTabliczkiZListyPrzystankow(pstart);
 		
 		log.info("Liczba tabliczek dla start: " + tabForStart.size());
 		
@@ -171,6 +171,8 @@ public class AlgorithmBean implements Algorithm {
 		}
 	}
 	
+	
+
 	@Override
 	public Boolean setStartPoint(Point p) {
 		startPoint = p;
@@ -354,4 +356,25 @@ public class AlgorithmBean implements Algorithm {
 		Collections.reverse(result);
 		return result;
 	}
+	
+	
+	/**
+	 * Funkcja tworzy jedna liste tabliczkow przystankowych z listy przystankow
+	 * @param pstart
+	 * @return
+	 */
+	private List<PrzystanekTabliczka> getWszystkieTabliczkiZListyPrzystankow(
+			List<Przystanek> pstart) {
+		List<PrzystanekTabliczka> ret = new ArrayList<PrzystanekTabliczka>();
+		
+		if(pstart == null || pstart.size()==0)
+			return ret;
+		
+		for(int i=0; i < pstart.size(); i++){
+			ret.addAll(pstart.get(i).getPrzystanekTabliczki());
+		}
+		log.info("Wybrano " + ret.size() + " tabliczek startowych");
+		return ret;
+	}
+	
 }

@@ -1,7 +1,9 @@
 package pl.mgrProject.action.rest;
 
 import java.io.StringWriter;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.persistence.EntityManager;
 import javax.ws.rs.GET;
@@ -15,7 +17,9 @@ import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
 
 import org.jboss.seam.annotations.In;
+import org.jboss.seam.annotations.Logger;
 import org.jboss.seam.annotations.Name;
+import org.jboss.seam.log.Log;
 
 import pl.mgrProject.model.Linia;
 import pl.mgrProject.model.Przystanek;
@@ -26,17 +30,13 @@ import flexjson.JSONSerializer;
 @Name("rozkladServiceBean")
 public class RozkladServiceBean implements RozkladService {
 
-	// @EJB(beanName = "PrzystanekTabliczkaDAOBean")
-	// private PrzystanekTabliczkaDAO przystanekTabliczkaDAO;
+	@Logger
+	private Log log;
 
-	// @In(create = true, required = true, value="liniaDAO")
-	// private LiniaDAO liniaDAO;
-
+	private static final String[] keys = {"linie", "przystanki"};
+	
 	@In
 	private EntityManager mgrDatabase;
-
-	// @EJB(beanName = "PrzystanekDAOBean")
-	// private PrzystanekDAO przystanekDAO;
 
 	@GET
 	@Path("/all")
@@ -50,17 +50,17 @@ public class RozkladServiceBean implements RozkladService {
 	@Produces(MediaType.TEXT_PLAIN)
 	public String linie(@QueryParam("format") String format) {
 		try {
-			System.out.println("Wybrano format: "
+			log.info("Wybrano format: "
 					+ (format == null ? "json" : format));
 
-			List<Linia> listaLinii = null;
-
-			listaLinii = mgrDatabase.createNamedQuery("wszystkieLinie")
+			List<Linia> listaLinii = mgrDatabase.createNamedQuery("wszystkieLinie")
 					.getResultList();
 
-			System.out.println("Pobrano " + listaLinii.size() + " lini");
+			log.info("Pobrano " + listaLinii.size() + " lini");
 
-			return printOut(listaLinii, format, null);
+
+			
+			return printOut(listaLinii, format, null) ;
 		} catch (Exception e) {
 			e.printStackTrace();
 			return e.toString();
@@ -73,15 +73,15 @@ public class RozkladServiceBean implements RozkladService {
 	public String linia(@PathParam("numer") Integer numer,
 			@QueryParam("format") String format) {
 		try {
-			System.out.println("Wybrano format: "
+			log.info("Wybrano format: "
 					+ (format == null ? "json" : format));
-			System.out.println("Pobieranie linii z nr " + numer);
+			log.info("Pobieranie linii z nr " + numer);
 			List<Linia> listaLinii = null;
 
 			listaLinii = mgrDatabase.createNamedQuery("liniePoNumerze")
 					.setParameter("numer", numer).getResultList();
 
-			System.out.println("Pobrano " + listaLinii.size() + " lini");
+			log.info("Pobrano " + listaLinii.size() + " lini");
 			int sum = 0;
 			for (Linia linia : listaLinii) {
 				List<PrzystanekTabliczka> przystanekTabliczka = linia
@@ -90,7 +90,7 @@ public class RozkladServiceBean implements RozkladService {
 
 			}
 
-			System.out.println("Pobrano " + sum + " tabliczek");
+			log.info("Pobrano " + sum + " tabliczek");
 
 			return printOut(listaLinii, format, "przystanekTabliczka");
 		} catch (Exception e) {
@@ -104,7 +104,7 @@ public class RozkladServiceBean implements RozkladService {
 	@Produces(MediaType.TEXT_PLAIN)
 	public String przystanki(@QueryParam("format") String format) {
 		try {
-			System.out.println("Wybrano format: "
+			log.info("Wybrano format: "
 					+ (format == null ? "json" : format));
 
 			List<Przystanek> listaPrzystankow = null;
@@ -112,7 +112,7 @@ public class RozkladServiceBean implements RozkladService {
 			listaPrzystankow = mgrDatabase.createNamedQuery(
 					"wszystkiePrzystanki").getResultList();
 
-			System.out.println("Pobrano " + listaPrzystankow.size()
+			log.info("Pobrano " + listaPrzystankow.size()
 					+ " przystankow");
 
 			return printOut(listaPrzystankow, format, null);
@@ -129,16 +129,16 @@ public class RozkladServiceBean implements RozkladService {
 	public String przystanek(@PathParam("id") Long id,
 			@QueryParam("format") String format) {
 		try {
-			System.out.println("Wybrano format: " + format == null ? "json"
+			log.info("Wybrano format: " + format == null ? "json"
 					: format);
-			System.out.println("Pobieranie przystanku z nr " + id);
+			log.info("Pobieranie przystanku z nr " + id);
 			List<Przystanek> listaPrzystankow = null;
 
 			listaPrzystankow = mgrDatabase
 					.createQuery("SELECT p from Przystanek p where p.id = :id")
 					.setParameter("id", id).getResultList();
 
-			System.out.println("Pobrano " + listaPrzystankow.size()
+			log.info("Pobrano " + listaPrzystankow.size()
 					+ " przystankow");
 			int sum = 0;
 			for (Przystanek przystanek : listaPrzystankow) {
@@ -148,7 +148,7 @@ public class RozkladServiceBean implements RozkladService {
 
 			}
 
-			System.out.println("Pobrano " + sum + " tabliczek");
+			log.info("Pobrano " + sum + " tabliczek");
 
 			return printOut(listaPrzystankow, format, "przystanekTabliczki");
 		} catch (Exception e) {
@@ -157,7 +157,7 @@ public class RozkladServiceBean implements RozkladService {
 		}
 	}
 
-	private String printOut(Object obj, String format, String... include)
+	public static String printOut(Object obj, String format, String... include)
 			throws Exception {
 
 		if (format != null && (format.equals("xml") || format.equals("XML"))) {
@@ -167,7 +167,7 @@ public class RozkladServiceBean implements RozkladService {
 		}
 	}
 
-	private String toJson(Object obj, String... include) {
+	public static  String toJson(Object obj, String... include) {
 		String json = null;
 		if (include != null) {
 			json = new JSONSerializer().include(include).serialize(obj);
@@ -177,7 +177,7 @@ public class RozkladServiceBean implements RozkladService {
 		return json;
 	}
 
-	private String toXml(Object obj) throws JAXBException {
+	public static String toXml(Object obj) throws JAXBException {
 
 		JAXBContext jc = JAXBContext.newInstance(new Class[] {
 				Przystanek.class, Linia.class });
