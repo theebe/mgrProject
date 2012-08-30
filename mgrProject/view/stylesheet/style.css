@@ -178,6 +178,18 @@ fieldset {
 	padding: 0.3em;
 }
 
+.addPrzystanekDialog .label {
+	width: 70px;
+	margin-left: 10px;
+	float: left;
+	clear: left;
+}
+
+.addPrzystanekDialog .value {
+	width: 300px;
+	float: left;
+}
+
 /********************************************************************************8
 * ADD LINIA FORM
 */
@@ -204,6 +216,18 @@ fieldset {
 	width: 120px;
 	font-weight: 8px;
 	cursor: pointer;
+	float: left;
+}
+
+.addLiniaDialog .label {
+	width: 70px;
+	margin-left: 10px;
+	float: left;
+	clear: left;
+}
+
+.addLiniaDialog #liniaTypRadio {
+	width: 300px;
 	float: left;
 }
 
@@ -275,19 +299,32 @@ fieldset {
 /**
  EDYCJA LINII
 */
-.edycjaLiniiContainerAll {
-	overflow: auto;
+.edycjaLiniiContainerAll .label {
+	width: 70px;
+	margin-left: 10px;
+	float: left;
+	clear: left;
+}
+
+.edycjaLiniiContainerAll input[type="text"], .edycjaLiniiContainerAll .value {
+	width: 150px;
+	float: left;
 }
 
 .formularzEdycjiLinii {
-	width: 500px;
+	width: 360px;
 }
 
 .listaPrzystankowLiniiEdit {
 	marging: 0;
 	padding: 0;
-	
 }
+
+.listaPrzystankowLiniiEdit input[type="text"] {
+	width: 40px;
+	float: none;
+}
+
 .edycjaLiniiButtons{
 	padding: 10px;
 	}

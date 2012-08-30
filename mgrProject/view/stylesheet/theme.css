@@ -107,7 +107,8 @@ select {
 
 .value {
 	float: left;
-	padding: 5px;
+	padding: none;
+	padding-top: 5px;
 }
 
 .error {
