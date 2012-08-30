@@ -11,99 +11,100 @@
 	<ui:define name="infoPanel">
 		<s:div
 			rendered="#{s:hasRole('Administrator') or s:hasRole('Moderator')}">
-
-			<s:div styleClass="infoPanel">
-
-				<s:div id="listaUzytkownikowTableCont" styleClass="listaContainer">
-
-					<h:outputText value="Brak uzytkownikow w bazie"
-						rendered="#{users.rowCount eq 0}" />
-					<h:outputText styleClass="tabelaPrzystankow"
-						value="TABELA UZYTKOWNIKOW"
-						rendered="#{users.rowCount > 0}" />
-					<br />
-					<a:form ajaxSubmit="true">
-
-						<rich:dataTable id="userDataTable" var="user"
-							value="#{users}"
-							rendered="#{users.rowCount > 0}">
-							<f:facet name="header">  
-						      Uzytkownicy
-						    </f:facet>
-							<rich:column sortBy="#{user.username}"
-								filterBy="#{user.username}" filterEvent="onkeyup">
-								<f:facet name="header">
-						Username
-					</f:facet>
-								<h:outputText value="#{user.username}" />
-							</rich:column>
-
-							<rich:column>
-								<f:facet name="header">
-									<h:outputText value="First Name" />
-								</f:facet>
-								<h:outputText value="#{user.firstname}" />
-							</rich:column>
-							
-							<rich:column>
-								<f:facet name="header">
-									<h:outputText value="Last Name" />
-								</f:facet>
-								<h:outputText value="#{user.lastname}" />
-							</rich:column>
-
-							<rich:column>
-								<a:commandLink ignoreDupResponses="true"
-									action="#{userDAOBean.setUser(user)}"
-									reRender="deleteDialog" value="Skaskuj"
-									oncomplete="deleteDialogOpen();">
-								</a:commandLink>
-
-							</rich:column>
-							<rich:column>
-								<a:commandLink
-									action="#{userDAOBean.setUser(user)}"
-									ignoreDupResponses="true" reRender="userInfo"
-									value="Pokarz"
-									>
-								</a:commandLink>
-
-							</rich:column>
-						</rich:dataTable>
+			<s:div styleClass="infoPanelContainer" id="infoPanelContId">
+				<s:div styleClass="infoPanel">
+	
+					<s:div id="listaUzytkownikowTableCont" styleClass="listaContainer">
+	
+						<h:outputText value="Brak uzytkownikow w bazie"
+							rendered="#{users.rowCount eq 0}" />
+						<!--<h:outputText styleClass="tabelaPrzystankow"
+							value="TABELA UZYTKOWNIKOW"
+							rendered="#{users.rowCount > 0}" />-->
+						<br />
+						<a:form ajaxSubmit="true">
+	
+							<rich:dataTable id="userDataTable" var="user"
+								value="#{users}"
+								rendered="#{users.rowCount > 0}">
+								<f:facet name="header">  
+							      Użytkownicy
+							    </f:facet>
+								<rich:column sortBy="#{user.username}"
+									filterBy="#{user.username}" filterEvent="onkeyup">
+									<f:facet name="header">
+							Login
+						</f:facet>
+									<h:outputText value="#{user.username}" />
+								</rich:column>
+	
+								<rich:column>
+									<f:facet name="header">
+										<h:outputText value="Imię" />
+									</f:facet>
+									<h:outputText value="#{user.firstname}" />
+								</rich:column>
+								
+								<rich:column>
+									<f:facet name="header">
+										<h:outputText value="Nazwisko" />
+									</f:facet>
+									<h:outputText value="#{user.lastname}" />
+								</rich:column>
+	
+								<rich:column>
+									<a:commandLink ignoreDupResponses="true"
+										action="#{userDAOBean.setUser(user)}"
+										reRender="deleteDialog" value="Skasuj"
+										oncomplete="deleteDialogOpen();">
+									</a:commandLink>
+	
+								</rich:column>
+								<rich:column>
+									<a:commandLink
+										action="#{userDAOBean.setUser(user)}"
+										ignoreDupResponses="true" reRender="userInfo"
+										value="Pokaż"
+										>
+									</a:commandLink>
+	
+								</rich:column>
+							</rich:dataTable>
+						</a:form>
+					</s:div>
+	
+					<s:div id="userInfo" styleClass="entityInfo">
+						<s:div rendered="#{userDAOBean.user != null}">
+				 	Uzytkownik: <br />
+				 		Id: #{userDAOBean.user.id} <br />
+				 		Username: #{userDAOBean.user.username} <br />
+				 		Imie: #{userDAOBean.user.firstname} <br />
+				 		Nazwisko: #{userDAOBean.user.lastname}<br />
+						
+						</s:div>
+					</s:div>
+	
+					<s:div id="deleteDialog" styleClass="deleteDialogCont">
+						<s:div rendered="#{userDAOBean.user != null}">
+							<div id="dialog-deleteconfirm" title="Usunąć użytkownika?">
+								<p>
+									<span class="ui-icon ui-icon-alert"
+										style="float: left; margin-right: .3em;"></span> Czy jesteś
+									pewny aby usunąć użytkownika '#{userDAOBEan.user.username}' ?
+								</p>
+							</div>
+						</s:div>
+					</s:div>
+	
+					<a:form ajaxSubmit="true" reRender="listaUzytkownikowTableCont">
+						<a:jsFunction id="deleteUserJSFunction"
+							name="deletee"
+							reRender="listaUzytkownikowTableCont, deleteDialog, userInfo"
+							ajaxSingle="true"
+							action="#{userDAOBean.delete(userDAOBean.user)}" />
 					</a:form>
-				</s:div>
-
-				<s:div id="userInfo" styleClass="entityInfo">
-					<s:div rendered="#{userDAOBean.user != null}">
-			 	Uzytkownik: <br />
-			 		Id: #{userDAOBean.user.id} <br />
-			 		Username: #{userDAOBean.user.username} <br />
-			 		Imie: #{userDAOBean.user.firstname} <br />
-			 		Nazwisko: #{userDAOBean.user.lastname}<br />
 					
-					</s:div>
 				</s:div>
-
-				<s:div id="deleteDialog" styleClass="deleteDialogCont">
-					<s:div rendered="#{userDAOBean.user != null}">
-						<div id="dialog-deleteconfirm" title="Usunąć uzytkownika?">
-							<p>
-								<span class="ui-icon ui-icon-alert"
-									style="float: left; margin-right: .3em;"></span> Czy jesteś
-								pewny aby usunąć uzytkownika '#{userDAOBEan.user.username}' ?
-							</p>
-						</div>
-					</s:div>
-				</s:div>
-
-				<a:form ajaxSubmit="true" reRender="listaUzytkownikowTableCont">
-					<a:jsFunction id="deleteUserJSFunction"
-						name="deletee"
-						reRender="listaUzytkownikowTableCont, deleteDialog, userInfo"
-						ajaxSingle="true"
-						action="#{userDAOBean.delete(userDAOBean.user)}" />
-				</a:form>
-				
 			</s:div>
 
 

@@ -29,7 +29,7 @@ fieldset {
 
 .topPanelContainer {
 	background: url('../img2/topPanelContainer.png');
-	height: 110px;
+	height: 108px;
 	border: 1px solid #89989d;
 	border-radius: 5px 5px 0 0;
 }
@@ -260,7 +260,6 @@ fieldset {
 	float: right;
 	width: 281px;
 	height: 108px;
-	margin-top: 2px;
 }
 
 .menuOperatoraCont ul {

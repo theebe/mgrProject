@@ -8,6 +8,7 @@
 	xmlns:h="http://java.sun.com/jsf/html"
 	xmlns:rich="http://richfaces.org/rich"
 	xmlns:a="http://richfaces.org/a4j" template="home.xhtml">
+	
 	<ui:define name="infoPanel">
 	<s:div rendered="#{s:hasRole('Administrator') or s:hasRole('Operator')}" > 
 	
@@ -29,8 +30,8 @@
 
 							<h:outputText value="Brak linii w bazie"
 								rendered="#{liniaList.rowCount eq 0}" />
-							<h:outputText styleClass="tabelaLinii" value="TABELA LINII:"
-								rendered="#{liniaList.rowCount > 0}" />
+							<!--<h:outputText styleClass="tabelaLinii" value="TABELA LINII:"
+								rendered="#{liniaList.rowCount > 0}" />-->
 							<br />
 
 
@@ -56,7 +57,7 @@
 
 								<rich:column>
 									<a:commandLink action="#{liniaDAO.setSelectedLinia(linia)}"
-										reRender="deleteDialog" value="Skaskuj"
+										reRender="deleteDialog" value="Skasuj"
 										oncomplete="deleteDialogOpen();" 
 										eventsQueue="liniaQueue" ignoreDupResponses="true" >
 									</a:commandLink>
@@ -65,7 +66,7 @@
 								<rich:column>
 									<a:commandLink 
 									eventsQueue="liniaQueue" ignoreDupResponses="true" action="#{liniaDAO.setSelectedLinia(linia)}" onclick="displayLoadingMessage();"
-										reRender="liniaInfo" value="Pokaz" oncomplete="hideLoadingMessage(); showSelectedLinia();" >
+										reRender="liniaInfo" value="Pokaż" oncomplete="hideLoadingMessage(); showSelectedLinia();" >
 									</a:commandLink>
 
 								</rich:column>
