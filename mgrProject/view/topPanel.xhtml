@@ -53,10 +53,10 @@
 			<ul>
 				<li><a href="start.seam">Start</a></li>
 				<li>
-					<s:link value="Lista przystankow" view="/listaPrzystankow.xhtml" rendered="#{s:hasRole('Administrator') or s:hasRole('Operator')}"/>
+					<s:link value="Lista przystanków" view="/listaPrzystankow.xhtml" rendered="#{s:hasRole('Administrator') or s:hasRole('Operator')}"/>
 				</li>
 				<li><s:link value="Lista linii" view="/listaLinii.xhtml" rendered="#{s:hasRole('Administrator') or s:hasRole('Operator')}"/></li>
-				<li><s:link value="Lista użytkownikow" view="/listaUzytkownikow.xhtml" rendered="#{s:hasRole('Administrator') or s:hasRole('Moderator')}"/></li>
+				<li><s:link value="Lista użytkowników" view="/listaUzytkownikow.xhtml" rendered="#{s:hasRole('Administrator') or s:hasRole('Moderator')}"/></li>
 				<li><s:link value="Konfiguracja" view="/konfiguracja.xhtml" rendered="#{s:hasRole('Administrator') or s:hasRole('Moderator')}"/></li>
 				<li><a href="ws/rest/rozklad/przystanki">Przystanki WebServis</a></li>
 				<li><a href="ws/rest/rozklad/linie">Linie WebServis</a></li>
