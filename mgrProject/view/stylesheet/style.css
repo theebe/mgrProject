@@ -260,6 +260,7 @@ fieldset {
 	float: right;
 	width: 281px;
 	height: 108px;
+	overflow: auto;
 }
 
 .menuOperatoraCont ul {
