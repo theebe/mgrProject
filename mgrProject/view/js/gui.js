@@ -1,5 +1,5 @@
 /**
- * W tym pliku znajduj¹ sie pomocne funkcje i zmienne obslugujace gui
+ * W tym pliku znajduja sie pomocne funkcje i zmienne obslugujace gui
  */
 
 var dniTygodnia = [ 'pon.', 'wt.', 'sr.', 'czw.', 'pt.', 'sob.', 'niedz.' ];
@@ -35,7 +35,7 @@ function searchButtonClick(e) {
 
 	var setStartPointCallback = function(result) {
 		if (!result) {
-			alert("bledne parametry przystanku startowego");
+			alert("BÅ‚Ä™dne parametry przystanku startowego.");
 			Seam.Remoting.cancelBatch();
 			return;
 		}
@@ -47,7 +47,7 @@ function searchButtonClick(e) {
 			setStartPointCallback);
 	var setStopPointCallback = function(result) {
 		if (!result) {
-			alert("bledne parametry przystanku koncowego");
+			alert("BÅ‚Ä™dne parametry przystanku koÅ„cowego.");
 			Seam.Remoting.cancelBatch();
 			return;
 		}
@@ -59,7 +59,7 @@ function searchButtonClick(e) {
 
 	var setStartTimeCallback = function(result) {
 		if (!result) {
-			alert("bledna data i czas startowy");
+			alert("BÅ‚Ä™dna data i czas startowy.");
 			Seam.Remoting.cancelBatch();
 			return;
 		}
@@ -71,7 +71,7 @@ function searchButtonClick(e) {
 	var findRouteCallback = function(result) {
 	
 		if (result == null) {
-			alert("Obliczanie trasy nie powiodlo sie!");
+			alert("Obliczanie trasy nie powiodÅ‚o siÄ™!");
 			Seam.Remoting.cancelBatch();
 			return;
 		}
@@ -127,19 +127,19 @@ var dodajPrzystanekButtonClick = function() {
 
 	// validacja
 	bValid = bValid && checkLength($("#przystanekNazwa"), "nazwa", 3, 50);
-	bValid = bValid && checkLength($("#przystanekLon"), "dlugoœæ", 1, 20);
-	bValid = bValid && checkLength($("#przystanekLat"), "szerokoœæ", 1, 20);
+	bValid = bValid && checkLength($("#przystanekLon"), "dlugoÅ›Ä‡", 1, 20);
+	bValid = bValid && checkLength($("#przystanekLat"), "szerokoÅ›Ä‡", 1, 20);
 
 	bValid = bValid
 			&& checkRegexp($("#przystanekNazwa"),
 					/^[a-zA-Z]([0-9a-z])+(\s)?([0-9a-z])*$/i,
-					"Nazwa moze sie sk³adaæ ze znakow 'a-z' i '0-9'");
+					"Nazwa moÅ¼e siÄ™ skÅ‚adaÄ‡ ze znakÃ³w 'a-z' i '0-9'");
 	bValid = bValid
 			&& checkRegexp($("#przystanekLon"), /^[0-9][0-9].([0-9])+$/i,
-					"D³ugoœæ (np. 19.123)");
+					"DÅ‚ugoÅ›Ä‡ (np. 19.123)");
 	bValid = bValid
 			&& checkRegexp($("#przystanekLat"), /^[0-9][0-9].([0-9])+$/i,
-					"Szerokoœæ (np. 50.123)");
+					"SzerokoÅ›Ä‡ (np. 50.123)");
 
 	if (bValid) {
 		// zaczyna sie kolejka zapytan
@@ -168,10 +168,10 @@ var dodajPrzystanekButtonClick = function() {
 				przystankiLayer.removeAllFeatures();
 				przystankiLayer.addFeatures(przystanki);
 
-				alert("Dodano przystanek");
+				alert("Dodano przystanek.");
 				$(".addPrzystanekDialog").dialog("close");
 			} else {
-				alert("Nie dodano, czegos brakuje");
+				alert("Nie dodano, czegoÅ› brakuje.");
 			}
 		}
 
@@ -322,7 +322,7 @@ function dodajLinieButtonClick() {
 
 	bValid = bValid
 			&& checkContainer($(".listaPrzystankowLinii li"),
-					"Liczba przystanków", 1);
+					"Liczba przystankÃ³w", 1);
 
 	if (bValid) {
 
@@ -335,17 +335,17 @@ function dodajLinieButtonClick() {
 
 		var saveLiniaCallback = function(l) {
 			if (l == 'success') {
-				alert("Dodano Linie");
+				alert("Dodano liniÄ™!");
 			} else {
 				if (l)
 					alert(l);
 				else {
-					alert("b³¹d w po³¹czeniu");
+					alert("BÅ‚Ä…d w poÅ‚Ä…czeniu.");
 				}
 			}
 		};
 		var exeptionHandler = function(ex) {
-			alert("wystapi³ b³¹d: " + ex.getMessage());
+			alert("WystapiÅ‚ bÅ‚Ä…d: " + ex.getMessage());
 			alert(ex.printStackTrace());
 		};
 
@@ -397,7 +397,7 @@ function homeDatapickerInit() {
 }
 
 /**
- * Funkcja inincjalizuj¹ca guziki w lewo i w prawo na stronie glównej
+ * Funkcja inincjalizujï¿½ca guziki w lewo i w prawo na stronie glï¿½wnej
  */
 function homeFormButtonInit() {
 
@@ -527,8 +527,8 @@ function prepareListeIdPrzystanokow(l) {
 function checkLength(o, n, min, max) {
 	if (o.val().length > max || o.val().length < min) {
 		o.addClass("ui-state-error");
-		updateTips("Dlugosc " + n + " musi byæ pomiedzy " + min + " a " + max
-				+ " znakow.");
+		updateTips("DlugoÅ›Ä‡ '" + n + "' musi byÄ‡ pomiÄ™dzy " + min + " a " + max
+				+ " znakÃ³w.");
 		return false;
 	} else {
 		return true;
@@ -547,7 +547,7 @@ function checkRegexp(o, regexp, n) {
 
 function checkContainer(o, n, min) {
 	if (o.length < min) {
-		updateTips(n + "musi byæ wieksza od" + min);
+		updateTips(n + "musi byÄ‡ wiÄ™ksza od" + min);
 		return false;
 	} else
 		return true;
@@ -569,7 +569,7 @@ function deleteDialogOpen() {
 		width : 300,
 		modal : true,
 		buttons : {
-			"Usuñ" : function() {
+			"UsuÅ„" : function() {
 				// funkcja zdefiniowana w pliku listaLinii.xhtml,
 				// id="deletePrzystanekJSFunction"
 				deletee();
@@ -592,7 +592,7 @@ function drawRoute(odpowiedz) {
 		if ($("#tabs"))
 			$("#tabs-1").text("Brak trasy");
 		else
-			alert("Brak trasy");
+			alert("Brak trasy.");
 		return;
 	}
 
@@ -725,7 +725,7 @@ function drawRoute(odpowiedz) {
 	var timeStop_ = tabelaGodzin[tabelaGodzin.length-1].getTime();
 	timeStop_ += 1000 * 60 * czasDoStop ;
 	timeStop_ = new Date(timeStop_);
-	$("#tabs-1 ol.glownaListaOl").append( "<li>Pieszo ok. " + czasDoStop +" min  w linii prostej (" + parseInt(odlPieszoDoStop) + " m) <br /> Stop: "+ hoursMinutesToString(timeStop_) +" </li>" );
+	$("#tabs-1 ol.glownaListaOl").append( "<li>Pieszo ok. " + czasDoStop +" min w linii prostej (" + parseInt(odlPieszoDoStop) + " m) <br /> Stop: "+ hoursMinutesToString(timeStop_) +" </li>" );
 	przystankiLayer.addFeatures(path);
 	
 }

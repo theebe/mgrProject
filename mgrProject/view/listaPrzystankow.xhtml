@@ -17,9 +17,9 @@
 
 					<h:outputText value="Brak przystanków w bazie"
 						rendered="#{przystanekList.rowCount eq 0}" />
-					<h:outputText styleClass="tabelaPrzystankow"
+					<!--<h:outputText styleClass="tabelaPrzystankow"
 						value="TABELA PRZYSTANKÓW:"
-						rendered="#{przystanekList.rowCount > 0}" />
+						rendered="#{przystanekList.rowCount > 0}" />-->
 					<br />
 					<a:form ajaxSubmit="true">
 
@@ -47,7 +47,7 @@
 							<rich:column>
 								<a:commandLink ignoreDupResponses="true"
 									action="#{przystanekDAO.setSelectedPrzystanek(przystanek)}"
-									reRender="deleteDialog" value="Skaskuj"
+									reRender="deleteDialog" value="Skasuj"
 									oncomplete="deleteDialogOpen();">
 								</a:commandLink>
 
@@ -55,7 +55,7 @@
 							<rich:column>
 								<a:commandLink
 									action="#{przystanekDAO.setSelectedPrzystanek(przystanek)}" ignoreDupResponses="true"
-									reRender="przystanekInfo" value="Pokarz" oncomplete="hidePrzystanek(); showPrzystanekOnMap(#{przystanek.id});">
+									reRender="przystanekInfo" value="Pokaż" oncomplete="hidePrzystanek(); showPrzystanekOnMap(#{przystanek.id});">
 								</a:commandLink>
 
 							</rich:column>
@@ -78,7 +78,7 @@
 
 				<s:div id="deleteDialog" styleClass="deleteDialogCont">
 					<s:div rendered="#{przystanekDAO.selectedPrzystanek != null}">
-						<div id="dialog-deleteconfirm" title="Usunąć linie?">
+						<div id="dialog-deleteconfirm" title="Usunąć linię?">
 							<p>
 								<span class="ui-icon ui-icon-alert"
 									style="float: left; margin-right: .3em;"></span> Czy jesteś

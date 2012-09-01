@@ -12,12 +12,15 @@
 	<s:div>
 		<div class="addLiniaDialog" title="Nowa Linia">
 
-			<p class="validateTips">Wszystkie pola sa wymagane.</p>
+			<p class="validateTips">Wszystkie pola są wymagane.</p>
 			<form>
 				<fieldset>
-					<label for="liniaNumer"><b>Numer</b></label> <input type="text"
+					<label class="label" for="liniaNumer"><b>Numer</b></label>
+					<input type="text"
 						name="liniaNumer" id="liniaNumer" value=""
-						class="text ui-widget-content ui-corner-all" /> <br /><br /><b>Typ</b>
+						class="text ui-widget-content ui-corner-all" />
+					<br /><br />
+					<span class="label"><b>Typ</b></span>
 					<div id="liniaTypRadio">
 						<input type="radio" class="liniaTyp" id="liniaTypA" name="radio"
 							value="A" checked="checked" /><label for="liniaTypA">Autobusowy</label>
@@ -28,12 +31,12 @@
 					<!--  <label for="liniaPowrotna">Stwórz odrazu linię
 						powrotną</label> <input type="checkbox" id="liniaPowrotna"
 						name="liniaPowrotna" checked="checked" /> <br />  -->
-					<br />
+					<br /><br />
 					<div class="listaPrzystankowConterner">
 
 
 						<s:div id="listaPrzystankowCont">
-							Lista dostepnych przystankow:
+							Lista dostępnych przystanków:
 								<br />
 							<ul class="listaPrzystankow droptrue">
 								<ui:repeat value="#{przystanekDAO.przystanekList}"
@@ -49,7 +52,7 @@
 
 
 						<div id="listaPrzystankowLiniiCont">
-							Lista przystankow nowej linii: <br />
+							Lista przystanków nowej linii: <br />
 							<ul class="listaPrzystankowLinii droptrue">
 
 							</ul>

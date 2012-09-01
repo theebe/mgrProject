@@ -29,7 +29,7 @@
 
 					<div
 						class="ui-widget-header ui-widget-content ui-corner-all ui-helper-clearfix text">
-						<span>Edycja Linia</span>
+						<span>Edycja linii</span>
 					</div>
 					<h:form>
 
@@ -37,19 +37,20 @@
 
 							<p class="validateTips ui-state-error-text"></p>
 
-
-							<label for="liniaNumer">Numer</label>
-							<h:inputText  size="3" id="liniaNumerEdit"
+							<span class="label">Numer:</span>
+							<h:inputText size="3" id="liniaNumerEdit"
 								style="width: 150px" value="#{editedLinia.numer}"
 								class="text ui-widget-content ui-corner-all">
 								<a:support eventsQueue="liniaQueue" ignoreDupResponses="true"
 									event="onchange" timeout="500" />
 							</h:inputText>
-							<br />Typ: <br />
-							<h:outputText value="Autobusowa"
-								rendered="#{editedLinia.typ == 'A'}" />
-							<h:outputText value="Tramwajowa"
-								rendered="#{editedLinia.typ == 'T'}" />
+							<span class="label">Typ:</span> 
+							<span class="value">
+								<h:outputText value="Autobusowa"
+									rendered="#{editedLinia.typ == 'A'}" />
+								<h:outputText value="Tramwajowa"
+									rendered="#{editedLinia.typ == 'T'}" />
+							</span>
 
 							<div class="listaPrzystankowConterner">
 								<br /> <br />
@@ -62,7 +63,7 @@
 												<thead class="rich-table-thead">
 													<tr class="rich-table-header ">
 														<th class="rich-table-headercell" scope="colgroup"
-															colspan="4">Przystanki Linii</th>
+															colspan="4">Przystanki linii</th>
 													</tr>
 													<tr class="rich-table-subheader ">
 
@@ -71,7 +72,7 @@
 														</th>
 														<th class="rich-table-subheadercell " scope="col">
 															<div>
-																Dni powrzednie <br />
+																Dni powrzednie<br />
 																<a:commandButton value="Dodaj kurs" ajaxSingle="true"
 																	action="#{liniaEditer.addOdjazdPo}"
 																	oncomplete=" initEdycjaLinii( '#{editedLinia.typ}', #{editedLinia.id} ) ;"
@@ -91,7 +92,7 @@
 														</th>
 														<th class="rich-table-subheadercell " scope="col">
 															<div>
-																Czas do następnego<br /> przyst. [min]
+																Czas<br />przejazdu<br />[min]
 															</div>
 														</th>
 													</tr>

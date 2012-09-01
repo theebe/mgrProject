@@ -15,23 +15,26 @@
 				<p class="validateTips">Wszystkie pola są wymagane.</p>
 				<form>
 					<fieldset>
-						<label for="przystanekNazwa"><b>Nazwa</b></label> <input type="text"
+						<label class="label" for="przystanekNazwa"><b>Nazwa</b></label>
+						<input type="text"
 							name="przystanekNazwa" id="przystanekNazwa" value=""
-							class="text ui-widget-content ui-corner-all" /><br /><br />
-							<b>Typ</b>
-							<div id="przystanekTypRadio">
+							class="text ui-widget-content ui-corner-all, value" />
+						<br /><br />
+						<span class="label"><b>Typ</b></span>
+						<div id="przystanekTypRadio" class="value">
 							<input type="radio" id="przystanekTypA" name="radio" value="A"
 								checked="checked" /><label for="przystanekTypA">Autobusowy</label>
 							<input type="radio" id="przystanekTypT" name="radio" value="T" /><label
 								for="przystanekTypT">Tramwajowy</label>
 						</div>
-						<br /><br /> <label for="przystanekLon"><b>Długość</b></label> <input
-							type="text" name="przystanekLon" id="przystanekLon"
-							class=" text ui-widget-content ui-corner-all "
-							style="width: 100px" /><label style="margin-left: 40px"
+						<br /><br /><br />
+						<label style="margin-left: 10px;" for="przystanekLon"><b>Długość</b></label> <input type="text"
+							name="przystanekLon" id="przystanekLon"
+							class="text ui-widget-content ui-corner-all"
+							style="width: 100px; margin-left: 16px;" /> <label style="margin-left: 11px;"
 							for="przystanekLat"><b>Szerokość</b></label> <input type="text"
 							name="przystanekLat" id="przystanekLat" value=""
-							class="text ui-widget-content ui-corner-all" style="width: 100px" />
+							class="text ui-widget-content ui-corner-all" style="width: 100px; margin-left: 10px;" />
 					</fieldset>
 				</form>
 			</div>
