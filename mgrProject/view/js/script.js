@@ -33,8 +33,7 @@ var startTime = null
  */
 var popup = null;
 
-var przystanekInfoPopup = null;
-
+var przystanekInfoPopup = [];
 
 /**
  * Linia na ktorej pracujemy
@@ -58,7 +57,6 @@ var iconStop = null;
  */
 var crossMarker = null
 
-
 // ///////////////////////////////////////////////////////////
 // Funkcje
 
@@ -67,17 +65,16 @@ var crossMarker = null
  */
 $(document).ready(function() {
 
-	
 	// now
 	startTime = new Date();
 
 	// dynamiczna zmiana rozmiaru strony
-//	findSize();
+	// findSize();
 
 	// zdarzenie resizu okna
-//	$(window).resize(function() {
-//		findSize();
-//	});
+	// $(window).resize(function() {
+	// findSize();
+	// });
 
 	// inicjalizuje ikonki i guziki i eventy
 	homeGuiInit();
@@ -140,22 +137,17 @@ function mapInit() {
 	var layerMapnik = new OpenLayers.Layer.OSM.Mapnik("Mapnik");
 	map.addLayer(layerMapnik);
 
-/*
-	var gmap = new OpenLayers.Layer.Google("Google Streets", {
-		visibility : false
-	});
-	map.addLayer(gmap);
-
-	var gsat = new OpenLayers.Layer.Google("Google Satellite", {
-		type : google.maps.MapTypeId.SATELLITE,
-		numZoomLevels : 22
-	});
-	map.addLayer(gsat);
-*/
-	///////////////////
+	/*
+	 * var gmap = new OpenLayers.Layer.Google("Google Streets", { visibility :
+	 * false }); map.addLayer(gmap);
+	 * 
+	 * var gsat = new OpenLayers.Layer.Google("Google Satellite", { type :
+	 * google.maps.MapTypeId.SATELLITE, numZoomLevels : 22 });
+	 * map.addLayer(gsat);
+	 */
+	// /////////////////
 	// Warsty robocze
-
-	//styl do warstwy
+	// styl do warstwy
 	przystankiLayerStyle = new OpenLayers.Style(
 	// the first argument is a base symbolizer
 	// all other symbolizers in rules will extend this one
@@ -163,11 +155,11 @@ function mapInit() {
 		fillColor : "#ff00ED",
 		fillOpacity : 1,
 		strokeColor : "#9800FF",
-		strokeWidth: 4,
-		strokeLinecap: "square",
-		strokeDashstyle: "solid",
+		strokeWidth : 4,
+		strokeLinecap : "square",
+		strokeDashstyle : "solid",
 		pointRadius : 1,
-		graphicOpacity: 1,
+		graphicOpacity : 1,
 		graphicWidth : 30,
 		graphicHeight : 30,
 		graphicXOffset : -30 / 2,
@@ -194,7 +186,7 @@ function mapInit() {
 	}
 
 	);
-	//dodanie stylu
+	// dodanie stylu
 	przystankiLayer = new OpenLayers.Layer.Vector("Przystanki", {
 		styleMap : new OpenLayers.StyleMap(przystankiLayerStyle)
 	});
@@ -280,9 +272,9 @@ function onClickEvent(e) {
 	start_stopLayer.addMarker(crossMarker);
 
 	// dodanie popupu
-	if (popup)//jezeli popup juz jest skasuj poprzedni
+	if (popup)// jezeli popup juz jest skasuj poprzedni
 		map.removePopup(popup);
-	
+
 	popup = new OpenLayers.Popup('menu', lonlat, new OpenLayers.Size(100, 120),
 			$(".popupContent").html(), true);
 
@@ -330,46 +322,90 @@ function onClickEvent(e) {
 				$("#przystanekLon").val(lonlat.lon.toFixed(10));
 				$("#przystanekLat").val(lonlat.lat.toFixed(10));
 			});
-	$(".popupDodajLinie").click(function(){
-		$("ul.listaPrzystankowLinii li").each(function(index) {
-			$(this).remove();
-			$(".listaPrzystankow").append($(this));
-			 $(this).children("span").removeClass("ui-icon-circle-arrow-w arrowPrzystL").addClass("ui-icon-circle-arrow-e arrowPrzystR");
-		  });
-		
-		$(".arrowPrzystR").click(function() {
-			var element = $(this).parent().get();
-			
-			element.remove();
-			$(".listaPrzystankowLinii").append(element);
-			$(".addLiniaDialog ul").sortable( "refresh" );
-			 $(this).removeClass("ui-icon-circle-arrow-e arrowPrzystR").addClass("ui-icon-circle-arrow-w arrowPrzystL");
-			 $(this).parent().removeClass("ui-state-hover");
-			 $(".arrowPrzystL").click(function() {
-					var element = $(this).parent().get();
-					element.remove();
-					$(".listaPrzystankow").append(element);
-					$(".addLiniaDialog ul").sortable( "refresh" );
-					 $(this).removeClass("ui-icon-circle-arrow-w arrowPrzystL").addClass("ui-icon-circle-arrow-e arrowPrzystR");
-					 map.removePopup(przystanekInfoPopup);
-					 $(this).parent().removeClass("ui-state-hover");
-				});
-		});
-		
-		 $(".addLiniaDialog ul").sortable( "refresh" );
-		 $("#liniaTypA").attr("checked", "checked");
-		 $("#liniaTypT").removeAttr("checked");
-		$(".addLiniaDialog").dialog("open");
-		removePopupFromMap();
-	});
+	$(".popupDodajLinie")
+			.click(
+					function() {
+						$("ul.listaPrzystankowLinii li")
+								.each(
+										function(index) {
+											$(this).remove();
+											$(".listaPrzystankow").append(
+													$(this));
+											$(this)
+													.children("span")
+													.removeClass(
+															"ui-icon-circle-arrow-w arrowPrzystL")
+													.addClass(
+															"ui-icon-circle-arrow-e arrowPrzystR");
+										});
+
+						$(".arrowPrzystR")
+								.click(
+										function() {
+											var element = $(this).parent()
+													.get();
+
+											element.remove();
+											$(".listaPrzystankowLinii").append(
+													element);
+											$(".addLiniaDialog ul").sortable(
+													"refresh");
+											$(this)
+													.removeClass(
+															"ui-icon-circle-arrow-e arrowPrzystR")
+													.addClass(
+															"ui-icon-circle-arrow-w arrowPrzystL");
+											$(this).parent().removeClass(
+													"ui-state-hover");
+											$(".arrowPrzystL")
+													.click(
+															function() {
+																var element = $(
+																		this)
+																		.parent()
+																		.get();
+																element
+																		.remove();
+																$(
+																		".listaPrzystankow")
+																		.append(
+																				element);
+																$(
+																		".addLiniaDialog ul")
+																		.sortable(
+																				"refresh");
+																$(this)
+																		.removeClass(
+																				"ui-icon-circle-arrow-w arrowPrzystL")
+																		.addClass(
+																				"ui-icon-circle-arrow-e arrowPrzystR");
+																map
+																		.removePopup(przystanekInfoPopup);
+																$(this)
+																		.parent()
+																		.removeClass(
+																				"ui-state-hover");
+															});
+										});
+
+						$(".addLiniaDialog ul").sortable("refresh");
+						$("#liniaTypA").attr("checked", "checked");
+						$("#liniaTypT").removeAttr("checked");
+						$(".addLiniaDialog").dialog("open");
+						removePopupFromMap();
+					});
 
 }
 
 /**
  * FUnkcja ustawia marker starotwy i koncowy
- * @param s typ markera, 'start' 'stop'
- * @param sLonLat openlayers.lonlat
- * @param ic ikona
+ * 
+ * @param s
+ *            typ markera, 'start' 'stop'
+ * @param sLonLat
+ *            openlayers.lonlat
+ * @param ic
+ *            ikona
  */
 function popupStartStopMarker(s, sLonLat, ic) {
 	if (s == 'start') {
@@ -395,8 +431,6 @@ function removePopupFromMap() {
 	start_stopLayer.removeMarker(crossMarker);
 	crossMarker = null;
 }
-
-
 
 /**
  * Funkcja wykonuje sie po wyslaniu zapytania ajax pokazuje loading message
@@ -435,18 +469,14 @@ function homeGuiInit() {
 		searchButtonClick(e);
 	});
 
-	
-	//Tabs
-	$( "#tabs" ).tabs();
-	
+	// Tabs
+	homeTabsInit();
+
 	// ///////////////////////////////////////////////////////////////////////////////////////
 	// Add przystanek dialog form
 	homeAddPrzystanekDialogInit();
-	
+
 	homeAddLiniaDialogInit();
-	
-	
-	
 
 	// ustawienie loading message
 	Seam.Remoting.displayLoadingMessage = displayLoadingMessage;
@@ -481,8 +511,8 @@ function getPrzystankiFeatures() {
 
 		// Pobieranie przystankow z bazy
 		Seam.Remoting.startBatch();
-		
-		Seam.Remoting.getContext().setConversationId(seamConversationId );
+
+		Seam.Remoting.getContext().setConversationId(seamConversationId);
 		var przystanekDAO = Seam.Component.getInstance("przystanekDAO");
 
 		var getAllPrzystankiCallback = function(p) {
@@ -490,7 +520,7 @@ function getPrzystankiFeatures() {
 			for (i; i < p.length; i += 1) {
 
 				var vect = createVectorPrzystanek(p[i]);
-				
+
 				przystanki.push(vect);
 
 			}
@@ -507,16 +537,16 @@ function getPrzystankiFeatures() {
 
 /**
  * Tworzy obiekt vector z encji pl.mgrProject.model.Przystanek
+ * 
  * @param przystanek
  * @returns {OpenLayers.Feature.Vector}
  */
-function createVectorPrzystanek(przystanek){
+function createVectorPrzystanek(przystanek) {
 	var lon_lat = new OpenLayers.LonLat(przystanek.location.x,
 			przystanek.location.y).transform(new OpenLayers.Projection(
 			"EPSG:4326"), map.getProjectionObject());
 
-	var point = new OpenLayers.Geometry.Point(lon_lat.lon,
-			lon_lat.lat);
+	var point = new OpenLayers.Geometry.Point(lon_lat.lon, lon_lat.lat);
 	var vect = new OpenLayers.Feature.Vector(point, {
 		nazwa : przystanek.nazwa,
 		id : przystanek.id,
@@ -528,73 +558,95 @@ function createVectorPrzystanek(przystanek){
 /**
  * pobiera z lokalnej tablicy przystankow (obiekty openlayers.feature.vector)
  * indeks obiektu przystanku o zadanym id
- * @param id -  id przystanku
+ * 
+ * @param id -
+ *            id przystanku
  * @returns obiekt openlayers.feature.vector - przystanek
  */
-function getIPrzystnekFromId(id){
-	var i =0, id_tmp=0;
-	for(i=0; i<przystanki.length; ++i){
+function getIPrzystnekFromId(id) {
+	var i = 0, id_tmp = 0;
+	for (i = 0; i < przystanki.length; ++i) {
 		id_tmp = przystanki[i].attributes.id;
-		if(id == id_tmp)
+		if (id == id_tmp)
 			return i;
 	}
 	return null;
 }
 
-function deletePrzystanekFromMap(id){
+function deletePrzystanekFromMap(id) {
 
 	var i = getIPrzystnekFromId(id);
-	//kasowanie
-	przystanki.splice(i,1);
+	// kasowanie
+	przystanki.splice(i, 1);
 	przystankiLayer.removeAllFeatures();
 	przystankiLayer.addFeatures(przystanki);
 	alert("Usuniêto przystanek");
 }
 
-function showPrzystanekOnMap(id){
+function showPrzystanekOnMap(id) {
 	var przystanekFeature = przystanki[getIPrzystnekFromId(id)];
-	var lonLat = new OpenLayers.LonLat(
-			przystanekFeature.geometry.x,
+	var lonLat = new OpenLayers.LonLat(przystanekFeature.geometry.x,
 			przystanekFeature.geometry.y);
 
-	przystanekInfoPopup = new OpenLayers.Popup.FramedCloud(
-			"przystanekFramedCloud", lonLat, null,
-			przystanekFeature.attributes.nazwa, null,
-			false);
-	map.addPopup(przystanekInfoPopup);
+	var popupp = new OpenLayers.Popup.FramedCloud("przystanekFramedCloud",
+			lonLat, null, przystanekFeature.attributes.nazwa, null, false);
+	przystanekInfoPopup.push(popupp);
+
+	map.addPopup(popupp);
+}
+function showPrzystanekOnMapLinia(id) {
+	var przystanekFeature = przystanki[getIPrzystnekFromId(id)];
+	var lonLat = new OpenLayers.LonLat(przystanekFeature.geometry.x,
+			przystanekFeature.geometry.y);
+
+	var popupp = new OpenLayers.Popup.FramedCloud("przystanekFramedCloudLinia",
+			lonLat, null,
+			"<p style=\"opacity: 1;color:#000; font-weight: bold;\">"
+					+ przystanekFeature.attributes.nazwa + "</p>", null, false);
+	przystanekInfoPopup.push(popupp);
+
+	map.addPopup(popupp);
 }
 
-function hidePrzystanek(){
-	if(przystanekInfoPopup != null)
-		map.removePopup(przystanekInfoPopup);
-	przystanekInfoPopup = null;
+function hidePrzystanek() {
+	try{
+	while (przystanekInfoPopup.length != 0)
+		map.removePopup(przystanekInfoPopup.pop());
+	}
+	catch(e)
+	{
+		alert(e);
+	}
 }
 
-
-function showLiniaOnMap(linia){
-	if(liniaVect != null) 
+function showLiniaOnMap(linia) {
+	if (liniaVect != null)
 		hideLinia();
-	
+
 	var przystTablList = linia.przystanekTabliczka;
 	var points = [];
 
-	var i =0
-	for(i; i<przystTablList.length; ++i){
+	var i = 0
+	for (i; i < przystTablList.length; ++i) {
 		var przystTabl = przystTablList[i];
 		var przystanekGeometry = przystanki[getIPrzystnekFromId(przystTabl.przystanek.id)].geometry;
 		points.push(przystanekGeometry);
+		showPrzystanekOnMapLinia(przystTabl.przystanek.id);
 	}
 	var lineString = new OpenLayers.Geometry.LineString(points);
-	liniaVect = new OpenLayers.Feature.Vector(lineString,{
-		id: 	linia.id,
-		numer: 	linia.numer
+	liniaVect = new OpenLayers.Feature.Vector(lineString, {
+		id : linia.id,
+		numer : linia.numer
 	});
-	
-	przystankiLayer.addFeatures([liniaVect]);
-	
+
+	przystankiLayer.addFeatures([ liniaVect ]);
+
 }
 
-function hideLinia(){
-	przystankiLayer.removeFeatures([liniaVect]);
-	liniaVect = null;
+function hideLinia() {
+	if (liniaVect) {
+		przystankiLayer.removeFeatures([ liniaVect ]);
+		liniaVect = null;
+		hidePrzystanek();
+	}
 }

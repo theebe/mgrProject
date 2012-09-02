@@ -10,50 +10,58 @@
 	xmlns:a="http://richfaces.org/a4j">
 
 	<s:div styleClass="infoPanel">
-		<s:div rendered="#{homeBean.isListaLinii()}">
-			<h:form>
-				<a:include viewId="listaLinii.xhtml" />
-			</h:form>
-		</s:div>
-		<s:div rendered="#{not homeBean.isListaLinii()}">
-			<div id="tabs">
-				<ul>
-					<li><a href="#tabs-1">Połączenia</a>
-					</li>
-					<li><a href="#tabs-2">Przystanki</a>
-					</li>
-					<li><a href="#tabs-3">Rozkład</a>
-					</li>
-				</ul>
-				<div id="tabs-1"></div>
-				<div id="tabs-2">
-					<div id="tabs-1-cont">
-						<br /> <a href="#" id="permalink">Link do mapy</a> <br />
 
-						<h:form>
-							<a:region>
-								<a:push reRender="przystanki, listaPrzystankowCont"
-									eventProducer="#{przystanekDAO.addListener}" enabled="true"
-									interval="10000" />
-								<s:div id="przystanki">przystanki: <br />
-									<ui:repeat id="przystankiRepeat"
-										value="#{przystanekDAO.przystanekList}" var="przystanek">
-										<h:outputText
-											value="#{przystanek.id}. #{przystanek.nazwa} - #{przystanek.typ}" />
-										<br />
-									</ui:repeat>
-								</s:div>
 
-							</a:region>
-						</h:form>
+		<div id="tabs">
+			<ul>
+				<li><a href="#tabs-1">Połączenia</a>
+				</li>
+				<li><a href="#tabs-2">Przystanki</a>
+				</li>
+				<li><a href="#tabs-3">Linie</a>
+				</li>
+			</ul>
+			<div id="tabs-1">
+				<br /> <a href="#" id="permalink">Link do mapy</a> <br /> <br />
+				<br />
+			</div>
+			<div id="tabs-2">
+				<div id="tabs-1-cont">
 
-					</div>
-				</div>
-				<div id="tabs-3">
-					<br /> 
+
+					<s:div id="przystanki">Przystanki: <br />
+						<br />
+						<ui:repeat id="przystankiRepeat"
+							value="#{przystanekDAO.przystanekList}" var="przystanek">
+							<span class="przystanekLink" id="#{przystanek.id}">
+								#{przystanek.nazwa} - #{przystanek.typ} </span>
+							<br />
+						</ui:repeat>
+
+
+					</s:div>
+
+
 				</div>
 			</div>
-		</s:div>
+			<div id="tabs-3">
+
+				<s:div id="linie">Linie: <br />
+					<a:form>
+
+
+						<br />
+						<ui:repeat id="linieRepeat" value="#{liniaDAO.liniaList}"
+							var="linia">
+							<span class="liniaLink" id="#{linia.id}"> <h:outputText
+									value="#{linia.numer} - #{linia.typ}" /> </span>
+							<br />
+						</ui:repeat>
+					</a:form>
+				</s:div>
+
+			</div>
+		</div>
 
 	</s:div>
 </ui:composition>

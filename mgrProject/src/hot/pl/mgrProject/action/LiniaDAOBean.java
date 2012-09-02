@@ -102,7 +102,12 @@ public class LiniaDAOBean implements LiniaDAO, Serializable {
 	 * Pobiera linie o zadanym id 
 	 */
 	public Linia getLinia(Long id){
-		return mgrDatabase.find(Linia.class, id);
+		Linia l = mgrDatabase.find(Linia.class, id);
+		//lazy loading :(
+		for(PrzystanekTabliczka pt: l.getPrzystanekTabliczka()){
+			pt.getPrzystanek().getId();
+		}
+		return l;
 	}
 	
 	/**

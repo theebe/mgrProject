@@ -38,6 +38,10 @@ fieldset {
 	padding: 0px;
 }
 
+#przystanekFramedCloudLinia {
+	opacity: 0.65;
+}
+
 .mapa {
 	float: left;
 	width: 70%;
@@ -61,23 +65,31 @@ fieldset {
 	padding: 10px;
 }
 
+.przystanekLink {
+	cursor: pointer;
+}
+
+.liniaLink {
+	cursor: pointer;
+}
+
 .topSearchPanel {
 	float: left;
 	padding: 10px;
 	border: 1px solid green;
 }
 
-.dataLeftButton, .godzinaLeftButton {
+.dataLeftButton,.godzinaLeftButton {
 	background: url('../img2/leftButton.png') !important;
 	width: 12px !important;
 	height: 24px !important;
 	border: none !important;
 	border-radius: 0px !important;
-	margin: 0px !important;	
+	margin: 0px !important;
 	float: left !important;
 }
 
-.dataRightButton, .godzinaRightButton {
+.dataRightButton,.godzinaRightButton {
 	background: url('../img2/rightButton.png') !important;
 	width: 13px !important;
 	height: 24px !important;
@@ -173,9 +185,8 @@ fieldset {
 	display: none;
 }
 
-.validateTips {
-	border: 1px solid transparent;
-	padding: 0.3em;
+.liniaRozklaDialog {
+	display: none;
 }
 
 .addPrzystanekDialog .label {
@@ -306,7 +317,8 @@ fieldset {
 	clear: left;
 }
 
-.edycjaLiniiContainerAll input[type="text"], .edycjaLiniiContainerAll .value {
+.edycjaLiniiContainerAll input[type="text"],.edycjaLiniiContainerAll .value
+	{
 	width: 150px;
 	float: left;
 }
@@ -325,29 +337,58 @@ fieldset {
 	float: none;
 }
 
-.edycjaLiniiButtons{
+.edycjaLiniiButtons {
 	padding: 10px;
-	}
-.edycjaLiniiButtons button{
+}
+
+.edycjaLiniiButtons button {
 	margin-left: 10px;
-	}
-	
-#przystanekTypRadio, #liniaTypRadio {
+}
+
+#przystanekTypRadio,#liniaTypRadio {
 	display: inline;
 }
 
-.ui-spinner {position: relative}
-.ui-spinner-buttons {position: absolute}
-.ui-spinner-button {overflow: hidden}
-.ui-timepicker-div .ui-widget-header { margin-bottom: 8px; }
-.ui-timepicker-div dl { text-align: left; }
-.ui-timepicker-div dl dt { height: 25px; }
-.ui-timepicker-div dl dd { margin: -25px 10px 10px 65px; }
-.ui-timepicker-div td { font-size: 90%; }
-.ui-tpicker-grid-label { background: none; border: none; margin: 0; padding: 0; }
+.ui-spinner {
+	position: relative
+}
 
+.ui-spinner-buttons {
+	position: absolute
+}
 
-.menuBold{
-	color:white;
+.ui-spinner-button {
+	overflow: hidden
+}
+
+.ui-timepicker-div .ui-widget-header {
+	margin-bottom: 8px;
+}
+
+.ui-timepicker-div dl {
+	text-align: left;
+}
+
+.ui-timepicker-div dl dt {
+	height: 25px;
+}
+
+.ui-timepicker-div dl dd {
+	margin: -25px 10px 10px 65px;
+}
+
+.ui-timepicker-div td {
+	font-size: 90%;
+}
+
+.ui-tpicker-grid-label {
+	background: none;
+	border: none;
+	margin: 0;
+	padding: 0;
+}
+
+.menuBold {
+	color: white;
 	font-weight: bold;
-	}
+}
