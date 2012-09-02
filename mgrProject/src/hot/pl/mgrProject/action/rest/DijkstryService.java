@@ -1,26 +1,18 @@
 package pl.mgrProject.action.rest;
 
-import javax.ejb.Local;
-import javax.ejb.Remove;
-import javax.ws.rs.GET;
-import javax.ws.rs.POST;
-import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
 import javax.ws.rs.core.Response;
-
-import org.jboss.seam.annotations.Destroy;
 
 
 public interface DijkstryService {
 
 	
-	public String info(String format); 
+	public Response info(String format, String pp); 
 	
 	
-	public String run(String format,
-			String path);
+	public Response run(String format,
+			String path, String pp);
 	
-	public String runEmpty(String format);
+	public Response runEmpty(String format, String pp);
 	
 	
 	

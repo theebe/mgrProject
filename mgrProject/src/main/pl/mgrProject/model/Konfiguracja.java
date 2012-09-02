@@ -47,7 +47,7 @@ public class Konfiguracja {
 
 	private Integer nieskonczonosc;
 	
-	
+	 
 
 	/**
 	 * id
@@ -147,6 +147,34 @@ public class Konfiguracja {
 
 	public void setOdlegloscDoStartStop(Integer odlegloscDoStartStop) {
 		this.odlegloscDoStartStop = odlegloscDoStartStop;
+		
 	}
+	
+	public boolean equals(Konfiguracja k){
+		if(this.id != k.getId())
+			return false;
+		if(this.liczbaWatkow != k.getLiczbaWatkow())
+			return false;
+		if(this.odlegloscDoStartStop != k.getOdlegloscDoStartStop())
+			return false;
+		if(this.odlegloscPrzystankow != k.getOdlegloscPrzystankow())
+			return false;
+		if(this.nieskonczonosc != k.getNieskonczonosc())
+			return false;
+		
+		return true;
+	}
+	public int hashCode(){
+		int prime = 7;
+		int ret = super.hashCode();
+		ret += prime * ret + id;
+		ret += prime * ret + liczbaWatkow;
+		ret += prime * ret + odlegloscDoStartStop;
+		ret += prime * ret + odlegloscPrzystankow;
+		ret += prime * ret + nieskonczonosc;
+		return ret;
+	}
+	
+	
 
 }
