@@ -101,8 +101,6 @@ public class DijkstraBean implements Dijkstra {
 		
 		d[start] = 0;
 		p[start] = 0;
-		
-		
 	}
 	
 	 /**
