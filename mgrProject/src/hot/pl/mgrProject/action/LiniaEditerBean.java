@@ -24,6 +24,7 @@ import org.jboss.seam.annotations.Scope;
 import org.jboss.seam.annotations.datamodel.DataModel;
 import org.jboss.seam.log.Log;
 
+import pl.mgrProject.action.algorithm.AdjacencyMatrix;
 import pl.mgrProject.model.Linia;
 import pl.mgrProject.model.Odjazd;
 import pl.mgrProject.model.PrzystanekTabliczka;
@@ -50,6 +51,10 @@ public class LiniaEditerBean implements LiniaEditer, Serializable {
 	@Out(required = false)
 	private Linia editedLinia;
 
+	@In(create=true)
+	private AdjacencyMatrix adjacencyMatrixBean;
+	
+	
 	@DataModel
 	List<PrzystanekTabliczka> ptList;
 
@@ -95,6 +100,7 @@ public class LiniaEditerBean implements LiniaEditer, Serializable {
 		log.info("Uaktualniono linie nr " + editedLinia.getNumer());
 		mgrDatabase.flush();
 		editedLinia = null;
+		adjacencyMatrixBean.compileMap();
 		// destory();
 	}
 

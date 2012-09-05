@@ -29,6 +29,7 @@ import org.jboss.seam.annotations.datamodel.DataModelSelection;
 import org.jboss.seam.log.Log;
 import org.postgis.Point;
 
+import pl.mgrProject.action.algorithm.AdjacencyMatrix;
 import pl.mgrProject.model.Przystanek;
 import pl.mgrProject.model.PrzystanekTabliczka;
 import pl.mgrProject.model.TypKomunikacji;
@@ -60,6 +61,10 @@ public class PrzystanekDAOBean implements Serializable, PrzystanekDAO {
 	@In(required = false)
 	@Out(required = false)
 	private Przystanek selectedPrzystanek;
+	
+	@In(create=true)
+	private AdjacencyMatrix adjacencyMatrixBean;
+	
 
 	/**
 	 * Metoda WebRemote
@@ -88,6 +93,7 @@ public class PrzystanekDAOBean implements Serializable, PrzystanekDAO {
 			e.printStackTrace();
 			return null;
 		}
+		adjacencyMatrixBean.compileMap();
 		return p;
 	}
 
@@ -125,6 +131,7 @@ public class PrzystanekDAOBean implements Serializable, PrzystanekDAO {
 
 		mgrDatabase.merge(p);
 		log.info("Uaktualniono przystanek " + p.getNazwa());
+		adjacencyMatrixBean.compileMap();
 
 	}
 
@@ -146,6 +153,7 @@ public class PrzystanekDAOBean implements Serializable, PrzystanekDAO {
 					+ " wraz z tabliczkami z bazy danychSss");
 			p = null;
 		}
+		adjacencyMatrixBean.compileMap();
 	}
 
 	public Przystanek getSelectedPrzystanek() {

@@ -28,6 +28,7 @@ import org.jboss.seam.annotations.datamodel.DataModel;
 import org.jboss.seam.annotations.datamodel.DataModelSelection;
 import org.jboss.seam.log.Log;
 
+import pl.mgrProject.action.algorithm.AdjacencyMatrix;
 import pl.mgrProject.model.Linia;
 import pl.mgrProject.model.Odjazd;
 import pl.mgrProject.model.Przystanek;
@@ -58,6 +59,9 @@ public class LiniaDAOBean implements LiniaDAO, Serializable {
 	
 	@Out(required=false)
 	private Linia selectedLinia;
+	
+	@In(create=true)
+	private AdjacencyMatrix adjacencyMatrixBean;
 	
 	
 	/**
@@ -95,7 +99,9 @@ public class LiniaDAOBean implements LiniaDAO, Serializable {
 		mgrDatabase.persist(l);
 		log.info("Dodano nowa linie do bazy, NUMER LINII: " + l.getNumer()
 				+ ", TYP: " + l.getTyp());
+		
 
+		adjacencyMatrixBean.compileMap();
 	}
 	
 	/**
@@ -139,6 +145,7 @@ public class LiniaDAOBean implements LiniaDAO, Serializable {
 			liniaList.remove(l);
 			
 			log.info("Kasowanie linii nr " + l.getNumer());
+			adjacencyMatrixBean.compileMap();
 			l = null;
 		}
 	}

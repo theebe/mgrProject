@@ -627,7 +627,7 @@ function showLiniaOnMap(linia) {
 	var przystTablList = linia.przystanekTabliczka;
 	var points = [];
 
-	var i = 0
+	var i = 0;
 	for (i; i < przystTablList.length; ++i) {
 		var przystTabl = przystTablList[i];
 		var przystanekGeometry = przystanki[getIPrzystnekFromId(przystTabl.przystanek.id)].geometry;
