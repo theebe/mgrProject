@@ -7,16 +7,31 @@
 	xmlns:f="http://java.sun.com/jsf/core"
 	xmlns:h="http://java.sun.com/jsf/html"
 	xmlns:rich="http://richfaces.org/rich"
-	xmlns:a="http://richfaces.org/a4j" template="home.xhtml">
-	<ui:define name="infoPanel">
+	xmlns:a="http://richfaces.org/a4j">
 
-		<s:div styleClass="infoPanelContainer" id="infoPanelContId"
-			style="width: 330px;">
+	<s:div id="liniaRozklaDialogContainer">
 
 
-			<ui:include src="infoPanel.xhtml" />
+		<div class="liniaRozklaDialog" title="Rozklad jazdy">
 
 
-		</s:div>
-	</ui:define>
+			<h2>
+				Linia nr &nbsp;&nbsp;
+				<h:outputText value="#{liniaDAO.selectedLinia.numer}" />
+			</h2>
+
+
+			<s:div id="liniaRozklaDialogInnerContainer">
+
+
+
+			</s:div>
+
+
+		</div>
+
+
+
+	</s:div>
+
 </ui:composition>

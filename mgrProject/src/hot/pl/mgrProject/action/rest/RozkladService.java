@@ -1,23 +1,17 @@
 package pl.mgrProject.action.rest;
 
-import javax.ejb.Local;
-import javax.ejb.Remove;
-import javax.ws.rs.GET;
-import javax.ws.rs.Path;
 import javax.ws.rs.core.Response;
-
-import org.jboss.seam.annotations.Destroy;
 
 public interface RozkladService {
 
-	public String all(String format);
+	public Response all(String format, String pp);
 
-	public String linie(String format);
+	public Response linie(String format, String pp);
 
-	public String linia(Integer numer, String format);
+	public Response linia(Integer numer, String format, String pp);
 
-	public String przystanki(String format);
+	public Response przystanki(String format, String pp);
 
-	public String przystanek(Long id, String format);
+	public Response przystanek(Long id, String format, String pp);
 
 }

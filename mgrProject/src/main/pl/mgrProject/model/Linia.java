@@ -40,7 +40,6 @@ import org.jboss.seam.annotations.Name;
 		@NamedQuery(name = "wszystkieLinie", query = "SELECT OBJECT(lin) FROM Linia lin"),
 		@NamedQuery(name = "liniePoNumerze", query = "SELECT OBJECT(lin) FROM Linia lin where lin.numer = :numer"),
 		@NamedQuery(name = "liniePoPrzystanku", query = "SELECT przystTabl.linia FROM PrzystanekTabliczka przystTabl WHERE przystTabl.przystanek = :przystanek") })
-@XmlRootElement
 public class Linia {
 
 	private Long id;

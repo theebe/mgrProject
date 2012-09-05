@@ -56,6 +56,7 @@ public class PrzystanekDAOBean implements Serializable, PrzystanekDAO {
 	private PrzystanekTabliczkaDAO przystanekTabliczkaDAO;
 
 	@DataModel
+
 	private List<Przystanek> przystanekList;
 
 	@DataModelSelection("przystanekList")
@@ -95,7 +96,7 @@ public class PrzystanekDAOBean implements Serializable, PrzystanekDAO {
 	/**
 	 * Pobiera liste przystankow z bazy danych
 	 */
-	@Factory
+	@Factory("przystanekList")
 	public List<Przystanek> getPrzystanekList() {
 		// Liczba przystankow w bazie
 		Long liczba = (Long) mgrDatabase.createQuery(
@@ -111,13 +112,7 @@ public class PrzystanekDAOBean implements Serializable, PrzystanekDAO {
 		return przystanekList;
 	}
  
-	public void addListener(EventListener listener) {
-		synchronized (listener) {
-			if (this.listener != listener) {
-				this.listener = (PushEventListener) listener;
-			}  
-		}  
-	}
+
 
 	/**
 	 * uaktualnia przystanek w bazie 

@@ -10,16 +10,17 @@ var dniTygodnia = [ 'pon.', 'wt.', 'sr.', 'czw.', 'pt.', 'sob.', 'niedz.' ];
  * @param e
  */
 function searchButtonClick(e) {
+	hideLinia();
 	// parsowanie start stop, data godzina
 	var parseResult = parseInputParameters();
 	if (parseResult) {
 		alert("parse error: " + parseResult);
 		return;
 	}
-	
-	//czyszczenie starej strasy
+
+	// czyszczenie starej strasy
 	$("#tabs-1").text(" ");
-	if(path.length!=0){
+	if (path.length != 0) {
 		przystankiLayer.removeFeatures(path);
 		path = [];
 	}
@@ -31,7 +32,6 @@ function searchButtonClick(e) {
 	Seam.Remoting.startBatch();
 	Seam.Remoting.getContext().setConversationId(seamConversationId);
 	var homeBean = Seam.Component.getInstance("homeBean");
-	
 
 	var setStartPointCallback = function(result) {
 		if (!result) {
@@ -65,26 +65,58 @@ function searchButtonClick(e) {
 		}
 	}
 	homeBean.setStartTime(startTime, setStartTimeCallback);
-	homeBean.setStartPoint(startLonLat.lon, startLonLat.lat, setStartPointCallback);
+	homeBean.setStartPoint(startLonLat.lon, startLonLat.lat,
+			setStartPointCallback);
 	homeBean.setStopPoint(stopLonLat.lon, stopLonLat.lat, setStopPointCallback);
-	
+
 	var findRouteCallback = function(result) {
-	
+
 		if (result == null) {
 			alert("Obliczanie trasy nie powiodło się!");
 			Seam.Remoting.cancelBatch();
 			return;
-		}
-		else{
+		} else {
 			drawRoute(result);
 		}
 	};
-	
-	homeBean.findRoute(findRouteCallback);
 
+	homeBean.findRoute(findRouteCallback);
 
 	// odpalenie zapytan
 	Seam.Remoting.executeBatch();
+}
+
+function homeTabsInit() {
+	$("#tabs").tabs();
+
+	// zdarzenie najechania na nazwe przystanku
+	$(".przystanekLink").hover(
+	// on
+	function() {
+		$(this).addClass("ui-state-hover");
+		var id = parseInt(this.id);
+		showPrzystanekOnMap(id);
+	},
+	// off
+	function() {
+		$(this).removeClass("ui-state-hover");
+
+	});
+
+	$(".liniaLink").hover(
+	// on
+	function() {
+		$(this).addClass("ui-state-hover");
+		var id = parseInt(this.id);
+		showLiniaId(id);
+
+	},
+	// off
+	function() {
+		$(this).removeClass("ui-state-hover");
+
+	});
+
 }
 
 /**
@@ -111,6 +143,21 @@ function homeAddPrzystanekDialogInit() {
 									"ui-state-error");
 				}
 			});
+}
+
+function homeAddLiniaRozkladDialog() {
+
+	liniaRozkladDialog = $(".liniaRozklaDialog").dialog({
+		autoOpen : false,
+		height : 550,
+		width : 450,
+		modal : false,
+		buttons : {
+			"Zamknij" : function() {
+				$(this).dialog("close");
+			}
+		}
+	});
 }
 
 /**
@@ -461,13 +508,13 @@ function homeFormButtonInit() {
  * zamienia czas w stringa o aktualnej godzinie ( 16:54 )
  */
 function hoursMinutesToString(time) {
-	
+
 	var dataGodzinaText = (time.getHours() < 10 ? ("0" + time.getHours())
 			: time.getHours())
 			+ ":";
 	dataGodzinaText += (time.getMinutes() < 10 ? ("0" + time.getMinutes())
 			: time.getMinutes());
-	
+
 	return dataGodzinaText;
 
 }
@@ -527,8 +574,8 @@ function prepareListeIdPrzystanokow(l) {
 function checkLength(o, n, min, max) {
 	if (o.val().length > max || o.val().length < min) {
 		o.addClass("ui-state-error");
-		updateTips("Dlugość '" + n + "' musi być pomiędzy " + min + " a " + max
-				+ " znaków.");
+		updateTips("Dlugość '" + n + "' musi być pomiędzy " + min + " a "
+				+ max + " znaków.");
 		return false;
 	} else {
 		return true;
@@ -584,10 +631,10 @@ function deleteDialogOpen() {
 };
 
 function drawRoute(odpowiedz) {
-	
+
 	trasa = odpowiedz.ptList;
 	tabelaGodzin = odpowiedz.dateList;
-	
+
 	if (trasa == null || trasa.length == 0) {
 		if ($("#tabs"))
 			$("#tabs-1").text("Brak trasy");
@@ -602,132 +649,173 @@ function drawRoute(odpowiedz) {
 
 	// od start do przystanku
 	// dodajemy punkt startowy
-	points.push( new OpenLayers.Geometry.Point(start.lonlat.lon,
-			start.lonlat.lat) );
-	//dodajemy punkt przystanku nablizszego do start
-	points.push( przystanki[getIPrzystnekFromId(trasa[0].przystanek.id)].geometry );
-	//tworze linie
+	points.push(new OpenLayers.Geometry.Point(start.lonlat.lon,
+			start.lonlat.lat));
+	// dodajemy punkt przystanku nablizszego do start
+	points
+			.push(przystanki[getIPrzystnekFromId(trasa[0].przystanek.id)].geometry);
+	// tworze linie
 	var liniaDoStart = new OpenLayers.Geometry.LineString(points);
-	//tworze obiekt wektorowy linii wraz z stylem
-	var liniaStartVect = new OpenLayers.Feature.Vector(
-					liniaDoStart, 
-					{},
-					{strokeColor : "#AAAAFF",
-						strokeWidth: 4,
-						strokeLinecap: "square",
-						strokeDashstyle: "solid"});
-	
-	//dodaje wektor do tablicy w ktorej jest cala wyznaczona trasa
+	// tworze obiekt wektorowy linii wraz z stylem
+	var liniaStartVect = new OpenLayers.Feature.Vector(liniaDoStart, {}, {
+		strokeColor : "#AAAAFF",
+		strokeWidth : 4,
+		strokeLinecap : "square",
+		strokeDashstyle : "solid"
+	});
+
+	// dodaje wektor do tablicy w ktorej jest cala wyznaczona trasa
 	path.push(liniaStartVect);
 	points = [];
-	
-	// obliczam odleglosc z buta do najblizszego przystanku  (float w metrach)
-	var odlPieszoDoStart = liniaDoStart.getGeodesicLength(map.getProjectionObject());
-	//z zalozenia predkosc = 4km/h
-	var czasDoStart = parseInt( ((odlPieszoDoStart / 1000.0)*60)/4.0 );
-	//czas wyruszyc
+
+	// obliczam odleglosc z buta do najblizszego przystanku (float w metrach)
+	var odlPieszoDoStart = liniaDoStart.getGeodesicLength(map
+			.getProjectionObject());
+	// z zalozenia predkosc = 4km/h
+	var czasDoStart = parseInt(((odlPieszoDoStart / 1000.0) * 60) / 4.0);
+	// czas wyruszyc
 	var timeStart_ = tabelaGodzin[0].getTime();
-	timeStart_ -= 1000 * 60 * czasDoStart ;
+	timeStart_ -= 1000 * 60 * czasDoStart;
 	timeStart_ = new Date(timeStart_);
-	
+
 	$("#tabs-1").append("<ol class=\"glownaListaOl\"></ol>");
-	$("#tabs-1 ol.glownaListaOl").append("<li>Start: "+ hoursMinutesToString(timeStart_) +"<br />Pieszo ok. "  + czasDoStart + " min  w linii prostej ("+ parseInt(odlPieszoDoStart) +" m) </li>" );
-	
+	$("#tabs-1 ol.glownaListaOl").append(
+			"<li>Start: " + hoursMinutesToString(timeStart_)
+					+ "<br />Pieszo ok. " + czasDoStart
+					+ " min  w linii prostej (" + parseInt(odlPieszoDoStart)
+					+ " m) </li>");
+
 	var i = 0;
-	var idLinii = null; 
-	//trasa wyznaczona przez alg dijkstry
+	var idLinii = null;
+	// trasa wyznaczona przez alg dijkstry
 	for (i; i < trasa.length; ++i) {
-		
-		//wykryto przesiadke
-		if(idLinii != trasa[i].linia.id){
-			
+
+		// wykryto przesiadke
+		if (idLinii != trasa[i].linia.id) {
+
 			idLinii = trasa[i].linia.id;
-			
+
 			// malowanie przesiadki na mapie
-			if(i!=0){ 			 	
-				var colorHex = "#" + (Math.floor(Math.random()* 8388607)+4194303).toString(16);
-				
-				
+			if (i != 0) {
+				var colorHex = "#"
+						+ (Math.floor(Math.random() * 8388607) + 4194303)
+								.toString(16);
+
 				var liniaVect = new OpenLayers.Feature.Vector(
-						new OpenLayers.Geometry.LineString(points), 
-						{},
-						{strokeColor : colorHex,
-							strokeWidth: 4,
-							strokeLinecap: "square",
-							strokeDashstyle: "solid"});
+						new OpenLayers.Geometry.LineString(points), {}, {
+							strokeColor : colorHex,
+							strokeWidth : 4,
+							strokeLinecap : "square",
+							strokeDashstyle : "solid"
+						});
 				path.push(liniaVect);
 				points = [];
-				
-				points.push(przystanki[getIPrzystnekFromId(trasa[i-1].przystanek.id)].geometry);
-				points.push(przystanki[getIPrzystnekFromId(trasa[i].przystanek.id)].geometry);
-				
+
+				points
+						.push(przystanki[getIPrzystnekFromId(trasa[i - 1].przystanek.id)].geometry);
+				points
+						.push(przystanki[getIPrzystnekFromId(trasa[i].przystanek.id)].geometry);
+
 				var liniaPrzesiadka = new OpenLayers.Geometry.LineString(points);
-				//tworze obiekt wektorowy linii wraz z stylem
+				// tworze obiekt wektorowy linii wraz z stylem
 				var liniaPrzesiadkaVect = new OpenLayers.Feature.Vector(
-						liniaPrzesiadka, 
-								{},
-								{strokeColor : "#AAAAFF",
-									strokeWidth: 4,
-									strokeLinecap: "square",
-									strokeDashstyle: "solid"});
-				
-				//dodaje wektor do tablicy w ktorej jest cala wyznaczona trasa
+						liniaPrzesiadka, {}, {
+							strokeColor : "#AAAAFF",
+							strokeWidth : 4,
+							strokeLinecap : "square",
+							strokeDashstyle : "solid"
+						});
+
+				// dodaje wektor do tablicy w ktorej jest cala wyznaczona trasa
 				path.push(liniaPrzesiadkaVect);
 				points = [];
-				
-				
-				var odlPrzesiadka = liniaPrzesiadka.getGeodesicLength(map.getProjectionObject());
-				var czasPrzesiadka = parseInt( ((odlPrzesiadka / 1000.0)*60)/4.0 );
-				
-				$("#tabs-1 ol.glownaListaOl").append("<li>Pieszo ok. " + czasPrzesiadka + " min w linii prostej (" + parseInt(odlPrzesiadka) + " m)</li>" );
-				points.push(przystanki[getIPrzystnekFromId(trasa[i].przystanek.id)].geometry);
-				
+
+				var odlPrzesiadka = liniaPrzesiadka.getGeodesicLength(map
+						.getProjectionObject());
+				var czasPrzesiadka = parseInt(((odlPrzesiadka / 1000.0) * 60) / 4.0);
+
+				$("#tabs-1 ol.glownaListaOl").append(
+						"<li>Pieszo ok. " + czasPrzesiadka
+								+ " min w linii prostej ("
+								+ parseInt(odlPrzesiadka) + " m)</li>");
+				points
+						.push(przystanki[getIPrzystnekFromId(trasa[i].przystanek.id)].geometry);
+
 			}
-			
-			$("#tabs-1 ol.glownaListaOl").append("<li id=\"liniaList-" + idLinii + "\">Linia nr "+ trasa[i].linia.numer + ":</li>");
-			$("#liniaList-" + idLinii).append("<ol></ol>");	
-		
+
+			$("#tabs-1 ol.glownaListaOl").append(
+					"<li id=\"liniaList-" + idLinii + "\">Linia nr "
+							+ trasa[i].linia.numer + ":</li>");
+			$("#liniaList-" + idLinii).append("<ol></ol>");
+
 		}
-		
-		$("#liniaList-" + idLinii + " ol").append("<li>" + trasa[i].przystanek.nazwa + ": \t " + hoursMinutesToString(tabelaGodzin[i]) + "</li>");
-		points.push(przystanki[getIPrzystnekFromId(trasa[i].przystanek.id)].geometry );		
-		
+
+		$("#liniaList-" + idLinii + " ol").append(
+				"<li>" + trasa[i].przystanek.nazwa + ": \t "
+						+ hoursMinutesToString(tabelaGodzin[i]) + "</li>");
+		points
+				.push(przystanki[getIPrzystnekFromId(trasa[i].przystanek.id)].geometry);
+
 	}
-	
+
 	var liniaVect = new OpenLayers.Feature.Vector(
-			new OpenLayers.Geometry.LineString(points), 
-			{},
-			{strokeColor : "#00CC00",
-				strokeWidth: 4,
-				strokeLinecap: "square",
-				strokeDashstyle: "solid"});
+			new OpenLayers.Geometry.LineString(points), {}, {
+				strokeColor : "#00CC00",
+				strokeWidth : 4,
+				strokeLinecap : "square",
+				strokeDashstyle : "solid"
+			});
 	path.push(liniaVect);
 	points = [];
-	
+
 	// od ostatniego przystanku do stop
-	points.push( new OpenLayers.Geometry.Point(stop.lonlat.lon,
-			stop.lonlat.lat) );
-	points.push( przystanki[getIPrzystnekFromId(trasa[trasa.length-1].przystanek.id)].geometry );
+	points
+			.push(new OpenLayers.Geometry.Point(stop.lonlat.lon,
+					stop.lonlat.lat));
+	points
+			.push(przystanki[getIPrzystnekFromId(trasa[trasa.length - 1].przystanek.id)].geometry);
 	var liniaDoStop = new OpenLayers.Geometry.LineString(points);
-	var liniaStopVect = new OpenLayers.Feature.Vector(
-			liniaDoStop, 
-			{},
-			{strokeColor : "#AAAAFF",
-				strokeWidth: 4,
-				strokeLinecap: "square",
-				strokeDashstyle: "solid"});
-	
+	var liniaStopVect = new OpenLayers.Feature.Vector(liniaDoStop, {}, {
+		strokeColor : "#AAAAFF",
+		strokeWidth : 4,
+		strokeLinecap : "square",
+		strokeDashstyle : "solid"
+	});
+
 	path.push(liniaStopVect);
 	points = [];
-	var odlPieszoDoStop = liniaDoStop.getGeodesicLength(map.getProjectionObject());
-	//z zalozenia predkosc = 4km/h	
-	var czasDoStop =  parseInt( ((odlPieszoDoStop/1000.0)*60)/4);
-	var timeStop_ = tabelaGodzin[tabelaGodzin.length-1].getTime();
-	timeStop_ += 1000 * 60 * czasDoStop ;
+	var odlPieszoDoStop = liniaDoStop.getGeodesicLength(map
+			.getProjectionObject());
+	// z zalozenia predkosc = 4km/h
+	var czasDoStop = parseInt(((odlPieszoDoStop / 1000.0) * 60) / 4);
+	var timeStop_ = tabelaGodzin[tabelaGodzin.length - 1].getTime();
+	timeStop_ += 1000 * 60 * czasDoStop;
 	timeStop_ = new Date(timeStop_);
-	$("#tabs-1 ol.glownaListaOl").append( "<li>Pieszo ok. " + czasDoStop +" min w linii prostej (" + parseInt(odlPieszoDoStop) + " m) <br /> Stop: "+ hoursMinutesToString(timeStop_) +" </li>" );
+	$("#tabs-1 ol.glownaListaOl").append(
+			"<li>Pieszo ok. " + czasDoStop + " min w linii prostej ("
+					+ parseInt(odlPieszoDoStop) + " m) <br /> Stop: "
+					+ hoursMinutesToString(timeStop_) + " </li>");
 	przystankiLayer.addFeatures(path);
-	
+
 }
 
+function showLiniaId(id) {
 
+	// Pobieranie przystankow z bazy
+	Seam.Remoting.startBatch();
+
+	Seam.Remoting.getContext().setConversationId(seamConversationId);
+	var liniaDAO = Seam.Component.getInstance("liniaDAO");
+
+	var getLiniaCallback = function(l) {
+		if (l)
+			showLiniaOnMap(l);
+		else
+			console.debug("ERROR");
+	};
+
+	liniaDAO.getLinia(id, getLiniaCallback);
+
+	Seam.Remoting.executeBatch();
+
+}

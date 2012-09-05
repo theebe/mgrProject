@@ -1,5 +1,8 @@
 package pl.mgrProject.action.rest;
 
+import static pl.mgrProject.action.rest.message.MessageBuilderHelper.getMessageBuilder;
+import static pl.mgrProject.action.rest.message.MessageBuilderHelper.sendOut;
+
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -17,6 +20,8 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
+import javax.ws.rs.core.Response.Status;
 
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Logger;
@@ -26,7 +31,7 @@ import org.postgis.Point;
 
 import pl.mgrProject.action.Odpowiedz;
 import pl.mgrProject.action.algorithm.Algorithm;
-import flexjson.JSONSerializer;
+import pl.mgrProject.action.rest.message.MessageBuilder;
 
 @Name("dijkstryServiceBean")
 @Path("/algorytm")
@@ -43,50 +48,59 @@ public class DijkstryServiceBean implements DijkstryService {
 	public static final String DATA = "data";
 
 	private static final String INFO = "Algorytm wyszukiwania trasy zaimplementowany na bazie algorytmu DIJKSTRY";
-	
 
+	
 	@GET
 	@Path("/info")
 	@Produces(MediaType.TEXT_PLAIN)
-	public String info(@QueryParam("format") String format) {
+	public Response info(@QueryParam("format") String format, @QueryParam("pretty") String pp) {
 		log.info("Wybrano format: " + (format == null ? "json" : format));
 		try {
-			String ret = new JSONSerializer().serialize(INFO);
+			MessageBuilder messageBuilder = getMessageBuilder(format, pp);
 
-			if (format != null && (format.equals("xml") || format.equals("XML"))) {
-				return "<info>" + INFO + "</info>";
-			} else {
-				return ret;
-			}
+			log.info("Budowanie wiadomosci info ");
+
+			String out = messageBuilder.buildMessage(INFO);
+			log.info("Wyslanie wiadomosci");
+
+			return sendOut(out, format);
 		} catch (Exception e) {
-			
+
 			e.printStackTrace();
-			return e.toString();
+			return Response.status(Status.INTERNAL_SERVER_ERROR)
+			.entity(e.toString()).build();
 		}
 	}
 
 	@GET
 	@Path("/run")
 	@Produces(MediaType.TEXT_PLAIN)
-	public String runEmpty(@QueryParam("format") String format) {
-		String ret = "Brak parametrów \nINFO: \n" + INFO;
+	public Response runEmpty(@QueryParam("format") String format, @QueryParam("pretty") String pp) {
+
+		log.info("Wybrano format: " + (format == null ? "json" : format));
+		String ret = "Brak parametrów \n\nINFO: \n" + INFO;
 		try {
-			if (format != null && (format.equals("xml") || format.equals("XML"))) {
-				return "<info>" + ret + "</info>";
-			} else {
-				return new JSONSerializer().serialize(ret);
-			}
+
+			MessageBuilder messageBuilder = getMessageBuilder(format, pp);
+
+			log.info("Budowanie wiadomosci info ");
+
+			String out = messageBuilder.buildMessage(ret);
+			log.info("Wyslanie wiadomosci");
+
+			return sendOut(out, format);
 		} catch (Exception e) {
 			e.printStackTrace();
-			return e.toString();
+			return Response.status(Status.INTERNAL_SERVER_ERROR)
+			.entity(e.toString()).build();
 		}
 	}
 
 	@GET
 	@Path("/run/{path:.*}")
 	@Produces(MediaType.TEXT_PLAIN)
-	public String run(@QueryParam("format") String format,
-			@PathParam("path") String path) {
+	public Response run(@QueryParam("format") String format,
+			@PathParam("path") String path, @QueryParam("pretty") String pp) {
 		try {
 			log.info("Wybrano format: " + (format == null ? "json" : format));
 			log.info("PATH : " + path);
@@ -95,7 +109,7 @@ public class DijkstryServiceBean implements DijkstryService {
 			Map<String, Object> vars = parse(path, errs);
 
 			if (errs.size() != 0) {
-				return stringErrs(errs);
+				return sendOut(stringErrs(errs), format); 
 			}
 
 			Point start = (Point) vars.get(START);
@@ -110,11 +124,18 @@ public class DijkstryServiceBean implements DijkstryService {
 
 			log.info("Otrzymano odpowiedz: " + odp.toString());
 
-			return RozkladServiceBean.printOut(odp, format, "dateList");
+			MessageBuilder messageBuilder = getMessageBuilder(format, pp);
 
+			log.info("Budowanie odpowiedzi ");
+
+			String out = messageBuilder.buildMessage(odp);
+			log.info("Wyslanie wiadomosci");
+
+			return sendOut(out, format);
 		} catch (Exception e) {
 			e.printStackTrace();
-			return e.toString();
+			return Response.status(Status.INTERNAL_SERVER_ERROR)
+			.entity(e.toString()).build();
 		}
 	}
 

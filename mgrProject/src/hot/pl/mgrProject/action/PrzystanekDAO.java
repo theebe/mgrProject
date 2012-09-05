@@ -40,12 +40,6 @@ public interface PrzystanekDAO {
 	public List<Przystanek> getPrzystanekList();
 	
 	
-	/**
-	 * Dodaje listener nowego rpzystanku
-	 * @param listener
-	 */
-	public void addListener(EventListener listener);
-	
 	
 	/**
 	 * Kasuje przystanek z bazy danych
