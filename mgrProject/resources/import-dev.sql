@@ -224,7 +224,7 @@ INSERT INTO odjazdy (id, czas, typdnia, version, przystanektabliczka_id) VALUES 
 
 
 -- KONFIGURACJA
-INSERT INTO konfiguracja(id, liczbawatkow, name, nieskonczonosc, odlegloscprzystankow, odlegloscdostartstop, predkoscpasazera, version) VALUES (nextval('public.hibernate_sequence'), 0, 'default', 9999, 200, 500, 6.0, 0)
+INSERT INTO konfiguracja(id, liczbawatkow, name, nieskonczonosc, odlegloscprzystankow, odlegloscdostartstop, predkoscpasazera, version) VALUES (nextval('public.hibernate_sequence'), 0, 'default', 9999, 500, 1000, 6.0, 0)
 
 
 -- USERS

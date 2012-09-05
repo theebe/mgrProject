@@ -102,7 +102,6 @@ public class HomeBean implements Serializable, Home {
 		
 		algorithmBean.setStartPoint(startPoint);
 		algorithmBean.setStopPoint(stopPoint);
-		//TODO: czasami startTime nie zawiera godziny ustawionej w formularzu na stronie tylko ustawia aktualna godzine
 		algorithmBean.setStartTime(startTime);
 		Boolean result = algorithmBean.run();
 		if(result)
