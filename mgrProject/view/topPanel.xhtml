@@ -58,6 +58,7 @@
 				<li><s:link value="Lista linii" view="/listaLinii.xhtml" rendered="#{s:hasRole('Administrator') or s:hasRole('Operator')}"/></li>
 				<li><s:link value="Lista użytkowników" view="/listaUzytkownikow.xhtml" rendered="#{s:hasRole('Administrator') or s:hasRole('Moderator')}"/></li>
 				<li><s:link value="Konfiguracja" view="/konfiguracja.xhtml" rendered="#{s:hasRole('Administrator') or s:hasRole('Moderator')}"/></li>
+				<li><s:link value="Kompiluj mapę" action="#{adjacencyMatrixBean.compileMap()}" rendered="#{s:hasRole('Administrator') or s:hasRole('Operator')}"/></li>
 				<li><a href="ws/rest/rozklad/przystanki">Przystanki WebServis</a></li>
 				<li><a href="ws/rest/rozklad/linie">Linie WebServis</a></li>
 			</ul>

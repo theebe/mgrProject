@@ -72,4 +72,5 @@ public interface Algorithm {
 	 * @return Lista przystankow.
 	 */
 	public List<Przystanek> getClosestList(Point p, int distance);
+	public boolean isHoliday(Calendar date);
 }
