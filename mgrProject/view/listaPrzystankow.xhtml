@@ -98,13 +98,7 @@
 						ajaxSingle="true"
 						action="#{przystanekDAO.delete(przystanekDAO.selectedPrzystanek)}" />
 				</a:form>
-				<h:form>
-					<a:region>
-						<a:push reRender="listaPrzystankowTableCont"
-							eventProducer="#{przystanekDAO.addListener}" enabled="true"
-							interval="10000" />
-					</a:region>
-				</h:form>
+				
 			</s:div>
 		</s:div>
 

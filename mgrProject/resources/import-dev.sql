@@ -23,8 +23,8 @@ INSERT INTO przystanki(id, location, nazwa, typ, version) VALUES ( nextval ('pub
 INSERT INTO przystanki(id, location, nazwa, typ, version) VALUES ( nextval ('public.hibernate_sequence'), st_geomfromtext('POINT(19.9455639 50.0569768)', 4326), 'Starowiœlna', 'A', 0);
 INSERT INTO przystanki(id, location, nazwa, typ, version) VALUES ( nextval ('public.hibernate_sequence'), st_geomfromtext('POINT(19.9459175 50.0569637)', 4326), 'Starowiœlna', 'A', 0);
 INSERT INTO przystanki(id, location, nazwa, typ, version) VALUES ( nextval ('public.hibernate_sequence'), st_geomfromtext('POINT(19.9158628 50.0730276)', 4326), 'Biprostal', 'A', 0);
-INSERT INTO przystanki(id, location, nazwa, typ, version) VALUES ( nextval ('public.hibernate_sequence'), st_geomfromtext('POINT(19.9176934 50.0780557)', 4326), 'Mazowiecka', 'A', 0);
-INSERT INTO przystanki(id, location, nazwa, typ, version) VALUES ( nextval ('public.hibernate_sequence'), st_geomfromtext('POINT(19.9163887 50.0816579)', 4326), '£obzów PKP', 'A', 0);
+INSERT INTO przystanki(id, location, nazwa, typ, version) VALUES ( nextval ('public.hibernate_sequence'), st_geomfromtext('POINT(19.9176934 50.0780557)', 4326), 'Mazowiecka', 'A', 0);--10
+INSERT INTO przystanki(id, location, nazwa, typ, version) VALUES ( nextval ('public.hibernate_sequence'), st_geomfromtext('POINT(19.9163887 50.0816579)', 4326), '\u0141obzów PKP', 'A', 0);
 INSERT INTO przystanki(id, location, nazwa, typ, version) VALUES ( nextval ('public.hibernate_sequence'), st_geomfromtext('POINT(19.9476992 50.0761400)', 4326), 'Cmentarz', 'A', 0);
 INSERT INTO przystanki(id, location, nazwa, typ, version) VALUES ( nextval ('public.hibernate_sequence'), st_geomfromtext('POINT(19.9485747 50.0781064)', 4326), 'Biskupa Prandoty', 'A', 0);
 INSERT INTO przystanki(id, location, nazwa, typ, version) VALUES ( nextval ('public.hibernate_sequence'), st_geomfromtext('POINT(19.9169042 50.0528696)', 4326), 'Salwator', 'A', 0);
@@ -32,7 +32,7 @@ INSERT INTO przystanki(id, location, nazwa, typ, version) VALUES ( nextval ('pub
 INSERT INTO przystanki(id, location, nazwa, typ, version) VALUES ( nextval ('public.hibernate_sequence'), st_geomfromtext('POINT(19.9597251 50.0668168)', 4326), 'Rondo Mogilskie', 'A', 0);
 INSERT INTO przystanki(id, location, nazwa, typ, version) VALUES ( nextval ('public.hibernate_sequence'), st_geomfromtext('POINT(19.9487737 50.0587173)', 4326), 'Hala Targowa', 'A', 0);
 INSERT INTO przystanki(id, location, nazwa, typ, version) VALUES ( nextval ('public.hibernate_sequence'), st_geomfromtext('POINT(19.9487844 50.0586536)', 4326), 'Hala Targowa', 'A', 0);
-INSERT INTO przystanki(id, location, nazwa, typ, version) VALUES ( nextval ('public.hibernate_sequence'), st_geomfromtext('POINT(19.9677338 50.0491658)', 4326), 'Klimeckiego', 'A', 0);
+INSERT INTO przystanki(id, location, nazwa, typ, version) VALUES ( nextval ('public.hibernate_sequence'), st_geomfromtext('POINT(19.9677338 50.0491658)', 4326), 'Klimeckiego', 'A', 0);--20
 INSERT INTO przystanki(id, location, nazwa, typ, version) VALUES ( nextval ('public.hibernate_sequence'), st_geomfromtext('POINT(19.9293443 50.0526976)', 4326), 'Konopnickiej', 'A', 0);
 INSERT INTO przystanki(id, location, nazwa, typ, version) VALUES ( nextval ('public.hibernate_sequence'), st_geomfromtext('POINT(19.9267252 50.0560778)', 4326), 'Jubilat', 'A', 0);
 INSERT INTO przystanki(id, location, nazwa, typ, version) VALUES ( nextval ('public.hibernate_sequence'), st_geomfromtext('POINT(19.9353019 50.0747759)', 4326), 'Nowy Kleparz', 'A', 0);
@@ -42,32 +42,32 @@ INSERT INTO przystanki(id, location, nazwa, typ, version) VALUES ( nextval ('pub
 INSERT INTO przystanki(id, location, nazwa, typ, version) VALUES ( nextval ('public.hibernate_sequence'), st_geomfromtext('POINT(19.9231330 50.0628306)', 4326), 'AGH', 'A', 0);
 INSERT INTO przystanki(id, location, nazwa, typ, version) VALUES ( nextval ('public.hibernate_sequence'), st_geomfromtext('POINT(19.9054824 50.0699547)', 4326), 'Miasteczko Studenckie AGH', 'A', 0);
 INSERT INTO przystanki(id, location, nazwa, typ, version) VALUES ( nextval ('public.hibernate_sequence'), st_geomfromtext('POINT(19.9129460 50.0683881)', 4326), 'Kawiory', 'A', 0);
-INSERT INTO przystanki(id, location, nazwa, typ, version) VALUES ( nextval ('public.hibernate_sequence'), st_geomfromtext('POINT(19.9118612 50.0462661)', 4326), 'Zieliñskiego', 'A', 0);
+INSERT INTO przystanki(id, location, nazwa, typ, version) VALUES ( nextval ('public.hibernate_sequence'), st_geomfromtext('POINT(19.9118612 50.0462661)', 4326), 'Zieliñskiego', 'A', 0);--30
 INSERT INTO przystanki(id, location, nazwa, typ, version) VALUES ( nextval ('public.hibernate_sequence'), st_geomfromtext('POINT(19.9035332 50.0487627)', 4326), 'Malczewskiego', 'A', 0)
 INSERT INTO przystanki(id, location, nazwa, typ, version) VALUES ( nextval ('public.hibernate_sequence'), st_geomfromtext('POINT(19.9046772 50.0564644)', 4326), 'Przegon', 'A', 0);
 INSERT INTO przystanki(id, location, nazwa, typ, version) VALUES ( nextval ('public.hibernate_sequence'), st_geomfromtext('POINT(19.9142421 50.0577042)', 4326), 'Instytut Reumatologii', 'A', 0);
-INSERT INTO przystanki(id, location, nazwa, typ, version) VALUES ( nextval ('public.hibernate_sequence'), st_geomfromtext('POINT(19.9732762 50.0813313)', 4326), 'Rondo M³yñskie', 'A', 0);
+INSERT INTO przystanki(id, location, nazwa, typ, version) VALUES ( nextval ('public.hibernate_sequence'), st_geomfromtext('POINT(19.9732762 50.0813313)', 4326), 'Rondo M\u0142yñskie', 'A', 0);
 INSERT INTO przystanki(id, location, nazwa, typ, version) VALUES ( nextval ('public.hibernate_sequence'), st_geomfromtext('POINT(19.9662214 50.0735677)', 4326), 'Narzymskiego', 'A', 0);
 INSERT INTO przystanki(id, location, nazwa, typ, version) VALUES ( nextval ('public.hibernate_sequence'), st_geomfromtext('POINT(19.9709154 50.0784756)', 4326), 'Pilotów', 'A', 0);
 INSERT INTO przystanki(id, location, nazwa, typ, version) VALUES ( nextval ('public.hibernate_sequence'), st_geomfromtext('POINT(19.9634453 50.0849241)', 4326), 'Lublañska', 'A', 0);
 INSERT INTO przystanki(id, location, nazwa, typ, version) VALUES ( nextval ('public.hibernate_sequence'), st_geomfromtext('POINT(19.9534031 50.0849409)', 4326), 'Opolska Estakada', 'A', 0);
-INSERT INTO przystanki(id, location, nazwa, typ, version) VALUES ( nextval ('public.hibernate_sequence'), st_geomfromtext('POINT(19.9589213 50.0738121)', 4326), 'Cmentarz Rakowicki', 'A', 0);;
-INSERT INTO przystanki(id, location, nazwa, typ, version) VALUES ( nextval ('public.hibernate_sequence'), st_geomfromtext('POINT(19.9252526 50.0466826)', 4326), 'Szwedzka', 'A', 0);
+INSERT INTO przystanki(id, location, nazwa, typ, version) VALUES ( nextval ('public.hibernate_sequence'), st_geomfromtext('POINT(19.9589213 50.0738121)', 4326), 'Cmentarz Rakowicki', 'A', 0);
+INSERT INTO przystanki(id, location, nazwa, typ, version) VALUES ( nextval ('public.hibernate_sequence'), st_geomfromtext('POINT(19.9252526 50.0466826)', 4326), 'Szwedzka', 'A', 0);--40
 INSERT INTO przystanki(id, location, nazwa, typ, version) VALUES ( nextval ('public.hibernate_sequence'), st_geomfromtext('POINT(19.9823369 50.0720096)', 4326), 'Wieczysta', 'A', 0);
 INSERT INTO przystanki(id, location, nazwa, typ, version) VALUES ( nextval ('public.hibernate_sequence'), st_geomfromtext('POINT(19.9446605 50.0710467)', 4326), 'Politechnika', 'A', 0);
-INSERT INTO przystanki(id, location, nazwa, typ, version) VALUES ( nextval ('public.hibernate_sequence'), st_geomfromtext('POINT(19.9434344 50.0672463)', 4326), 'Dworzec G³ówny Zachód (Galeria Krakowska)', 'A', 0);
-INSERT INTO przystanki(id, location, nazwa, typ, version) VALUES ( nextval ('public.hibernate_sequence'), st_geomfromtext('POINT(19.9450070 50.0653699)', 4326), 'Dworzec G³ówny', 'A', 0);
+INSERT INTO przystanki(id, location, nazwa, typ, version) VALUES ( nextval ('public.hibernate_sequence'), st_geomfromtext('POINT(19.9434344 50.0672463)', 4326), 'Dworzec G\u0142ówny Zachód (Galeria Krakowska)', 'A', 0);
+INSERT INTO przystanki(id, location, nazwa, typ, version) VALUES ( nextval ('public.hibernate_sequence'), st_geomfromtext('POINT(19.9450070 50.0653699)', 4326), 'Dworzec G\u0142ówny', 'A', 0);
 INSERT INTO przystanki(id, location, nazwa, typ, version) VALUES ( nextval ('public.hibernate_sequence'), st_geomfromtext('POINT(19.9388133 50.0662546)', 4326), 'Basztowa LOT', 'A', 0);
 INSERT INTO przystanki(id, location, nazwa, typ, version) VALUES ( nextval ('public.hibernate_sequence'), st_geomfromtext('POINT(19.9334918 50.0585545)', 4326), 'Filharmonia', 'A', 0);
 INSERT INTO przystanki(id, location, nazwa, typ, version) VALUES ( nextval ('public.hibernate_sequence'), st_geomfromtext('POINT(19.9326925 50.0631176)', 4326), 'Teatr Bagatela', 'A', 0);
 INSERT INTO przystanki(id, location, nazwa, typ, version) VALUES ( nextval ('public.hibernate_sequence'), st_geomfromtext('POINT(19.9469752 50.0438964)', 4326), 'Korona', 'A', 0);
-INSERT INTO przystanki(id, location, nazwa, typ, version) VALUES ( nextval ('public.hibernate_sequence'), st_geomfromtext('POINT(19.9274522 50.0840991)', 4326), 'Wybickiego', 'A', 0);
+INSERT INTO przystanki(id, location, nazwa, typ, version) VALUES ( nextval ('public.hibernate_sequence'), st_geomfromtext('POINT(19.9274522 50.0840991)', 4326), 'Wybickiego', 'A', 0);--49
 
 
 --TRAMWAJOWE PRZYSTNAKI:
 INSERT INTO przystanki(id, location, nazwa, typ, version) VALUES ( nextval ('public.hibernate_sequence'), st_geomfromtext('POINT(19.9623698 50.0588172)', 4326), 'Aleja Pokoju', 'T', 0);
-INSERT INTO przystanki(id, location, nazwa, typ, version) VALUES ( nextval ('public.hibernate_sequence'), st_geomfromtext('POINT(19.9761873 50.0595728)', 4326), 'Ofiar D¹bia', 'T', 0);
-INSERT INTO przystanki(id, location, nazwa, typ, version) VALUES ( nextval ('public.hibernate_sequence'), st_geomfromtext('POINT(19.9701290 50.0604726)', 4326), 'Fabryczna', 'T', 0);;
+INSERT INTO przystanki(id, location, nazwa, typ, version) VALUES ( nextval ('public.hibernate_sequence'), st_geomfromtext('POINT(19.9761873 50.0595728)', 4326), 'Ofiar D¹bia', 'T', 0);--50
+INSERT INTO przystanki(id, location, nazwa, typ, version) VALUES ( nextval ('public.hibernate_sequence'), st_geomfromtext('POINT(19.9701290 50.0604726)', 4326), 'Fabryczna', 'T', 0);
 INSERT INTO przystanki(id, location, nazwa, typ, version) VALUES ( nextval ('public.hibernate_sequence'), st_geomfromtext('POINT(19.9396020 50.0544414)', 4326), 'Wawel', 'T', 0);
 INSERT INTO przystanki(id, location, nazwa, typ, version) VALUES ( nextval ('public.hibernate_sequence'), st_geomfromtext('POINT(19.9031282 50.0630685)', 4326), 'Cichy K¹cik', 'T', 0);
 INSERT INTO przystanki(id, location, nazwa, typ, version) VALUES ( nextval ('public.hibernate_sequence'), st_geomfromtext('POINT(19.9551055 50.0464802)', 4326), 'Plac Bohaterów Getta', 'T', 0);
@@ -85,8 +85,8 @@ INSERT INTO przystanki(id, location, nazwa, typ, version) VALUES ( nextval ('pub
 INSERT INTO przystanki(id, location, nazwa, typ, version) VALUES ( nextval ('public.hibernate_sequence'), st_geomfromtext('POINT(19.9561903 50.0448955)', 4326), 'Limanowskiego', 'T', 0);
 INSERT INTO przystanki(id, location, nazwa, typ, version) VALUES ( nextval ('public.hibernate_sequence'), st_geomfromtext('POINT(19.9376526 50.0590720)', 4326), 'Plac Wszystkich Œwiêtych', 'T', 0);
 INSERT INTO przystanki(id, location, nazwa, typ, version) VALUES ( nextval ('public.hibernate_sequence'), st_geomfromtext('POINT(19.9259787 50.0346380)', 4326), 'Kobierzyñska', 'T', 0);
-INSERT INTO przystanki(id, location, nazwa, typ, version) VALUES ( nextval ('public.hibernate_sequence'), st_geomfromtext('POINT(19.9241478 50.0414899)', 4326), 'S³omiana', 'T', 0);
-INSERT INTO przystanki(id, location, nazwa, typ, version) VALUES ( nextval ('public.hibernate_sequence'), st_geomfromtext('POINT(19.9219418 50.0451159)', 4326), 'Kapelanka', 'T', 0)
+INSERT INTO przystanki(id, location, nazwa, typ, version) VALUES ( nextval ('public.hibernate_sequence'), st_geomfromtext('POINT(19.9241478 50.0414899)', 4326), 'S\u0142omiana', 'T', 0);
+INSERT INTO przystanki(id, location, nazwa, typ, version) VALUES ( nextval ('public.hibernate_sequence'), st_geomfromtext('POINT(19.9219418 50.0451159)', 4326), 'Kapelanka', 'T', 0); --70
 INSERT INTO przystanki(id, location, nazwa, typ, version) VALUES ( nextval ('public.hibernate_sequence'), st_geomfromtext('POINT(19.9310490 50.0485980)', 4326), 'Most Grunwaldzki', 'T', 0);
 INSERT INTO przystanki(id, location, nazwa, typ, version) VALUES ( nextval ('public.hibernate_sequence'), st_geomfromtext('POINT(19.9387399 50.0506217)', 4326), 'Orzeszkowej', 'T', 0);
 INSERT INTO przystanki(id, location, nazwa, typ, version) VALUES ( nextval ('public.hibernate_sequence'), st_geomfromtext('POINT(19.9172550 50.0526199)', 4326), 'Flisacka', 'T', 0);
@@ -97,21 +97,21 @@ INSERT INTO przystanki(id, location, nazwa, typ, version) VALUES ( nextval ('pub
 INSERT INTO przystanki(id, location, nazwa, typ, version) VALUES ( nextval ('public.hibernate_sequence'), st_geomfromtext('POINT(19.9488261 50.0586919)', 4326), 'Hala Targowa', 'T', 0);
 INSERT INTO przystanki(id, location, nazwa, typ, version) VALUES ( nextval ('public.hibernate_sequence'), st_geomfromtext('POINT(19.9667636 50.0600095)', 4326), 'Francesco Nullo', 'T', 0);
 INSERT INTO przystanki(id, location, nazwa, typ, version) VALUES ( nextval ('public.hibernate_sequence'), st_geomfromtext('POINT(19.9711448 50.0665741)', 4326), 'Cystersów', 'T', 0);
-INSERT INTO przystanki(id, location, nazwa, typ, version) VALUES ( nextval ('public.hibernate_sequence'), st_geomfromtext('POINT(19.9425710 50.0591765)', 4326), 'Poczta G³ówna', 'T', 0);
-INSERT INTO przystanki(id, location, nazwa, typ, version) VALUES ( nextval ('public.hibernate_sequence'), st_geomfromtext('POINT(19.9424868 50.0597907)', 4326), 'Poczta G³ówna', 'T', 0);
-INSERT INTO przystanki(id, location, nazwa, typ, version) VALUES ( nextval ('public.hibernate_sequence'), st_geomfromtext('POINT(19.9450511 50.0641670)', 4326), 'Dworzec G³ówny', 'T', 0);
+INSERT INTO przystanki(id, location, nazwa, typ, version) VALUES ( nextval ('public.hibernate_sequence'), st_geomfromtext('POINT(19.9425710 50.0591765)', 4326), 'Poczta G\u0142ówna', 'T', 0);
+INSERT INTO przystanki(id, location, nazwa, typ, version) VALUES ( nextval ('public.hibernate_sequence'), st_geomfromtext('POINT(19.9424868 50.0597907)', 4326), 'Poczta G\u0142ówna', 'T', 0);
+INSERT INTO przystanki(id, location, nazwa, typ, version) VALUES ( nextval ('public.hibernate_sequence'), st_geomfromtext('POINT(19.9450511 50.0641670)', 4326), 'Dworzec G\u0142ówny', 'T', 0);
 INSERT INTO przystanki(id, location, nazwa, typ, version) VALUES ( nextval ('public.hibernate_sequence'), st_geomfromtext('POINT(19.9510507 50.0650655)', 4326), 'Lubicz', 'T', 0);
 INSERT INTO przystanki(id, location, nazwa, typ, version) VALUES ( nextval ('public.hibernate_sequence'), st_geomfromtext('POINT(19.9527224 50.0683991)', 4326), 'Uniwersytet Ekonomiczny', 'T', 0);
 INSERT INTO przystanki(id, location, nazwa, typ, version) VALUES ( nextval ('public.hibernate_sequence'), st_geomfromtext('POINT(19.9398653 50.0750830)', 4326), 'Dworzec Towarowy', 'T', 0);
 INSERT INTO przystanki(id, location, nazwa, typ, version) VALUES ( nextval ('public.hibernate_sequence'), st_geomfromtext('POINT(19.9377104 50.0807491)', 4326), 'Pr¹dnicka', 'T', 0);
-INSERT INTO przystanki(id, location, nazwa, typ, version) VALUES ( nextval ('public.hibernate_sequence'), st_geomfromtext('POINT(19.9336249 50.0847079)', 4326), 'Bratys³awska', 'T', 0);
+INSERT INTO przystanki(id, location, nazwa, typ, version) VALUES ( nextval ('public.hibernate_sequence'), st_geomfromtext('POINT(19.9336249 50.0847079)', 4326), 'Bratys\u0142awska', 'T', 0);
 INSERT INTO przystanki(id, location, nazwa, typ, version) VALUES ( nextval ('public.hibernate_sequence'), st_geomfromtext('POINT(19.8977928 50.0788760)', 4326), 'Wesele', 'T', 0);
-INSERT INTO przystanki(id, location, nazwa, typ, version) VALUES ( nextval ('public.hibernate_sequence'), st_geomfromtext('POINT(19.9056435 50.0759979)', 4326), 'G³owackiego', 'T', 0);
+INSERT INTO przystanki(id, location, nazwa, typ, version) VALUES ( nextval ('public.hibernate_sequence'), st_geomfromtext('POINT(19.9056435 50.0759979)', 4326), 'G\u0142owackiego', 'T', 0);
 INSERT INTO przystanki(id, location, nazwa, typ, version) VALUES ( nextval ('public.hibernate_sequence'), st_geomfromtext('POINT(19.9469900 50.0496600)', 4326), 'Muzeum In¿ynierii Miejskiej', 'T', 0);
 INSERT INTO przystanki(id, location, nazwa, typ, version) VALUES ( nextval ('public.hibernate_sequence'), st_geomfromtext('POINT(19.9376160 50.0695030)', 4326), 'Pêdzichów', 'T', 0);
 INSERT INTO przystanki(id, location, nazwa, typ, version) VALUES ( nextval ('public.hibernate_sequence'), st_geomfromtext('POINT(19.9212159 50.0598187)', 4326), 'Oleandry', 'T', 0);
-INSERT INTO przystanki(id, location, nazwa, typ, version) VALUES ( nextval ('public.hibernate_sequence'), st_geomfromtext('POINT(19.9644057 50.0499573)', 4326), 'Zab³ocie', 'T', 0);
-INSERT INTO przystanki(id, location, nazwa, typ, version) VALUES ( nextval ('public.hibernate_sequence'), st_geomfromtext('POINT(19.9579869 50.0576053)', 4326), 'Rondo Grzegórzeckie', 'T', 0);
+INSERT INTO przystanki(id, location, nazwa, typ, version) VALUES ( nextval ('public.hibernate_sequence'), st_geomfromtext('POINT(19.9644057 50.0499573)', 4326), 'Zab\u0142ocie', 'T', 0);
+INSERT INTO przystanki(id, location, nazwa, typ, version) VALUES ( nextval ('public.hibernate_sequence'), st_geomfromtext('POINT(19.9579869 50.0576053)', 4326), 'Rondo Grzegórzeckie', 'T', 0);--95
 
 
 
@@ -120,29 +120,29 @@ INSERT INTO przystanki(id, location, nazwa, typ, version) VALUES ( nextval ('pub
 
 -- LINIA  i TABLICZKI
 
-INSERT INTO linie(id, numer, typ, version) VALUES (nextval('public.hibernate_sequence'), 123, 'A', 0);
+INSERT INTO linie(id, numer, typ, version) VALUES (nextval('public.hibernate_sequence'), 123, 'A', 0);--96
 
-INSERT INTO przystanek_tabliczki(id, version, linia_id , przystanek_id, przystanektabliczka_order, czasdonastepnego) VALUES (nextval('public.hibernate_sequence'), 0, 96, 13, 0, 1); -- ID 97
-INSERT INTO przystanek_tabliczki(id, version, linia_id , przystanek_id, poprzedniprzystanek_id, przystanektabliczka_order, czasdonastepnego) VALUES (nextval('public.hibernate_sequence'), 0, 96, 14,  97, 1, 1);
+INSERT INTO przystanek_tabliczki(id, version, linia_id , przystanek_id, przystanektabliczka_order, czasdonastepnego) VALUES (nextval('public.hibernate_sequence'), 0, 96,9, 0, 1); -- ID 97
+INSERT INTO przystanek_tabliczki(id, version, linia_id , przystanek_id, poprzedniprzystanek_id, przystanektabliczka_order, czasdonastepnego) VALUES (nextval('public.hibernate_sequence'), 0, 96,  10,  97, 1, 1);
 UPDATE przystanek_tabliczki SET nastepnyprzystanek_id = 98, version=version+1 WHERE id = 97;
-INSERT INTO przystanek_tabliczki(id, version, linia_id , przystanek_id, poprzedniprzystanek_id, przystanektabliczka_order, czasdonastepnego) VALUES (nextval('public.hibernate_sequence'), 0, 96, 16, 98, 2, 1);
+INSERT INTO przystanek_tabliczki(id, version, linia_id , przystanek_id, poprzedniprzystanek_id, przystanektabliczka_order, czasdonastepnego) VALUES (nextval('public.hibernate_sequence'), 0, 96, 11, 98, 2, 1);
 UPDATE przystanek_tabliczki SET nastepnyprzystanek_id = 99, version=version+1 WHERE id = 98;
-INSERT INTO przystanek_tabliczki(id, version, linia_id , przystanek_id, poprzedniprzystanek_id, przystanektabliczka_order, czasdonastepnego) VALUES (nextval('public.hibernate_sequence'), 0, 96, 6, 99, 3, 1);
+INSERT INTO przystanek_tabliczki(id, version, linia_id , przystanek_id, poprzedniprzystanek_id, przystanektabliczka_order, czasdonastepnego) VALUES (nextval('public.hibernate_sequence'), 0, 96,48, 99, 3, 1);
 UPDATE przystanek_tabliczki SET nastepnyprzystanek_id = 100, version=version+1 WHERE id = 99;
-INSERT INTO przystanek_tabliczki(id, version, linia_id, przystanek_id, poprzedniprzystanek_id, przystanektabliczka_order, czasdonastepnego) VALUES (nextval('public.hibernate_sequence'), 0, 96, 5, 100, 4, 1);
+INSERT INTO przystanek_tabliczki(id, version, linia_id, przystanek_id, poprzedniprzystanek_id, przystanektabliczka_order, czasdonastepnego) VALUES (nextval('public.hibernate_sequence'), 0, 96, 37, 100, 4, 1);
 UPDATE przystanek_tabliczki SET nastepnyprzystanek_id = 101, version=version+1 WHERE id = 100;
-INSERT INTO przystanek_tabliczki(id, version, linia_id , przystanek_id, poprzedniprzystanek_id, przystanektabliczka_order, czasdonastepnego) VALUES (nextval('public.hibernate_sequence'), 0, 96, 7,101, 5, 1);
+INSERT INTO przystanek_tabliczki(id, version, linia_id , przystanek_id, poprzedniprzystanek_id, przystanektabliczka_order, czasdonastepnego) VALUES (nextval('public.hibernate_sequence'), 0, 96, 36,101, 5, 1);
 UPDATE przystanek_tabliczki SET nastepnyprzystanek_id = 102, version=version+1 WHERE id = 101;
-INSERT INTO przystanek_tabliczki(id, version, linia_id , przystanek_id, poprzedniprzystanek_id, przystanektabliczka_order, czasdonastepnego) VALUES (nextval('public.hibernate_sequence'), 0, 96, 10,102, 6, 1);
+INSERT INTO przystanek_tabliczki(id, version, linia_id , przystanek_id, poprzedniprzystanek_id, przystanektabliczka_order, czasdonastepnego) VALUES (nextval('public.hibernate_sequence'), 0, 96, 34,102, 6, 1);
 UPDATE przystanek_tabliczki SET nastepnyprzystanek_id = 103, version=version+1 WHERE id = 102;
-INSERT INTO przystanek_tabliczki(id, version, linia_id , przystanek_id, poprzedniprzystanek_id, przystanektabliczka_order, czasdonastepnego) VALUES (nextval('public.hibernate_sequence'), 0, 96, 12,103, 7, 1);
+INSERT INTO przystanek_tabliczki(id, version, linia_id , przystanek_id, poprzedniprzystanek_id, przystanektabliczka_order, czasdonastepnego) VALUES (nextval('public.hibernate_sequence'), 0, 96,40,103, 7, 1);
 UPDATE przystanek_tabliczki SET nastepnyprzystanek_id = 104, version=version+1 WHERE id = 103;
 
 INSERT INTO linie (id, numer, typ, version) VALUES (nextval('public.hibernate_sequence'), 3, 'T', 0); --id 105
 INSERT INTO linie (id, numer, typ, version) VALUES (nextval('public.hibernate_sequence'), 501, 'A', 0); 
 INSERT INTO linie (id, numer, typ, version) VALUES (nextval('public.hibernate_sequence'), 899, 'A', 0); -- ID 107
 
-INSERT INTO przystanek_tabliczki (id, czasdonastepnego, version, linia_id, poprzedniprzystanek_id, przystanek_id, przystanektabliczka_order) VALUES (nextval('public.hibernate_sequence'), 1, 2, 105, NULL, 95, 0);
+INSERT INTO przystanek_tabliczki (id, czasdonastepnego, version, linia_id, poprzedniprzystanek_id, przystanek_id, przystanektabliczka_order) VALUES (nextval('public.hibernate_sequence'), 1, 2, 105, NULL, 56, 0);
 INSERT INTO przystanek_tabliczki (id, czasdonastepnego, version, linia_id, poprzedniprzystanek_id, przystanek_id, przystanektabliczka_order) VALUES (nextval('public.hibernate_sequence'), 1, 2,105, 108, 73, 1);
 UPDATE przystanek_tabliczki SET nastepnyprzystanek_id = 109, version=version+1 WHERE id = 108;
 INSERT INTO przystanek_tabliczki (id, czasdonastepnego, version, linia_id, poprzedniprzystanek_id, przystanek_id, przystanektabliczka_order) VALUES (nextval('public.hibernate_sequence'), 1, 2, 105, 109, 74, 2);

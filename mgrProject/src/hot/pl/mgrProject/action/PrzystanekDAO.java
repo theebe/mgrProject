@@ -36,7 +36,7 @@ public interface PrzystanekDAO {
 	 * wysyla liste przystankow, bez taliby linie i poprzedniePrzystanki
 	 * @return
 	 */
-	@WebRemote(exclude={"linie", "poprzedniePrzystanki"})
+	@WebRemote
 	public List<Przystanek> getPrzystanekList();
 	
 	

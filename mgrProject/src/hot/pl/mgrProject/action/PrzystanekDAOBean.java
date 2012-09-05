@@ -50,20 +50,17 @@ public class PrzystanekDAOBean implements Serializable, PrzystanekDAO {
 	@In
 	private EntityManager mgrDatabase;
 
-	private PushEventListener listener;
-
 	@EJB(beanName = "PrzystanekTabliczkaDAOBean")
 	private PrzystanekTabliczkaDAO przystanekTabliczkaDAO;
 
 	@DataModel
-
 	private List<Przystanek> przystanekList;
 
 	@DataModelSelection("przystanekList")
 	@In(required = false)
 	@Out(required = false)
 	private Przystanek selectedPrzystanek;
-	
+
 	/**
 	 * Metoda WebRemote
 	 * 
@@ -83,11 +80,12 @@ public class PrzystanekDAOBean implements Serializable, PrzystanekDAO {
 		try {
 			mgrDatabase.persist(p);
 			// zdarzenie uaktualnienia przystankow po stronie przegladarki
-			listener.onEvent(new EventObject(this));
+
 			log.info("Dodano obiekt przystanek do bazy, nazwa: " + p.getNazwa());
 		} catch (Exception e) {
 			log.info("Blad w zapisie przystanku do bazy, nazwa: "
 					+ p.getNazwa());
+			e.printStackTrace();
 			return null;
 		}
 		return p;
@@ -109,13 +107,17 @@ public class PrzystanekDAOBean implements Serializable, PrzystanekDAO {
 					.createNamedQuery("wszystkiePrzystanki").getResultList();
 			log.info("Pobrano z bazy " + przystanekList.size() + " przystankow");
 		}
+		for (Przystanek p : przystanekList) {
+			p.getPrzystanekTabliczki().size();
+			for (PrzystanekTabliczka pt : p.getPrzystanekTabliczki()) {
+				pt.getLinia().getNumer();
+			}
+		}
 		return przystanekList;
 	}
- 
-
 
 	/**
-	 * uaktualnia przystanek w bazie 
+	 * uaktualnia przystanek w bazie
 	 */
 	@TransactionAttribute(TransactionAttributeType.REQUIRED)
 	@End
@@ -123,9 +125,9 @@ public class PrzystanekDAOBean implements Serializable, PrzystanekDAO {
 
 		mgrDatabase.merge(p);
 		log.info("Uaktualniono przystanek " + p.getNazwa());
-		
+
 	}
-	
+
 	/**
 	 * Kasuje przystanek wraz z wszystkimi podrzednymi tabliczkamii\\
 	 */
@@ -135,29 +137,29 @@ public class PrzystanekDAOBean implements Serializable, PrzystanekDAO {
 		if (p != null) {
 			List<PrzystanekTabliczka> ptSet = p.getPrzystanekTabliczki();
 			if (ptSet != null)
-				for (PrzystanekTabliczka pt : ptSet) 
+				for (PrzystanekTabliczka pt : ptSet)
 					przystanekTabliczkaDAO.delete(pt);
-		
+
 			mgrDatabase.remove(p);
 			przystanekList.remove(p);
-			log.info("Kasowanie przystanku " + p.getNazwa() + " wraz z tabliczkami z bazy danychSss");
+			log.info("Kasowanie przystanku " + p.getNazwa()
+					+ " wraz z tabliczkami z bazy danychSss");
 			p = null;
 		}
 	}
 
-	
 	public Przystanek getSelectedPrzystanek() {
 		return selectedPrzystanek;
 	}
-
 
 	@Begin(join = true)
 	public void setSelectedPrzystanek(Przystanek p) {
 		this.selectedPrzystanek = p;
 	}
-	
-	public List<Przystanek> getAll(){
-		List resultList = mgrDatabase.createNamedQuery("wszystkiePrzystanki").getResultList();
+
+	public List<Przystanek> getAll() {
+		List resultList = mgrDatabase.createNamedQuery("wszystkiePrzystanki")
+				.getResultList();
 		return resultList;
 	}
 
@@ -165,7 +167,5 @@ public class PrzystanekDAOBean implements Serializable, PrzystanekDAO {
 	@Remove
 	public void destory() {
 	}
-
-
 
 }

@@ -100,7 +100,6 @@ function homeTabsInit() {
 	// off
 	function() {
 		$(this).removeClass("ui-state-hover");
-
 	});
 
 	$(".liniaLink").hover(

@@ -550,7 +550,8 @@ function createVectorPrzystanek(przystanek) {
 	var vect = new OpenLayers.Feature.Vector(point, {
 		nazwa : przystanek.nazwa,
 		id : przystanek.id,
-		typ : przystanek.typ
+		typ : przystanek.typ,
+		tabliczki : przystanek.przystanekTabliczki
 	});
 	return vect;
 }
@@ -583,11 +584,13 @@ function deletePrzystanekFromMap(id) {
 	alert("Usuniêto przystanek");
 }
 
+
 function showPrzystanekOnMap(id) {
+	hidePrzystanek();
 	var przystanekFeature = przystanki[getIPrzystnekFromId(id)];
 	var lonLat = new OpenLayers.LonLat(przystanekFeature.geometry.x,
 			przystanekFeature.geometry.y);
-
+	
 	var popupp = new OpenLayers.Popup.FramedCloud("przystanekFramedCloud",
 			lonLat, null, przystanekFeature.attributes.nazwa, null, false);
 	przystanekInfoPopup.push(popupp);
@@ -609,12 +612,10 @@ function showPrzystanekOnMapLinia(id) {
 }
 
 function hidePrzystanek() {
-	try{
-	while (przystanekInfoPopup.length != 0)
-		map.removePopup(przystanekInfoPopup.pop());
-	}
-	catch(e)
-	{
+	try {
+		while (przystanekInfoPopup.length != 0)
+			map.removePopup(przystanekInfoPopup.pop());
+	} catch (e) {
 		alert(e);
 	}
 }
